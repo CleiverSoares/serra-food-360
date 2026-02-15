@@ -1,0 +1,51 @@
+---
+description: Padrões Laravel - Controller, Service, Repository, Model | PT-BR | KISS, SOLID, DRY
+globs: app/**/*.php
+alwaysApply: false
+---
+
+# Padrões Backend Laravel - Serra Food 360
+
+## Arquitetura obrigatória
+
+Sempre usar a camada em 4 níveis: **Controller → Service → Repository → Model**.
+
+- **Controller**: Recebe requisição, delega para Service, retorna resposta.
+- **Service**: Regras de negócio (obrigatório). Orquestra lógica e usa Repositories.
+- **Repository**: Acesso a dados (obrigatório). Queries **somente** aqui.
+- **Model**: Definição de entidade e relacionamentos.
+
+## Regras rígidas
+
+1. **NUNCA** executar query (Eloquent, DB::) fora do Repository.
+2. **SEMPRE** colocar regras de negócio na Service, nunca no Controller ou Repository.
+3. Repository apenas encapsula consultas e persistência, sem lógica de negócio.
+
+## Sufixos obrigatórios
+
+- `RestauranteModel`
+- `RestauranteService`
+- `RestauranteRepository`
+- `RestauranteController`
+
+## Nomenclatura em português (pt-BR)
+
+Variáveis, funções e métodos em português:
+
+```php
+// ✅ BOM
+public function obterRestaurantesPorRegiao(string $regiao): Collection
+{
+    $restaurantes = $this->restauranteRepository->buscarPorRegiao($regiao);
+    return $restaurantes;
+}
+
+// ❌ EVITAR
+public function getRestaurantsByRegion(string $region): Collection
+```
+
+## Princípios
+
+- **KISS**: Manter implementações simples.
+- **SOLID**: Responsabilidade única, injeção de dependência, etc.
+- **DRY**: Evitar duplicação; extrair código reutilizável.

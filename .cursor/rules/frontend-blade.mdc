@@ -1,0 +1,68 @@
+---
+description: Padrões Frontend - Blade, Tailwind, Alpine | Mobile-first | Bottom navigation
+globs: resources/views/**/*.blade.php, resources/css/**/*.css
+alwaysApply: false
+---
+
+# Padrões Frontend - Serra Food 360
+
+## Stack
+
+- **Blade** (Laravel) para templates
+- **Tailwind CSS** para estilização
+- **Alpine.js** para interatividade leve (modais, filtros, tabs)
+- **Mobile-first** obrigatório
+
+## Mobile-first
+
+1. Sempre começar o design pela versão mobile (320px+)
+2. Usar breakpoints do Tailwind: `sm:`, `md:`, `lg:` somente quando necessário
+3. A experiência mobile deve ser **prioritária e impressionante**
+4. Touch targets mínimo 44px para facilitar toque
+
+## Navegação tipo App
+
+- **Menu hambúrguer** opcional para ações secundárias
+- **Barra de navegação fixa na parte inferior** (bottom nav) com os principais botões/ícones
+- Comportamento similar a app nativo: Home, Módulos principais acessíveis pelo rodapé
+- Botões grandes, ícones claros, labels concisos
+
+## Design diferenciado
+
+- Evitar estética genérica ("AI slop")
+- Buscar identidade visual própria para food service e região serrana
+- Tipografia, cores e espaçamentos que destaquem o Serra Food 360 no mercado
+
+## Temas e variáveis (Admin)
+
+O painel admin terá **personalização forte**: vários temas e configurações editáveis pelo administrador. Por isso:
+
+1. **Todas as cores** devem usar variáveis CSS (não valores fixos como `#fff` ou `blue-500`).
+2. **Temas múltiplos**: não só dark mode — haverá vários temas (ex.: serra, oceano, neutro).
+3. **Configurações no admin**: cores primária, secundária, fundo, texto etc. editáveis via painel.
+4. Estrutura sugerida em `:root` ou classe do tema:
+
+```css
+:root, [data-tema="padrao"] {
+  --cor-primaria: #...;
+  --cor-secundaria: #...;
+  --cor-fundo: #...;
+  --cor-texto: #...;
+  --cor-destaque: #...;
+  /* ... todas as cores semanticamente nomeadas */
+}
+```
+
+5. Tailwind: usar `theme()` com variáveis ou classes que referenciem as variáveis.
+6. Nunca hardcodar cor; sempre `var(--nome-da-cor)` ou equivalente.
+
+## Nomenclatura
+
+- Variáveis, classes e IDs em **português (pt-BR)** quando fizer sentido
+- Componentes Blade: `@include` e nomes de partials em português ou kebab-case em inglês
+
+## Princípios
+
+- **KISS**, **SOLID**, **DRY**
+- Componentes reutilizáveis via Blade `@include` ou `@component`
+- Imagens: ver documentação do projeto para descrições e placeholders (gerar no Gemini)

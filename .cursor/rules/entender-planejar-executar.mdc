@@ -1,0 +1,25 @@
+---
+description: Metodologia obrigatória - nunca sair fazendo sem entender e planejar
+alwaysApply: true
+---
+
+# Entender → Planejar → Executar
+
+Siga esta ordem em **qualquer** tarefa. Não pule etapas nem comece a codar sem concluir as anteriores.
+
+## 1. Entender
+- Ler com calma o que foi pedido
+- Fazer perguntas se houver dúvida ou ambiguidade
+- Confirmar o escopo antes de propor soluções
+
+## 2. Planejar
+- Definir o que será feito e em qual ordem
+- Identificar dependências e decisões necessárias
+- Propor abordagem e validar com o usuário
+
+## 3. Executar
+- Implementar **somente** após entender e planejar
+- Seguir o plano definido, ajustando se surgir imprevisto
+
+## Regra de ouro
+**Nunca** sair fazendo código, arquivos ou mudanças sem antes entender e planejar. Quando em dúvida, perguntar.
