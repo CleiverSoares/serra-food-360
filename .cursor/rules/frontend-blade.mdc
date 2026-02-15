@@ -13,12 +13,13 @@ alwaysApply: false
 - **Alpine.js** para interatividade leve (modais, filtros, tabs)
 - **Mobile-first** obrigatório
 
-## Mobile-first
+## Mobile e Desktop — ambos de excelência
 
-1. Sempre começar o design pela versão mobile (320px+)
-2. Usar breakpoints do Tailwind: `sm:`, `md:`, `lg:` somente quando necessário
-3. A experiência mobile deve ser **prioritária e impressionante**
-4. Touch targets mínimo 44px para facilitar toque
+1. **Mobile e desktop precisam ser top.** A experiência deve ser impressionante nos dois — nada de "mobile ok, desktop simplão" ou vice-versa.
+2. Começar pelo mobile (320px+), mas **projetar desde o início** como ficará no desktop (lg:, xl:).
+3. No desktop: aproveitar espaço, tipografia maior, layouts mais elaborados (ex.: hero split, bento, grids ricos).
+4. No mobile: touch targets mínimo 44px, hierarquia clara, sem sacrificar beleza.
+5. Cada tela deve passar no "teste dos dois": ficaria orgulhoso de mostrar no celular **e** no monitor.
 
 ## Navegação tipo App
 
