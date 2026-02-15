@@ -18,7 +18,7 @@ class UserService
      */
     public function listarPendentes(): Collection
     {
-        return $this->userRepository->buscarPendentes();
+        return $this->userRepository->buscarPendentes()->load(['restaurante', 'fornecedor']);
     }
 
     /**
@@ -26,15 +26,24 @@ class UserService
      */
     public function listarAprovados(): Collection
     {
-        return $this->userRepository->buscarAprovados();
+        return $this->userRepository->buscarAprovados()->load(['restaurante', 'fornecedor']);
     }
 
     /**
-     * Listar restaurantes
+     * Listar compradores
+     */
+    public function listarCompradores(): Collection
+    {
+        return $this->userRepository->buscarPorRole('comprador')->load('comprador');
+    }
+
+    /**
+     * Listar restaurantes (alias para listarCompradores - retrocompatibilidade)
+     * @deprecated Use listarCompradores() instead
      */
     public function listarRestaurantes(): Collection
     {
-        return $this->userRepository->buscarPorRole('restaurante');
+        return $this->listarCompradores();
     }
 
     /**
@@ -42,7 +51,7 @@ class UserService
      */
     public function listarFornecedores(): Collection
     {
-        return $this->userRepository->buscarPorRole('fornecedor');
+        return $this->userRepository->buscarPorRole('fornecedor')->load('fornecedor');
     }
 
     /**
@@ -69,8 +78,10 @@ class UserService
         return [
             'pendentes' => $this->userRepository->contarPendentes(),
             'aprovados' => $this->userRepository->contarAprovados(),
-            'restaurantes' => $this->userRepository->buscarPorRole('restaurante')->count(),
+            'compradores' => $this->userRepository->buscarPorRole('comprador')->count(),
             'fornecedores' => $this->userRepository->buscarPorRole('fornecedor')->count(),
+            // Manter "restaurantes" por retrocompatibilidade
+            'restaurantes' => $this->userRepository->buscarPorRole('comprador')->count(),
         ];
     }
 
@@ -94,7 +105,7 @@ class UserService
                 Storage::disk('public')->delete($usuario->logo_path);
             }
             
-            $pasta = $usuario->role === 'restaurante' ? 'restaurantes/logos' : 'fornecedores/logos';
+            $pasta = $usuario->role === 'comprador' ? 'compradores/logos' : 'fornecedores/logos';
             $dados['logo_path'] = $dados['logo']->store($pasta, 'public');
             unset($dados['logo']);
         }

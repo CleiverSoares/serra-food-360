@@ -32,7 +32,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('cadastro') }}" method="POST" enctype="multipart/form-data" class="space-y-6" x-data="{ role: '{{ old('role', 'restaurante') }}' }">
+            <form action="{{ route('cadastro') }}" method="POST" enctype="multipart/form-data" class="space-y-6" x-data="{ role: '{{ old('role', 'comprador') }}' }">
                 @csrf
 
                 <!-- Tipo de Perfil -->
@@ -42,21 +42,21 @@
                     </label>
                     <div class="grid md:grid-cols-2 gap-4">
                         <label class="relative flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all"
-                               :class="role === 'restaurante' ? 'border-[var(--cor-verde-serra)] bg-green-50' : 'border-gray-200 hover:border-[var(--cor-verde-serra)]'">
+                               :class="role === 'comprador' ? 'border-[var(--cor-verde-serra)] bg-green-50' : 'border-gray-200 hover:border-[var(--cor-verde-serra)]'">
                             <input 
                                 type="radio" 
                                 name="role" 
-                                value="restaurante" 
+                                value="comprador" 
                                 x-model="role"
                                 required
                                 class="w-5 h-5 text-[var(--cor-verde-serra)] border-gray-300 focus:ring-[var(--cor-verde-serra)] mt-0.5"
                             >
                             <div class="ml-3">
                                 <div class="flex items-center mb-1">
-                                    <i data-lucide="utensils" class="w-5 h-5 text-[var(--cor-verde-serra)] mr-2"></i>
-                                    <span class="font-semibold text-gray-900">Restaurante</span>
+                                    <i data-lucide="shopping-cart" class="w-5 h-5 text-[var(--cor-verde-serra)] mr-2"></i>
+                                    <span class="font-semibold text-gray-900">Comprador</span>
                                 </div>
-                                <p class="text-sm text-gray-600">Gerencio um estabelecimento gastronômico</p>
+                                <p class="text-sm text-gray-600">Tenho um negócio e compro produtos/serviços</p>
                             </div>
                         </label>
 
@@ -75,7 +75,7 @@
                                     <i data-lucide="package" class="w-5 h-5 text-[var(--cor-verde-serra)] mr-2"></i>
                                     <span class="font-semibold text-gray-900">Fornecedor</span>
                                 </div>
-                                <p class="text-sm text-gray-600">Forneço produtos e insumos</p>
+                                <p class="text-sm text-gray-600">Forneço produtos ou serviços</p>
                             </div>
                         </label>
                     </div>
@@ -97,20 +97,36 @@
                     >
                 </div>
 
-                <!-- Nome do Estabelecimento -->
-                <div>
-                    <label for="nome_estabelecimento" class="block text-sm font-medium text-gray-700 mb-2">
-                        Nome do Estabelecimento *
-                    </label>
-                    <input 
-                        type="text" 
-                        id="nome_estabelecimento" 
-                        name="nome_estabelecimento" 
-                        value="{{ old('nome_estabelecimento') }}"
-                        required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent transition-all"
-                        placeholder="Ex: Restaurante Pedra Azul"
-                    >
+                <!-- Nome do Estabelecimento e CNPJ -->
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nome_estabelecimento" class="block text-sm font-medium text-gray-700 mb-2">
+                            Nome do Estabelecimento *
+                        </label>
+                        <input 
+                            type="text" 
+                            id="nome_estabelecimento" 
+                            name="nome_estabelecimento" 
+                            value="{{ old('nome_estabelecimento') }}"
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent transition-all"
+                            placeholder="Ex: Sabor da Serra, Pet Mania, etc"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="cnpj" class="block text-sm font-medium text-gray-700 mb-2">
+                            CNPJ
+                        </label>
+                        <input 
+                            type="text" 
+                            id="cnpj" 
+                            name="cnpj" 
+                            value="{{ old('cnpj') }}"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent transition-all"
+                            placeholder="00.000.000/0000-00"
+                        >
+                    </div>
                 </div>
 
                 <!-- Email, Telefone e WhatsApp -->

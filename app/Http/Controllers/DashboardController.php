@@ -20,27 +20,28 @@ class DashboardController extends Controller
 
         // Redireciona para dashboard específico baseado no role
         return match ($usuario->role) {
-            'admin' => $this->dashboardAdmin(),
-            'restaurante' => $this->dashboardRestaurante(),
+            'admin' => redirect()->route('admin.dashboard'),
+            'comprador' => $this->dashboardComprador(),
             'fornecedor' => $this->dashboardFornecedor(),
             default => abort(403, 'Tipo de usuário inválido'),
         };
     }
 
     /**
-     * Dashboard do Admin
+     * Dashboard do Comprador
      */
-    private function dashboardAdmin()
+    private function dashboardComprador()
     {
-        return view('dashboard.admin');
+        return view('dashboard.comprador');
     }
 
     /**
-     * Dashboard do Restaurante
+     * Dashboard do Restaurante (alias para retrocompatibilidade)
+     * @deprecated
      */
     private function dashboardRestaurante()
     {
-        return view('dashboard.restaurante');
+        return $this->dashboardComprador();
     }
 
     /**

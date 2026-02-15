@@ -23,12 +23,48 @@ class AdminUsuariosController extends Controller
 
         $usuarios = match ($filtro) {
             'aprovados' => $this->userService->listarAprovados(),
-            'restaurantes' => $this->userService->listarRestaurantes(),
+            'compradores' => $this->userService->listarCompradores(),
             'fornecedores' => $this->userService->listarFornecedores(),
             default => $this->userService->listarPendentes(),
         };
 
         return view('admin.usuarios.index', compact('usuarios', 'filtro'));
+    }
+
+    /**
+     * Exibir formulário de criar usuário
+     */
+    public function criar()
+    {
+        return view('admin.usuarios.criar');
+    }
+
+    /**
+     * Salvar novo usuário criado pelo admin
+     */
+    public function salvar(Request $request)
+    {
+        $dados = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+            'telefone' => 'required|string|max:20',
+            'whatsapp' => 'required|string|max:20',
+            'role' => 'required|in:comprador,fornecedor',
+            'status' => 'required|in:pendente,aprovado,rejeitado,inativo',
+            'cnpj' => 'nullable|string|max:18',
+            'nome_estabelecimento' => 'required|string|max:255',
+            'cidade' => 'required|string|max:255',
+            'descricao' => 'nullable|string|max:500',
+            'categorias' => 'required_if:role,fornecedor|array',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        $usuario = $this->authService->cadastrar($dados);
+
+        return redirect()
+            ->route('admin.usuarios.index')
+            ->with('sucesso', 'Usuário criado com sucesso!');
     }
 
     /**

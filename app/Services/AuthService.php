@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\UserModel;
 use App\Repositories\UserRepository;
+use App\Repositories\RestauranteRepository;
+use App\Repositories\FornecedorRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -11,7 +13,9 @@ use Illuminate\Support\Facades\Storage;
 class AuthService
 {
     public function __construct(
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private RestauranteRepository $restauranteRepository,
+        private FornecedorRepository $fornecedorRepository
     ) {}
 
     /**
@@ -35,20 +39,58 @@ class AuthService
      */
     public function cadastrar(array $dados): UserModel
     {
-        // Hash da senha
-        $dados['password'] = Hash::make($dados['password']);
+        $role = $dados['role'];
         
-        // Status padrão: pendente
-        $dados['status'] = 'pendente';
+        // Separar dados específicos do perfil
+        $dadosPerfil = [
+            'cnpj' => $dados['cnpj'] ?? null,
+            'nome_estabelecimento' => $dados['nome_estabelecimento'] ?? null,
+            'descricao' => $dados['descricao'] ?? null,
+            'categorias' => $dados['categorias'] ?? null,
+        ];
         
         // Upload do logo se fornecido
+        $logoPath = null;
         if (isset($dados['logo']) && $dados['logo']) {
-            $dados['logo_path'] = $this->salvarLogo($dados['logo'], $dados['role']);
-            unset($dados['logo']);
+            $logoPath = $this->salvarLogo($dados['logo'], $role);
         }
         
+        // Dados do usuário (apenas campos da tabela users)
+        $dadosUser = [
+            'name' => $dados['name'],
+            'email' => $dados['email'],
+            'password' => Hash::make($dados['password']),
+            'role' => $role,
+            'status' => 'pendente',
+            'telefone' => $dados['telefone'] ?? null,
+            'whatsapp' => $dados['whatsapp'] ?? null,
+            'cidade' => $dados['cidade'] ?? null,
+        ];
+        
         // Criar usuário
-        return $this->userRepository->criar($dados);
+        $usuario = $this->userRepository->criar($dadosUser);
+        
+        // Criar perfil específico
+        if ($role === 'comprador') {
+            $this->restauranteRepository->criar([
+                'user_id' => $usuario->id,
+                'cnpj' => $dadosPerfil['cnpj'],
+                'nome_estabelecimento' => $dadosPerfil['nome_estabelecimento'],
+                'descricao' => $dadosPerfil['descricao'],
+                'logo_path' => $logoPath,
+            ]);
+        } elseif ($role === 'fornecedor') {
+            $this->fornecedorRepository->criar([
+                'user_id' => $usuario->id,
+                'cnpj' => $dadosPerfil['cnpj'],
+                'nome_empresa' => $dadosPerfil['nome_estabelecimento'], // usa mesmo campo
+                'descricao' => $dadosPerfil['descricao'],
+                'categorias' => $dadosPerfil['categorias'],
+                'logo_path' => $logoPath,
+            ]);
+        }
+        
+        return $usuario;
     }
 
     /**
@@ -128,7 +170,7 @@ class AuthService
      */
     private function salvarLogo($arquivo, string $role): string
     {
-        $pasta = $role === 'restaurante' ? 'restaurantes/logos' : 'fornecedores/logos';
+        $pasta = $role === 'comprador' ? 'compradores/logos' : 'fornecedores/logos';
         return $arquivo->store($pasta, 'public');
     }
 }

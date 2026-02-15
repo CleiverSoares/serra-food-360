@@ -5,26 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
-class FornecedorModel extends Model
+class CompradorModel extends Model
 {
-    protected $table = 'fornecedores';
+    protected $table = 'compradores';
 
     protected $fillable = [
         'user_id',
         'cnpj',
-        'nome_empresa',
-        'categorias',
+        'nome_negocio',
+        'tipo_negocio',
         'logo_path',
         'site_url',
+        'colaboradores',
         'descricao',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'categorias' => 'array',
-        ];
-    }
 
     /**
      * Accessor: URL completa do logo
@@ -35,7 +29,7 @@ class FornecedorModel extends Model
     }
 
     /**
-     * Relacionamento: Usuário dono do fornecedor
+     * Relacionamento: Usuário dono do negócio
      */
     public function usuario()
     {
@@ -43,15 +37,15 @@ class FornecedorModel extends Model
     }
 
     /**
-     * Boot: deletar logo ao deletar fornecedor
+     * Boot: deletar logo ao deletar comprador
      */
     protected static function boot()
     {
         parent::boot();
 
-        static::deleting(function ($fornecedor) {
-            if ($fornecedor->logo_path && Storage::disk('public')->exists($fornecedor->logo_path)) {
-                Storage::disk('public')->delete($fornecedor->logo_path);
+        static::deleting(function ($comprador) {
+            if ($comprador->logo_path && Storage::disk('public')->exists($comprador->logo_path)) {
+                Storage::disk('public')->delete($comprador->logo_path);
             }
         });
     }

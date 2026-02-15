@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
         
         // Gestão de usuários
         Route::get('/usuarios', [AdminUsuariosController::class, 'index'])->name('usuarios.index');
+        Route::get('/usuarios/criar', [AdminUsuariosController::class, 'criar'])->name('usuarios.create');
+        Route::post('/usuarios', [AdminUsuariosController::class, 'salvar'])->name('usuarios.store');
         Route::post('/usuarios/{id}/aprovar', [AdminUsuariosController::class, 'aprovar'])->name('usuarios.aprovar');
         Route::post('/usuarios/{id}/rejeitar', [AdminUsuariosController::class, 'rejeitar'])->name('usuarios.rejeitar');
         Route::delete('/usuarios/{id}', [AdminUsuariosController::class, 'deletar'])->name('usuarios.deletar');

@@ -73,8 +73,10 @@
 
 - [x] Layout Blade principal (app público)
 - [x] Layout Blade do painel admin (estrutura separada)
+- [x] Layout Dashboard (ERP desktop + App mobile) para área logada
 - [x] Estrutura mobile-first: viewport, touch targets 44px+
-- [x] Bottom navigation (estrutura vazia, será preenchida na Fase 2)
+- [x] Bottom navigation (estilo app com ícones)
+- [x] Sidebar desktop (estilo ERP)
 
 ---
 
@@ -159,25 +161,27 @@
 
 **Objetivo:** Vitrines com fotos, dados e botão WhatsApp.
 
-### 3.1 Diretório de Restaurantes
+### 3.1 Diretório de Compradores (ex-Restaurantes)
 
-- [ ] Listagem de estabelecimentos pagantes
-- [ ] Cards com: foto, nome, descrição, quantidade de colaboradores
+- [ ] Listagem de estabelecimentos pagantes (com filtro por **segmento**)
+- [ ] Cards com: foto, nome, descrição, quantidade de colaboradores, **badges de segmentos**
 - [ ] Placeholder de foto quando não houver
-  - **Imagem (criar no Gemini):** Fachada genérica de restaurante aconchegante na serra. Arquitetura típica, madeira e pedra. Ambiente gastronômico. Placeholder para estabelecimento sem foto.
+  - **Imagem (criar no Gemini):** Fachada genérica de estabelecimento aconchegante na serra. Arquitetura típica, madeira e pedra. Ambiente profissional. Placeholder para estabelecimento sem foto.
 - [ ] Botão WhatsApp em cada card (link automatizado)
-- [ ] Modelo `RestauranteModel`, Repository, Service, Controller
-- [ ] Filtros básicos (opcional na v1: cidade, tipo)
+- [x] Modelo `CompradorModel` (ex-RestauranteModel), Repository, Service, Controller
+- [ ] Filtros básicos: cidade, tipo, **segmento**
+- [x] **Cruzamento inteligente:** Só mostra fornecedores com segmentos em comum
 
 ### 3.2 Diretório de Fornecedores e Serviços
 
-- [ ] Categorias: Bebidas, Laticínios, Hortifrúti, Manutenção (ar-condicionado, refrigeração)
-- [ ] Um fornecedor pode estar em várias categorias
+- [x] **Segmentos substituem categorias:** alimentacao, pet-shop, construcao, varejo, servicos
+- [x] Um fornecedor pode estar em vários **segmentos** (many-to-many)
 - [ ] Perfil: nome do representante, marcas atendidas, e-mail, site, botão WhatsApp
 - [ ] Placeholder de foto/logo quando não houver
   - **Imagem (criar no Gemini):** Logotipo genérico ou imagem de caixas/insumos organizados. Tom profissional, neutro. Placeholder para fornecedor sem foto.
-- [ ] Modelo, Repository, Service, Controller
-- [ ] Navegação por categoria (tabs ou filtros)
+- [x] Modelo, Repository, Service, Controller
+- [ ] Navegação por **segmento** (tabs ou filtros)
+- [x] **Cruzamento inteligente:** Só aparece para compradores com segmentos em comum
 
 ### 3.3 Dados Administrados
 
@@ -296,9 +300,12 @@
 
 ### 8.2 Gestão de Usuários
 
-- [ ] Lista de usuários (ativos, pendentes)
-- [ ] Aprovar/rejeitar novos cadastros manualmente
-- [ ] Atribuir tipo: restaurante, fornecedor, etc.
+- [x] Lista de usuários (ativos, pendentes, **por segmento**)
+- [x] Aprovar/rejeitar novos cadastros manualmente
+- [x] Atribuir tipo: comprador (ex-restaurante), fornecedor, etc.
+- [x] **Gerenciar segmentos** dos usuários
+- [x] Cards expandíveis com Alpine.js (x-collapse)
+- [x] Visualização de logos, CNPJ, dados completos
 - [ ] Monitorar acessos ativos
 
 ### 8.3 CRUD de Conteúdo

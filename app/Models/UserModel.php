@@ -59,11 +59,20 @@ class UserModel extends Authenticatable
     }
 
     /**
-     * Verifica se o usuário é restaurante
+     * Verifica se o usuário é comprador
+     */
+    public function ehComprador(): bool
+    {
+        return $this->role === 'comprador';
+    }
+
+    /**
+     * Verifica se o usuário é restaurante (alias para ehComprador - retrocompatibilidade)
+     * @deprecated Use ehComprador() instead
      */
     public function ehRestaurante(): bool
     {
-        return $this->role === 'restaurante';
+        return $this->ehComprador();
     }
 
     /**
@@ -123,11 +132,20 @@ class UserModel extends Authenticatable
     }
 
     /**
-     * Relacionamento: Perfil de restaurante
+     * Relacionamento: Perfil de comprador
+     */
+    public function comprador()
+    {
+        return $this->hasOne(CompradorModel::class, 'user_id');
+    }
+
+    /**
+     * Relacionamento: Perfil de restaurante (alias para comprador - retrocompatibilidade)
+     * @deprecated Use comprador() instead
      */
     public function restaurante()
     {
-        return $this->hasOne(RestauranteModel::class, 'user_id');
+        return $this->comprador();
     }
 
     /**
@@ -136,5 +154,33 @@ class UserModel extends Authenticatable
     public function fornecedor()
     {
         return $this->hasOne(FornecedorModel::class, 'user_id');
+    }
+
+    /**
+     * Relacionamento: Segmentos do usuário
+     */
+    public function segmentos()
+    {
+        return $this->belongsToMany(SegmentoModel::class, 'user_segmentos', 'user_id', 'segmento_id')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Verifica se usuário pertence a um segmento
+     */
+    public function temSegmento(string $slug): bool
+    {
+        return $this->segmentos()->where('slug', $slug)->exists();
+    }
+
+    /**
+     * Verifica se usuário tem algum segmento em comum com outro usuário
+     */
+    public function compartilhaSegmentoCom(UserModel $outroUsuario): bool
+    {
+        $meusSegmentos = $this->segmentos->pluck('id');
+        $segmentosOutro = $outroUsuario->segmentos->pluck('id');
+        
+        return $meusSegmentos->intersect($segmentosOutro)->isNotEmpty();
     }
 }
