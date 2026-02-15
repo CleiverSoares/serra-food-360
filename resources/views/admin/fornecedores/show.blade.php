@@ -65,6 +65,91 @@
             <!-- Conteúdo -->
             <div class="p-6">
                 
+                <!-- Assinatura -->
+                @php
+                    $assinatura = $fornecedor->assinaturaAtiva;
+                @endphp
+                <div class="mb-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border-2 border-blue-200">
+                    <h3 class="text-sm font-bold text-[var(--cor-texto)] mb-3 flex items-center gap-2">
+                        <i data-lucide="credit-card" class="w-5 h-5 text-blue-600"></i>
+                        Assinatura
+                    </h3>
+                    @if($assinatura)
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="space-y-2 text-sm">
+                                <div>
+                                    <span class="text-[var(--cor-texto-muted)] block mb-1">Plano:</span>
+                                    <span class="font-bold text-blue-900">{{ ucfirst($assinatura->plano) }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-[var(--cor-texto-muted)] block mb-1">Tipo:</span>
+                                    <span class="font-medium text-[var(--cor-texto)]">{{ ucfirst($assinatura->tipo_pagamento) }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-[var(--cor-texto-muted)] block mb-1">Status:</span>
+                                    @if($assinatura->estaAtiva())
+                                        <span class="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 rounded-md text-xs font-bold">
+                                            <i data-lucide="check-circle" class="w-3 h-3"></i>
+                                            Ativa
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2 py-1 bg-red-100 text-red-800 rounded-md text-xs font-bold">
+                                            <i data-lucide="x-circle" class="w-3 h-3"></i>
+                                            Vencida
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="space-y-2 text-sm">
+                                <div>
+                                    <span class="text-[var(--cor-texto-muted)] block mb-1">Início:</span>
+                                    <span class="font-medium text-[var(--cor-texto)]">{{ $assinatura->data_inicio->format('d/m/Y') }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-[var(--cor-texto-muted)] block mb-1">Vencimento:</span>
+                                    <span class="font-medium text-[var(--cor-texto)]">{{ $assinatura->data_fim->format('d/m/Y') }}</span>
+                                </div>
+                                <div>
+                                    <span class="text-[var(--cor-texto-muted)] block mb-1">Dias restantes:</span>
+                                    <span class="font-bold {{ $assinatura->diasRestantes() <= 7 ? 'text-red-600' : 'text-green-600' }}">
+                                        {{ $assinatura->diasRestantes() }} dias
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        @if(auth()->user()->role === 'admin')
+                            <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-blue-200">
+                                <a href="{{ route('admin.assinaturas.exibir', $assinatura->id) }}" 
+                                   class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                    Ver Detalhes
+                                </a>
+                                <button onclick="document.getElementById('form-renovar-{{ $assinatura->id }}').submit()" 
+                                        class="inline-flex items-center gap-1 px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
+                                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                                    Renovar
+                                </button>
+                                <form id="form-renovar-{{ $assinatura->id }}" action="{{ route('admin.assinaturas.renovar', $assinatura->id) }}" method="POST" class="hidden">
+                                    @csrf
+                                    <input type="hidden" name="tipo_pagamento" value="{{ $assinatura->tipo_pagamento }}">
+                                </form>
+                            </div>
+                        @endif
+                    @else
+                        <div class="text-center py-4">
+                            <i data-lucide="alert-triangle" class="w-12 h-12 text-yellow-600 mx-auto mb-2"></i>
+                            <p class="text-[var(--cor-texto-muted)] text-sm mb-3">Este usuário não possui assinatura ativa</p>
+                            @if(auth()->user()->role === 'admin')
+                                <a href="{{ route('admin.assinaturas.criar', $fornecedor->id) }}" 
+                                   class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                    Criar Assinatura
+                                </a>
+                            @endif
+                        </div>
+                    @endif
+                </div>
+                
                 <!-- Segmentos -->
                 @if($fornecedor->segmentos->count() > 0)
                     <div class="mb-6">

@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -248,5 +250,31 @@ class UserModel extends Authenticatable
     public function getLinkWhatsappAttribute(): ?string
     {
         return $this->whatsappPrincipal?->linkWhatsApp();
+    }
+
+    /**
+     * Relacionamento com assinaturas
+     */
+    public function assinaturas(): HasMany
+    {
+        return $this->hasMany(AssinaturaModel::class, 'user_id');
+    }
+
+    /**
+     * Assinatura ativa atual
+     */
+    public function assinaturaAtiva(): HasOne
+    {
+        return $this->hasOne(AssinaturaModel::class, 'user_id')
+            ->where('status', 'ativo')
+            ->latest('data_fim');
+    }
+
+    /**
+     * Verifica se usuário tem assinatura ativa
+     */
+    public function temAssinaturaAtiva(): bool
+    {
+        return $this->assinaturaAtiva()->exists();
     }
 }

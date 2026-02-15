@@ -1,8 +1,12 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+/**
+ * Agendamento de tarefas
+ */
+
+// Verificar assinaturas vencidas e enviar avisos (diariamente às 9h)
+Schedule::command('assinaturas:verificar')
+    ->dailyAt('09:00')
+    ->timezone('America/Sao_Paulo');

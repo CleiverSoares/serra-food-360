@@ -67,7 +67,7 @@ class FornecedorService
             return null;
         }
         
-        $fornecedor->load(['fornecedor', 'segmentos', 'aprovador', 'enderecoPrincipal', 'contatos']);
+        $fornecedor->load(['fornecedor', 'segmentos', 'aprovador', 'enderecoPrincipal', 'contatos', 'assinaturaAtiva']);
         return $fornecedor;
     }
 }

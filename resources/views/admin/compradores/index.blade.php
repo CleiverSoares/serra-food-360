@@ -157,14 +157,37 @@
                                     @endif
                                 </div>
 
-                                <!-- Status Badge -->
-                                <span class="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap
-                                    {{ $comprador->status === 'aprovado' ? 'bg-green-100 text-green-800' : '' }}
-                                    {{ $comprador->status === 'pendente' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                    {{ $comprador->status === 'inativo' ? 'bg-gray-100 text-gray-800' : '' }}
-                                    {{ $comprador->status === 'rejeitado' ? 'bg-red-100 text-red-800' : '' }}">
-                                    {{ ucfirst($comprador->status) }}
-                                </span>
+                                <!-- Status Badges -->
+                                <div class="flex flex-col gap-1">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap
+                                        {{ $comprador->status === 'aprovado' ? 'bg-green-100 text-green-800' : '' }}
+                                        {{ $comprador->status === 'pendente' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                        {{ $comprador->status === 'inativo' ? 'bg-gray-100 text-gray-800' : '' }}
+                                        {{ $comprador->status === 'rejeitado' ? 'bg-red-100 text-red-800' : '' }}">
+                                        {{ ucfirst($comprador->status) }}
+                                    </span>
+                                    @php
+                                        $assinatura = $comprador->assinaturaAtiva;
+                                    @endphp
+                                    @if($assinatura)
+                                        @if($assinatura->estaAtiva())
+                                            <span class="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap bg-blue-100 text-blue-800">
+                                                @if($assinatura->diasRestantes() <= 7)
+                                                    <i data-lucide="alert-circle" class="w-3 h-3 inline"></i>
+                                                @endif
+                                                {{ $assinatura->diasRestantes() }}d restantes
+                                            </span>
+                                        @else
+                                            <span class="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap bg-red-100 text-red-800">
+                                                Vencida
+                                            </span>
+                                        @endif
+                                    @else
+                                        <span class="px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap bg-gray-100 text-gray-600">
+                                            Sem assinatura
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
 
                             <!-- Detalhes -->

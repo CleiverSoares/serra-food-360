@@ -67,7 +67,7 @@ class CompradorService
             return null;
         }
         
-        $comprador->load(['comprador', 'segmentos', 'aprovador', 'enderecoPrincipal', 'contatos']);
+        $comprador->load(['comprador', 'segmentos', 'aprovador', 'enderecoPrincipal', 'contatos', 'assinaturaAtiva']);
         return $comprador;
     }
 }

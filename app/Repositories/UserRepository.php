@@ -40,6 +40,25 @@ class UserRepository
     }
 
     /**
+     * Atualizar usuário por ID
+     */
+    public function atualizarPorId(int $userId, array $dados): bool
+    {
+        return UserModel::where('id', $userId)->update($dados);
+    }
+
+    /**
+     * Buscar usuários compradores e fornecedores com suas assinaturas
+     */
+    public function buscarUsuariosComAssinatura()
+    {
+        return UserModel::whereIn('role', ['comprador', 'fornecedor'])
+            ->with(['assinaturaAtiva'])
+            ->orderBy('name')
+            ->paginate(20);
+    }
+
+    /**
      * Deletar usuário
      */
     public function deletar(UserModel $usuario): bool
@@ -344,5 +363,16 @@ class UserRepository
     public function associarSegmentos(UserModel $usuario, array $segmentosIds): void
     {
         $usuario->segmentos()->attach($segmentosIds);
+    }
+
+    /**
+     * Buscar usuários compradores e fornecedores com suas assinaturas
+     */
+    public function buscarUsuariosComAssinatura()
+    {
+        return UserModel::whereIn('role', ['comprador', 'fornecedor'])
+            ->with(['assinaturaAtiva'])
+            ->orderBy('name')
+            ->paginate(20);
     }
 }

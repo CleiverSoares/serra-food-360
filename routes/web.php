@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminCompradoresController;
 use App\Http\Controllers\Admin\AdminFornecedoresController;
 use App\Http\Controllers\Admin\AdminTalentosController;
 use App\Http\Controllers\Admin\AdminSegmentosController;
+use App\Http\Controllers\Admin\AdminAssinaturasController;
 use Illuminate\Support\Facades\Route;
 
 // Rota pública
@@ -100,5 +101,14 @@ Route::middleware('auth')->group(function () {
         Route::post('/segmentos/{id}/inativar', [AdminSegmentosController::class, 'inativar'])->name('segmentos.inativar');
         Route::post('/segmentos/{id}/ativar', [AdminSegmentosController::class, 'ativar'])->name('segmentos.ativar');
         Route::delete('/segmentos/{id}', [AdminSegmentosController::class, 'destroy'])->name('segmentos.destroy');
+
+        // Assinaturas
+        Route::get('/assinaturas', [AdminAssinaturasController::class, 'index'])->name('assinaturas.index');
+        Route::get('/assinaturas/usuario/{userId}/criar', [AdminAssinaturasController::class, 'criar'])->name('assinaturas.criar');
+        Route::post('/assinaturas/usuario/{userId}', [AdminAssinaturasController::class, 'armazenar'])->name('assinaturas.armazenar');
+        Route::get('/assinaturas/{id}', [AdminAssinaturasController::class, 'exibir'])->name('assinaturas.exibir');
+        Route::post('/assinaturas/{id}/renovar', [AdminAssinaturasController::class, 'renovar'])->name('assinaturas.renovar');
+        Route::post('/assinaturas/{id}/cancelar', [AdminAssinaturasController::class, 'cancelar'])->name('assinaturas.cancelar');
+        Route::get('/assinaturas/usuario/{userId}/historico', [AdminAssinaturasController::class, 'historico'])->name('assinaturas.historico');
     });
 });

@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'approved' => \App\Http\Middleware\CheckApproved::class,
             'role' => \App\Http\Middleware\CheckRole::class,
+            'assinatura.ativa' => \App\Http\Middleware\CheckAssinaturaAtiva::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
