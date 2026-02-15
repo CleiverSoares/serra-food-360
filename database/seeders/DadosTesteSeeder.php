@@ -309,23 +309,32 @@ class DadosTesteSeeder extends Seeder
             'whatsapp' => '(27) 99777-6655',
             'cargo' => 'Garçom',
             'mini_curriculo' => 'Experiência de 3 anos em restaurantes da serra. Pontual, educado, domínio de vinhos.',
-            'pretensao' => 80.00,
+            'pretensao' => 15.00,
+            'tipo_cobranca' => 'hora',
+            'disponibilidade' => 'Finais de semana',
+            'ativo' => true,
         ]);
 
         TalentoModel::create([
             'nome' => 'Maria Clara Souza',
             'whatsapp' => '(27) 99666-5544',
             'cargo' => 'Cozinheira',
-            'mini_curriculo' => 'Chef de cozinha com 5 anos de experiência. Especialista em comida regional.',
+            'mini_curriculo' => 'Chef de cozinha com 5 anos de experiência. Especialista em comida regional capixaba.',
             'pretensao' => 150.00,
+            'tipo_cobranca' => 'dia',
+            'disponibilidade' => 'Durante a semana',
+            'ativo' => true,
         ]);
 
         TalentoModel::create([
             'nome' => 'Pedro Costa Lima',
             'whatsapp' => '(27) 99555-4433',
             'cargo' => 'Auxiliar de Cozinha',
-            'mini_curriculo' => 'Disponível para trabalhos extras aos finais de semana. Proativo e rápido.',
+            'mini_curriculo' => 'Disponível para trabalhos extras aos finais de semana. Proativo e rápido no preparo.',
             'pretensao' => 60.00,
+            'tipo_cobranca' => 'dia',
+            'disponibilidade' => 'Finais de semana',
+            'ativo' => true,
         ]);
 
         TalentoModel::create([
@@ -333,7 +342,10 @@ class DadosTesteSeeder extends Seeder
             'whatsapp' => '(27) 99444-3322',
             'cargo' => 'Recepcionista',
             'mini_curriculo' => 'Atendimento ao público, reservas e organização. Inglês intermediário.',
-            'pretensao' => 70.00,
+            'pretensao' => 12.00,
+            'tipo_cobranca' => 'hora',
+            'disponibilidade' => 'Noites e finais de semana',
+            'ativo' => true,
         ]);
 
         TalentoModel::create([
@@ -341,7 +353,65 @@ class DadosTesteSeeder extends Seeder
             'whatsapp' => '(27) 99333-2211',
             'cargo' => 'Barman',
             'mini_curriculo' => 'Experiência em bares e eventos. Conhecimento em drinks clássicos e autorais.',
-            'pretensao' => 90.00,
+            'pretensao' => 20.00,
+            'tipo_cobranca' => 'hora',
+            'disponibilidade' => 'Noites',
+            'ativo' => true,
+        ]);
+
+        TalentoModel::create([
+            'nome' => 'Fernanda Oliveira Costa',
+            'whatsapp' => '(27) 99222-1100',
+            'cargo' => 'Gerente de Salão',
+            'mini_curriculo' => '7 anos de experiência em gerenciamento. Liderança de equipes, controle de estoque.',
+            'pretensao' => 120.00,
+            'tipo_cobranca' => 'dia',
+            'disponibilidade' => 'Durante a semana',
+            'ativo' => true,
+        ]);
+
+        TalentoModel::create([
+            'nome' => 'Carlos Eduardo Martins',
+            'whatsapp' => '(27) 99111-0099',
+            'cargo' => 'Sommelier',
+            'mini_curriculo' => 'Certificado ABS. Conhecimento em vinhos nacionais e internacionais. Eventos corporativos.',
+            'pretensao' => 35.00,
+            'tipo_cobranca' => 'hora',
+            'disponibilidade' => 'Finais de semana e eventos',
+            'ativo' => true,
+        ]);
+
+        TalentoModel::create([
+            'nome' => 'Juliana Ribeiro Santos',
+            'whatsapp' => '(27) 98999-8877',
+            'cargo' => 'Confeiteira',
+            'mini_curriculo' => 'Especialista em doces finos e bolos personalizados. Curso de confeitaria na França.',
+            'pretensao' => 110.00,
+            'tipo_cobranca' => 'dia',
+            'disponibilidade' => 'Durante a semana',
+            'ativo' => false, // Inativo para testar filtro
+        ]);
+
+        TalentoModel::create([
+            'nome' => 'Roberto Mendes Silva',
+            'whatsapp' => '(27) 98888-7766',
+            'cargo' => 'Chapeiro',
+            'mini_curriculo' => 'Especialista em hambúrgueres e lanches rápidos. Experiência em food trucks.',
+            'pretensao' => 80.00,
+            'tipo_cobranca' => 'dia',
+            'disponibilidade' => 'Finais de semana',
+            'ativo' => true,
+        ]);
+
+        TalentoModel::create([
+            'nome' => 'Camila Rodrigues Pinto',
+            'whatsapp' => '(27) 98777-6655',
+            'cargo' => 'Cumim',
+            'mini_curriculo' => 'Ajudante geral de cozinha. Disponível para eventos e festivais.',
+            'pretensao' => 10.00,
+            'tipo_cobranca' => 'hora',
+            'disponibilidade' => 'Finais de semana e eventos',
+            'ativo' => true,
         ]);
 
         $this->command->info('✅ Dados de teste criados com sucesso!');

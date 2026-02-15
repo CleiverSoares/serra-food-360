@@ -196,24 +196,37 @@
 
 ### 4.1 Cadastro de Talentos
 
-- [ ] Cadastro inicialmente manual (admin ou formulário controlado)
-- [ ] Campos: foto, mini currículo, pretensão salarial, dias disponíveis
-- [ ] Anexo: currículo original PDF ou carta de recomendação
-- [ ] Organização por cargos: garçom, cozinheiro, recepcionista
+- [x] Cadastro manual pelo admin
+- [x] Campos: foto, mini currículo, pretensão salarial, dias disponíveis
+- [x] **Tipo de cobrança:** por hora ou por dia
+- [x] **Disponibilidade:** finais de semana, durante a semana, noites, eventos, etc.
+- [x] Anexo: currículo original PDF ou carta de recomendação
+- [x] Organização por cargos: garçom, cozinheiro, recepcionista, barman, etc.
+- [x] Campo `ativo` para ativar/inativar talentos
 
 ### 4.2 Listagem e Detalhes
 
-- [ ] Lista de candidatos por cargo (filtro/tabs)
-- [ ] Cards: foto, mini currículo, pretensão, dias/horários
-- [ ] Placeholder de foto quando candidato não tiver
-  - **Imagem (criar no Gemini):** Silhueta ou avatar genérico de pessoa profissional em ambiente de restaurante. Tom neutro, profissional. Formato quadrado, fundo suave.
-- [ ] Tela de detalhes: currículo completo, link para PDF
-- [ ] Botão WhatsApp em cada card/detalhe
-- [ ] Modelo, Repository, Service, Controller
+- [x] Lista de candidatos com **filtros avançados:**
+  - [x] Busca por nome, cargo ou telefone
+  - [x] Filtro por cargo
+  - [x] Filtro por disponibilidade
+  - [x] **Filtro por tipo de cobrança** (hora/dia)
+  - [x] **Range de valor** (mínimo e máximo)
+- [x] Cards: foto, mini currículo, pretensão, dias/horários, badges
+- [x] Placeholder avatar quando candidato não tiver foto
+- [x] Tela de detalhes: currículo completo, link para PDF
+- [x] Botão WhatsApp em cada card/detalhe
+- [x] Modelo `TalentoModel`, Controller `AdminTalentosController`
+- [x] Badges coloridas: status (ativo/inativo), tipo cobrança (hora/dia), valor, disponibilidade
 
 ### 4.3 Atualização Ágil
 
-- [ ] Admin consegue atualizar currículos e dados de forma ágil (CRUD na Fase 8)
+- [x] Admin consegue criar novos talentos
+- [x] Admin consegue editar talentos existentes
+- [x] Admin consegue ativar/inativar talentos
+- [x] Admin consegue deletar talentos
+- [x] Upload de foto, currículo PDF e carta de recomendação
+- [x] Remoção automática de arquivos ao deletar talento
 
 ---
 

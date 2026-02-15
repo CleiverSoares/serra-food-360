@@ -1,8 +1,8 @@
 @extends('layouts.dashboard')
 
-@section('titulo', 'Gestão de Usuários')
-@section('page-title', 'Gestão de Usuários')
-@section('page-subtitle', 'Aprovar e gerenciar cadastros')
+@section('titulo', 'Aprovações Pendentes')
+@section('page-title', 'Aprovações')
+@section('page-subtitle', 'Aprovar ou rejeitar novos cadastros')
 
 @section('sidebar-nav')
 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
@@ -10,16 +10,20 @@
     <span>Dashboard</span>
 </a>
 <a href="{{ route('admin.usuarios.index') }}" class="flex items-center gap-3 px-4 py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg font-medium">
-    <i data-lucide="users" class="w-5 h-5"></i>
-    <span>Usuários</span>
+    <i data-lucide="user-check" class="w-5 h-5"></i>
+    <span>Aprovações</span>
+</a>
+<a href="{{ route('admin.compradores.index') }}" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
+    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+    <span>Compradores</span>
+</a>
+<a href="{{ route('admin.fornecedores.index') }}" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
+    <i data-lucide="package" class="w-5 h-5"></i>
+    <span>Fornecedores</span>
 </a>
 <a href="#" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
     <i data-lucide="briefcase" class="w-5 h-5"></i>
     <span>Talentos</span>
-</a>
-<a href="#" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
-    <i data-lucide="settings" class="w-5 h-5"></i>
-    <span>Configurações</span>
 </a>
 @endsection
 
@@ -34,17 +38,13 @@
     <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
     <span class="text-[10px] font-medium">Início</span>
 </a>
-<a href="{{ route('admin.usuarios.index') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-verde-serra)]">
-    <i data-lucide="users" class="w-5 h-5"></i>
-    <span class="text-[10px] font-semibold">Usuários</span>
+<a href="{{ route('admin.compradores.index') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
+    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+    <span class="text-[10px] font-medium">Compradores</span>
 </a>
-<a href="#" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
-    <i data-lucide="briefcase" class="w-5 h-5"></i>
-    <span class="text-[10px] font-medium">Talentos</span>
-</a>
-<a href="#" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
-    <i data-lucide="settings" class="w-5 h-5"></i>
-    <span class="text-[10px] font-medium">Config</span>
+<a href="{{ route('admin.fornecedores.index') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
+    <i data-lucide="package" class="w-5 h-5"></i>
+    <span class="text-[10px] font-medium">Fornecedores</span>
 </a>
 @endsection
 

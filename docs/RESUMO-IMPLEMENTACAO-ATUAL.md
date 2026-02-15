@@ -1,7 +1,7 @@
 # Resumo da Implementação Atual
 
 **Data:** 15/02/2026  
-**Status:** Fase 1.1 Completa + Sistema de Segmentos Implementado
+**Status:** Fase 1.1 Completa + Sistema de Segmentos + Rotas Diretas Admin + Fase 4 (Talentos) Completa
 
 ---
 
@@ -47,7 +47,88 @@ Fornecedor (Distribuidora Embalagens)
 
 ---
 
-### 2. **Dados de Teste Criados**
+### 2. **Rotas Diretas no Menu Admin** (Arquitetura Melhorada)
+
+**Por quê?**  
+Para facilitar navegação. Ao invés de "Usuários > Compradores", agora é **"Compradores"** direto no menu.
+
+**Mudanças principais:**
+- ✅ **Controllers dedicados:**
+  - `AdminCompradoresController` (CRUD completo)
+  - `AdminFornecedoresController` (CRUD completo)
+  - `AdminTalentosController` (CRUD completo)
+- ✅ **Service de filtros padronizados:** `FilterService` para reutilizar lógica de busca
+- ✅ **Views dedicadas:**
+  - `admin/compradores/` (index, show, edit)
+  - `admin/fornecedores/` (index, show, edit)
+  - `admin/talentos/` (index, show, create, edit)
+- ✅ **Rotas diretas:**
+  ```
+  /admin/compradores
+  /admin/fornecedores
+  /admin/talentos
+  /admin/usuarios (agora apenas "Aprovações")
+  ```
+
+**Menu atualizado:**
+```
+Início
+Aprovações (pendentes)
+---
+Compradores (lista/editar/ativar)
+Fornecedores (lista/editar/ativar)
+Talentos (lista/criar/editar/ativar)
+```
+
+---
+
+### 3. **Sistema de Talentos** (Fase 4 Completa)
+
+**Por quê?**  
+Banco de talentos para extras, universitários, profissionais avulsos. Facilita contratação de pessoal temporário.
+
+**Funcionalidades implementadas:**
+- ✅ **Campos do talento:**
+  - Nome, WhatsApp, Cargo, Mini Currículo
+  - **Tipo de cobrança:** Por hora (`hora`) ou Por dia (`dia`)
+  - **Valor pretendido** (R$)
+  - **Disponibilidade:** texto livre (ex: "Finais de semana", "Noites", "Eventos")
+  - **Status:** Ativo/Inativo
+  - **Arquivos:** Foto, Currículo PDF, Carta de Recomendação PDF
+
+- ✅ **Filtros avançados:**
+  - Busca por nome, cargo ou telefone
+  - Filtro por cargo (dropdown)
+  - Filtro por disponibilidade (dropdown)
+  - **Filtro por tipo de cobrança** (hora/dia)
+  - **Range de valor** (valor mínimo e máximo)
+
+- ✅ **UI diferenciada:**
+  - Cores temáticas: Amber/Laranja para destacar do resto do admin
+  - Badges coloridas:
+    - Verde/Vermelho: Ativo/Inativo
+    - Roxo: Por Hora ⏰
+    - Azul: Por Dia 📅
+    - Esmeralda: Valor R$ 💰
+  - Cards responsivos com foto (ou avatar placeholder)
+  - Botão WhatsApp em cada card/detalhe
+  - Tela de detalhes com download de PDFs
+
+- ✅ **CRUD completo:**
+  - Criar novo talento (com upload de arquivos)
+  - Editar talento existente
+  - Ativar/Inativar (soft status)
+  - Deletar (com remoção automática de arquivos)
+
+**Exemplo de uso:**
+```
+Filtrar: Tipo = "Por Hora" + Valor entre R$50 e R$100
+Resultado: Mostra apenas talentos que cobram por hora nessa faixa de preço
+```
+
+---
+
+### 4. **Dados de Teste Criados**
 
 Via `DadosTesteSeeder`:
 
@@ -60,7 +141,9 @@ Via `DadosTesteSeeder`:
 - ✅ 1 pendente (Carnes)
 
 **Talentos:**
-- ✅ 5 talentos criados (Garçom, Cozinheira, Auxiliar, Recepcionista, Barman)
+- ✅ 10 talentos criados (8 ativos, 1 inativo)
+- ✅ 5 cobram por hora, 5 cobram por dia
+- ✅ Cargos diversos: Garçom, Cozinheira, Auxiliar, Recepcionista, Barman, Gerente, Sommelier, Confeiteira, Chapeiro, Cumim
 
 **Logins de teste:**
 ```
@@ -71,7 +154,7 @@ Fornecedor: marcelo@distribebidas.com.br / senha123
 
 ---
 
-### 3. **Front-End Atualizado**
+### 5. **Front-End Atualizado**
 
 **Views atualizadas para "Comprador":**
 - ✅ `auth/cadastro.blade.php` - "Comprador" ao invés de "Restaurante"
@@ -84,7 +167,7 @@ Fornecedor: marcelo@distribebidas.com.br / senha123
 
 ---
 
-### 4. **Back-End Atualizado**
+### 6. **Back-End Atualizado**
 
 **Models:**
 - ✅ `SegmentoModel` - criado
@@ -113,7 +196,7 @@ Fornecedor: marcelo@distribebidas.com.br / senha123
 
 ---
 
-### 5. **Documentação**
+### 7. **Documentação**
 
 - ✅ `docs/arquitetura-segmentos.md` - Arquitetura completa proposta
 - ✅ `docs/implementacao-segmentos.md` - Registro da implementação
@@ -134,18 +217,37 @@ Fornecedor: marcelo@distribebidas.com.br / senha123
 
 **Admin:**
 - [x] Dashboard com estatísticas
-- [x] Listagem de usuários (pendentes, aprovados, compradores, fornecedores)
-- [x] Aprovar/Rejeitar usuários
-- [x] Deletar usuários
+- [x] **Menu lateral deslizante (drawer) no mobile** com swipe para fechar
+- [x] **Rotas diretas no menu:** Compradores, Fornecedores, Talentos (não dentro de "Usuários")
+- [x] **Aprovações:** Tela dedicada para aprovar/rejeitar pendentes
+- [x] **Compradores:** CRUD completo com filtros (status, plano, cidade, segmento, busca)
+- [x] **Fornecedores:** CRUD completo com filtros (status, plano, cidade, segmento, busca)
+- [x] **Talentos:** CRUD completo com filtros avançados:
+  - [x] Busca por nome/cargo/telefone
+  - [x] Filtro por cargo
+  - [x] Filtro por disponibilidade
+  - [x] Filtro por tipo de cobrança (hora/dia)
+  - [x] Range de valor (mínimo e máximo)
 - [x] Cards expandíveis com Alpine.js (x-collapse)
 - [x] Visualização completa de dados (pessoais, negócio, segmentos)
-- [x] Criar novos usuários manualmente
+- [x] Criar novos usuários/talentos manualmente
+- [x] Ativar/Inativar compradores, fornecedores e talentos
+- [x] Upload de arquivos (logos, fotos, PDFs)
 
 **Layouts:**
 - [x] Layout público (`layouts/app.blade.php`)
 - [x] Layout dashboard (`layouts/dashboard.blade.php`) - ERP desktop + App mobile
+- [x] **Menu lateral deslizante (drawer)** com:
+  - [x] Animação suave (slide in/out)
+  - [x] **Swipe/arrastar para fechar**
+  - [x] Overlay com backdrop blur
+  - [x] Header com avatar e informações do usuário
+  - [x] Links com hover animado (translate-x)
+  - [x] Cores específicas por seção
 - [x] Landing page completa com 8 módulos
-- [x] Bottom navigation mobile (5 itens)
+- [x] **Bottom navigation mobile (4 itens fixos):**
+  - [x] 3 ícones principais (Início, Compradores, Fornecedores)
+  - [x] 1 menu hamburguer (acessa drawer com todos os itens)
 
 **Database:**
 - [x] Migrations executadas
@@ -157,21 +259,30 @@ Fornecedor: marcelo@distribebidas.com.br / senha123
 
 ## 🚧 PRÓXIMOS PASSOS
 
-### Pendente na Fase 1.1:
-- [ ] Adicionar seleção de segmentos nos formulários de cadastro
-- [ ] Mostrar badges de segmentos nos cards de usuários
-- [ ] Criar CRUD de segmentos no admin (criar/editar/desativar segmentos)
+### Pendente na Fase 1.1 (UI de Segmentos):
+- [ ] Adicionar seleção de segmentos nos formulários de cadastro (`cadastro.blade.php`, `admin/usuarios/criar.blade.php`)
+- [ ] Mostrar badges de segmentos nos cards de usuários (`admin/usuarios/index.blade.php`)
+- [ ] Criar CRUD de segmentos no admin:
+  - [ ] `admin/segmentos/index.blade.php` (listar)
+  - [ ] `admin/segmentos/criar.blade.php` (criar novo segmento)
+  - [ ] `admin/segmentos/editar.blade.php` (editar segmento)
+  - [ ] Ativar/Desativar segmentos
 
 ### Próximas Fases:
-- [ ] Fase 2: Dashboard completo (cards de boas-vindas, navegação por ícones)
-- [ ] Fase 3: Diretórios (Compradores e Fornecedores com filtros por segmento)
-- [ ] Fase 4: Banco de Talentos (listar, filtrar, WhatsApp)
-- [ ] Fase 5: Cotações e Compras Coletivas
-- [ ] Fase 6: Material de Gestão
-- [ ] Fase 7: Consultor IA e Classificados
-- [ ] Fase 8: Painel Admin completo (CRUD de tudo)
-- [ ] Fase 9: Monetização (Asaas, planos VIP)
-- [ ] Fase 10: Polimento e Deploy
+- [ ] **Fase 2:** Dashboard completo (cards de boas-vindas, navegação por ícones grandes "bolinhas")
+- [ ] **Fase 3:** Diretórios públicos (área logada):
+  - [ ] Listagem de Compradores (para fornecedores verem)
+  - [ ] Listagem de Fornecedores (para compradores verem)
+  - [ ] **Filtros por segmento** (cruzamento inteligente já implementado no backend)
+  - [ ] Botão WhatsApp em cada card
+  - [ ] Placeholders de imagem quando não houver logo
+- [ ] **Fase 4:** ✅ **COMPLETA!** Banco de Talentos com CRUD, filtros avançados, badges
+- [ ] **Fase 5:** Cotações e Compras Coletivas
+- [ ] **Fase 6:** Material de Gestão (vídeos YouTube, PDFs)
+- [ ] **Fase 7:** Consultor IA e Classificados (troca de equipamentos)
+- [ ] **Fase 8:** Painel Admin completo (gerenciar tudo: cotações, materiais, etc.)
+- [ ] **Fase 9:** Monetização (Asaas, planos VIP, destaques)
+- [ ] **Fase 10:** Polimento e Deploy (domínio, SSL, imagens finais)
 
 ---
 
@@ -232,33 +343,39 @@ Controller → Service → Repository → Model
 
 ```
 app/
+├── Console/Commands/
+│   └── PopularTalentos.php ✅ NOVO (comando para popular talentos)
 ├── Http/
 │   ├── Controllers/
 │   │   ├── AuthController.php ✅
 │   │   ├── DashboardController.php ✅
 │   │   └── Admin/
 │   │       ├── AdminDashboardController.php ✅
-│   │       └── AdminUsuariosController.php ✅
+│   │       ├── AdminUsuariosController.php ✅
+│   │       ├── AdminCompradoresController.php ✅ NOVO
+│   │       ├── AdminFornecedoresController.php ✅ NOVO
+│   │       └── AdminTalentosController.php ✅ NOVO
 │   └── Middleware/
 │       ├── CheckApproved.php ✅
 │       └── CheckRole.php ✅
 ├── Models/
 │   ├── UserModel.php ✅ (+ relacionamentos segmentos)
-│   ├── SegmentoModel.php ✅ NOVO
-│   ├── CompradorModel.php ✅ NOVO (ex-RestauranteModel)
+│   ├── SegmentoModel.php ✅
+│   ├── CompradorModel.php ✅ (ex-RestauranteModel)
 │   ├── RestauranteModel.php ✅ (alias)
 │   ├── FornecedorModel.php ✅
-│   └── TalentoModel.php ✅
+│   └── TalentoModel.php ✅ (+ ativo, disponibilidade, tipo_cobranca)
 ├── Repositories/
 │   ├── UserRepository.php ✅ (+ métodos de cruzamento)
-│   ├── SegmentoRepository.php ✅ NOVO
-│   ├── CompradorRepository.php ✅ NOVO
+│   ├── SegmentoRepository.php ✅
+│   ├── CompradorRepository.php ✅
 │   ├── RestauranteRepository.php ✅ (alias)
 │   ├── FornecedorRepository.php ✅
 │   └── TalentoRepository.php ✅
 └── Services/
     ├── AuthService.php ✅ (+ segmentos)
-    └── UserService.php ✅ (+ segmentos)
+    ├── UserService.php ✅ (+ segmentos)
+    └── FilterService.php ✅ NOVO (filtros padronizados)
 
 resources/views/
 ├── auth/
@@ -266,37 +383,53 @@ resources/views/
 │   ├── cadastro.blade.php ✅ (campo "comprador")
 │   └── aguardando.blade.php ✅
 ├── dashboard/
-│   ├── comprador.blade.php ✅ NOVO
+│   ├── comprador.blade.php ✅
 │   ├── restaurante.blade.php ✅ (mantido)
 │   └── fornecedor.blade.php ✅
 ├── admin/
-│   ├── dashboard.blade.php ✅
-│   └── usuarios/
-│       ├── index.blade.php ✅ (filtro "compradores")
-│       └── criar.blade.php ✅ (campo "comprador")
+│   ├── dashboard.blade.php ✅ (menu atualizado com rotas diretas)
+│   ├── usuarios/
+│   │   ├── index.blade.php ✅ (agora "Aprovações")
+│   │   └── criar.blade.php ✅
+│   ├── compradores/ ✅ NOVO
+│   │   ├── index.blade.php ✅ (lista com filtros)
+│   │   ├── show.blade.php ✅ (detalhes)
+│   │   └── edit.blade.php ✅ (edição)
+│   ├── fornecedores/ ✅ NOVO
+│   │   ├── index.blade.php ✅ (lista com filtros)
+│   │   ├── show.blade.php ✅ (detalhes)
+│   │   └── edit.blade.php ✅ (edição)
+│   └── talentos/ ✅ NOVO
+│       ├── index.blade.php ✅ (lista com filtros avançados)
+│       ├── show.blade.php ✅ (detalhes + PDFs)
+│       ├── create.blade.php ✅ (criar)
+│       └── edit.blade.php ✅ (editar)
 └── layouts/
     ├── app.blade.php ✅
-    └── dashboard.blade.php ✅
+    └── dashboard.blade.php ✅ (+ drawer lateral com swipe)
 
 database/
 ├── migrations/
+│   ├── 2026_02_15_045834_adicionar_cnpj_restaurantes_fornecedores.php ✅
 │   ├── 2026_02_15_050258_create_segmentos_table.php ✅
 │   ├── 2026_02_15_050301_create_user_segmentos_table.php ✅
 │   ├── 2026_02_15_050303_rename_restaurantes_to_compradores.php ✅
-│   └── 2026_02_15_050304_update_users_add_comprador_role.php ✅
+│   ├── 2026_02_15_050304_update_users_add_comprador_role.php ✅
+│   ├── 2026_02_15_054103_add_ativo_and_disponibilidade_to_talentos_table.php ✅
+│   └── 2026_02_15_055044_add_tipo_cobranca_to_talentos_table.php ✅
 └── seeders/
     ├── AdminUserSeeder.php ✅
-    ├── SegmentosSeeder.php ✅ NOVO
-    ├── AtribuirSegmentoAlimentacaoSeeder.php ✅ NOVO
-    └── DadosTesteSeeder.php ✅ NOVO
+    ├── SegmentosSeeder.php ✅
+    ├── AtribuirSegmentoAlimentacaoSeeder.php ✅
+    └── DadosTesteSeeder.php ✅ (+ talentos completos)
 
 docs/
 ├── ideia-do-projeto-completa.md ✅
-├── roadmap.md ✅
+├── roadmap.md ✅ (atualizado com Fase 4 completa)
 ├── arquitetura-perfis-permissoes.md ✅
-├── arquitetura-segmentos.md ✅ NOVO
-├── implementacao-segmentos.md ✅ NOVO
-└── RESUMO-IMPLEMENTACAO-ATUAL.md ✅ NOVO (este arquivo)
+├── arquitetura-segmentos.md ✅
+├── implementacao-segmentos.md ✅
+└── RESUMO-IMPLEMENTACAO-ATUAL.md ✅ (este arquivo - atualizado)
 ```
 
 ---
@@ -390,19 +523,28 @@ php artisan storage:link
 - ✅ Cruzamentos inteligentes (lógica pronta no UserRepository)
 - ✅ Landing page completa e responsiva
 - ✅ Layout dashboard (ERP desktop + App mobile)
+- ✅ **Menu lateral deslizante (drawer) com swipe to close**
+- ✅ **Rotas diretas no menu: Compradores, Fornecedores, Talentos**
 - ✅ Admin pode ver/aprovar/rejeitar/deletar usuários
 - ✅ Admin pode criar usuários manualmente
+- ✅ **Admin pode gerenciar Compradores** (lista, editar, ativar/inativar)
+- ✅ **Admin pode gerenciar Fornecedores** (lista, editar, ativar/inativar)
+- ✅ **Admin pode gerenciar Talentos** (CRUD completo, upload de arquivos)
+- ✅ **Filtros avançados de Talentos** (tipo cobrança, range de valor)
 - ✅ Cards expandíveis com Alpine.js
 - ✅ Visualização de segmentos (via código)
-- ✅ Dados de teste criados (5 compradores, 6 fornecedores, 5 talentos)
+- ✅ Dados de teste criados (5 compradores, 6 fornecedores, **10 talentos**)
+- ✅ **FilterService** para padronizar filtros
+- ✅ Upload de arquivos (logos, fotos, PDFs)
+- ✅ **Fase 4 (Talentos) completa!**
 
-**O que falta implementar na UI:**
+**O que falta implementar na UI (Segmentos):**
 - [ ] Seleção de segmentos nos formulários de cadastro (checkboxes)
 - [ ] Badges visuais de segmentos nos cards de usuários
 - [ ] CRUD de segmentos no admin (criar/editar/desativar)
-- [ ] Filtros por segmento nas listagens
+- [ ] Filtros por segmento nas listagens de Compradores/Fornecedores
 
-**Mas a lógica de negócio está 100% pronta!** ✅
+**Mas a lógica de negócio de segmentos está 100% pronta!** ✅
 
 ---
 

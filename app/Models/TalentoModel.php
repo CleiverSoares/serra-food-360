@@ -15,15 +15,19 @@ class TalentoModel extends Model
         'cargo',
         'mini_curriculo',
         'pretensao',
+        'tipo_cobranca',
         'foto_path',
         'curriculo_pdf_path',
         'carta_recomendacao_path',
+        'ativo',
+        'disponibilidade',
     ];
 
     protected function casts(): array
     {
         return [
             'pretensao' => 'decimal:2',
+            'ativo' => 'boolean',
         ];
     }
 
