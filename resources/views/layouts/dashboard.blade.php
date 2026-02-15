@@ -26,73 +26,182 @@
 
             {{-- Navigation --}}
             <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-                {{-- Dashboard --}}
-                <a href="{{ route('admin.dashboard') }}" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   {{ request()->routeIs('admin.dashboard') 
-                       ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
-                       : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-                    <span>Dashboard</span>
-                </a>
+                @if(auth()->user()->role === 'admin')
+                    {{-- MENU ADMIN --}}
+                    <a href="{{ route('admin.dashboard') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('admin.dashboard') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                        <span>Dashboard</span>
+                    </a>
 
-                {{-- Aprovações --}}
-                <a href="{{ route('admin.usuarios.index') }}" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   {{ request()->routeIs('admin.usuarios.*') 
-                       ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
-                       : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
-                    <i data-lucide="user-check" class="w-5 h-5"></i>
-                    <span>Aprovações</span>
-                </a>
+                    <a href="{{ route('admin.usuarios.index') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('admin.usuarios.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="user-check" class="w-5 h-5"></i>
+                        <span>Aprovações</span>
+                    </a>
 
-                {{-- Compradores --}}
-                <a href="{{ route('admin.compradores.index') }}" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   {{ request()->routeIs('admin.compradores.*') 
-                       ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
-                       : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
-                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-                    <span>Compradores</span>
-                </a>
+                    <a href="{{ route('admin.compradores.index') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('admin.compradores.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        <span>Compradores</span>
+                    </a>
 
-                {{-- Fornecedores --}}
-                <a href="{{ route('admin.fornecedores.index') }}" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   {{ request()->routeIs('admin.fornecedores.*') 
-                       ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
-                       : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
-                    <i data-lucide="package" class="w-5 h-5"></i>
-                    <span>Fornecedores</span>
-                </a>
+                    <a href="{{ route('admin.fornecedores.index') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('admin.fornecedores.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="package" class="w-5 h-5"></i>
+                        <span>Fornecedores</span>
+                    </a>
 
-                {{-- Talentos --}}
-                <a href="{{ route('admin.talentos.index') }}" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   {{ request()->routeIs('admin.talentos.*') 
-                       ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
-                       : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
-                    <i data-lucide="briefcase" class="w-5 h-5"></i>
-                    <span>Talentos</span>
-                </a>
+                    <a href="{{ route('admin.talentos.index') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('admin.talentos.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="briefcase" class="w-5 h-5"></i>
+                        <span>Talentos</span>
+                    </a>
 
-                {{-- Segmentos --}}
-                <a href="{{ route('admin.segmentos.index') }}" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   {{ request()->routeIs('admin.segmentos.*') 
-                       ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
-                       : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
-                    <i data-lucide="tag" class="w-5 h-5"></i>
-                    <span>Segmentos</span>
-                </a>
+                    <a href="{{ route('admin.segmentos.index') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('admin.segmentos.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="tag" class="w-5 h-5"></i>
+                        <span>Segmentos</span>
+                    </a>
 
-                {{-- Configurações --}}
-                <a href="#" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
-                    <i data-lucide="settings" class="w-5 h-5"></i>
-                    <span>Configurações</span>
-                </a>
+                    <a href="#" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                        <span>Configurações</span>
+                    </a>
+                @elseif(auth()->user()->role === 'comprador')
+                    {{-- MENU COMPRADOR --}}
+                    <a href="{{ route('dashboard') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('dashboard') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="home" class="w-5 h-5"></i>
+                        <span>Início</span>
+                    </a>
+
+                    <a href="{{ route('comprador.fornecedores.index') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('comprador.fornecedores.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="package" class="w-5 h-5"></i>
+                        <span>Fornecedores</span>
+                    </a>
+
+                    <a href="{{ route('comprador.compradores.index') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('comprador.compradores.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="store" class="w-5 h-5"></i>
+                        <span>Compradores</span>
+                    </a>
+
+                    <a href="{{ route('comprador.talentos.index') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('comprador.talentos.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="briefcase" class="w-5 h-5"></i>
+                        <span>Talentos</span>
+                    </a>
+
+                    <a href="#" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="file-text" class="w-5 h-5"></i>
+                        <span>Cotações</span>
+                        <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
+                    </a>
+
+                    <a href="#" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="shopping-basket" class="w-5 h-5"></i>
+                        <span>Compras Coletivas</span>
+                        <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
+                    </a>
+
+                    <a href="#" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="book-open" class="w-5 h-5"></i>
+                        <span>Material de Gestão</span>
+                        <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
+                    </a>
+                @elseif(auth()->user()->role === 'fornecedor')
+                    {{-- MENU FORNECEDOR --}}
+                    <a href="{{ route('dashboard') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('dashboard') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="home" class="w-5 h-5"></i>
+                        <span>Início</span>
+                    </a>
+
+                    <a href="{{ route('fornecedor.compradores.index') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('fornecedor.compradores.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="store" class="w-5 h-5"></i>
+                        <span>Compradores</span>
+                    </a>
+
+                    <a href="{{ route('fornecedor.fornecedores.index') }}" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('fornecedor.fornecedores.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="package" class="w-5 h-5"></i>
+                        <span>Fornecedores</span>
+                    </a>
+
+                    <a href="#" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="file-text" class="w-5 h-5"></i>
+                        <span>Cotações</span>
+                        <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
+                    </a>
+
+                    <a href="#" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="shopping-basket" class="w-5 h-5"></i>
+                        <span>Compras Coletivas</span>
+                        <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
+                    </a>
+
+                    <a href="#" 
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="book-open" class="w-5 h-5"></i>
+                        <span>Material de Gestão</span>
+                        <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
+                    </a>
+                @endif
             </nav>
 
             {{-- User Info + Logout --}}
@@ -174,35 +283,91 @@
              }
          }">
         <div class="flex items-center justify-around h-16 max-w-lg mx-auto px-2">
-            {{-- Dashboard --}}
-            <a href="{{ route('admin.dashboard') }}" 
-               class="flex flex-col items-center gap-1 p-2 transition-colors
-               {{ request()->routeIs('admin.dashboard') 
-                   ? 'text-[var(--cor-verde-serra)]' 
-                   : 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]' }}">
-                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-                <span class="text-[10px] {{ request()->routeIs('admin.dashboard') ? 'font-semibold' : 'font-medium' }}">Início</span>
-            </a>
+            @if(auth()->user()->role === 'admin')
+                {{-- BOTTOM NAV ADMIN --}}
+                <a href="{{ route('admin.dashboard') }}" 
+                   class="flex flex-col items-center gap-1 p-2 transition-colors
+                   {{ request()->routeIs('admin.dashboard') 
+                       ? 'text-[var(--cor-verde-serra)]' 
+                       : 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]' }}">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span class="text-[10px] {{ request()->routeIs('admin.dashboard') ? 'font-semibold' : 'font-medium' }}">Início</span>
+                </a>
 
-            {{-- Compradores --}}
-            <a href="{{ route('admin.compradores.index') }}" 
-               class="flex flex-col items-center gap-1 p-2 transition-colors
-               {{ request()->routeIs('admin.compradores.*') 
-                   ? 'text-[var(--cor-verde-serra)]' 
-                   : 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]' }}">
-                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-                <span class="text-[10px] {{ request()->routeIs('admin.compradores.*') ? 'font-semibold' : 'font-medium' }}">Compradores</span>
-            </a>
+                <a href="{{ route('admin.compradores.index') }}" 
+                   class="flex flex-col items-center gap-1 p-2 transition-colors
+                   {{ request()->routeIs('admin.compradores.*') 
+                       ? 'text-[var(--cor-verde-serra)]' 
+                       : 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]' }}">
+                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                    <span class="text-[10px] {{ request()->routeIs('admin.compradores.*') ? 'font-semibold' : 'font-medium' }}">Compradores</span>
+                </a>
 
-            {{-- Fornecedores --}}
-            <a href="{{ route('admin.fornecedores.index') }}" 
-               class="flex flex-col items-center gap-1 p-2 transition-colors
-               {{ request()->routeIs('admin.fornecedores.*') 
-                   ? 'text-[var(--cor-verde-serra)]' 
-                   : 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]' }}">
-                <i data-lucide="package" class="w-5 h-5"></i>
-                <span class="text-[10px] {{ request()->routeIs('admin.fornecedores.*') ? 'font-semibold' : 'font-medium' }}">Fornecedores</span>
-            </a>
+                <a href="{{ route('admin.fornecedores.index') }}" 
+                   class="flex flex-col items-center gap-1 p-2 transition-colors
+                   {{ request()->routeIs('admin.fornecedores.*') 
+                       ? 'text-[var(--cor-verde-serra)]' 
+                       : 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]' }}">
+                    <i data-lucide="package" class="w-5 h-5"></i>
+                    <span class="text-[10px] {{ request()->routeIs('admin.fornecedores.*') ? 'font-semibold' : 'font-medium' }}">Fornecedores</span>
+                </a>
+            @elseif(auth()->user()->role === 'comprador')
+                {{-- BOTTOM NAV COMPRADOR --}}
+                <a href="{{ route('dashboard') }}" 
+                   class="flex flex-col items-center gap-1 p-2 transition-colors
+                   {{ request()->routeIs('dashboard') 
+                       ? 'text-[var(--cor-verde-serra)]' 
+                       : 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]' }}">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                    <span class="text-[10px] {{ request()->routeIs('dashboard') ? 'font-semibold' : 'font-medium' }}">Início</span>
+                </a>
+
+                <a href="{{ route('comprador.fornecedores.index') }}" 
+                   class="flex flex-col items-center gap-1 p-2 transition-colors
+                   {{ request()->routeIs('comprador.fornecedores.*') 
+                       ? 'text-[var(--cor-verde-serra)]' 
+                       : 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]' }}">
+                    <i data-lucide="package" class="w-5 h-5"></i>
+                    <span class="text-[10px] {{ request()->routeIs('comprador.fornecedores.*') ? 'font-semibold' : 'font-medium' }}">Fornecedores</span>
+                </a>
+
+                <a href="{{ route('comprador.talentos.index') }}" 
+                   class="flex flex-col items-center gap-1 p-2 transition-colors
+                   {{ request()->routeIs('comprador.talentos.*') 
+                       ? 'text-[var(--cor-verde-serra)]' 
+                       : 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]' }}">
+                    <i data-lucide="briefcase" class="w-5 h-5"></i>
+                    <span class="text-[10px] {{ request()->routeIs('comprador.talentos.*') ? 'font-semibold' : 'font-medium' }}">Talentos</span>
+                </a>
+            @elseif(auth()->user()->role === 'fornecedor')
+                {{-- BOTTOM NAV FORNECEDOR --}}
+                <a href="{{ route('dashboard') }}" 
+                   class="flex flex-col items-center gap-1 p-2 transition-colors
+                   {{ request()->routeIs('dashboard') 
+                       ? 'text-[var(--cor-verde-serra)]' 
+                       : 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]' }}">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                    <span class="text-[10px] {{ request()->routeIs('dashboard') ? 'font-semibold' : 'font-medium' }}">Início</span>
+                </a>
+
+                <a href="{{ route('fornecedor.compradores.index') }}" 
+                   class="flex flex-col items-center gap-1 p-2 transition-colors
+                   {{ request()->routeIs('fornecedor.compradores.*') 
+                       ? 'text-[var(--cor-verde-serra)]' 
+                       : 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]' }}">
+                    <i data-lucide="store" class="w-5 h-5"></i>
+                    <span class="text-[10px] {{ request()->routeIs('fornecedor.compradores.*') ? 'font-semibold' : 'font-medium' }}">Compradores</span>
+                </a>
+
+                <a href="{{ route('fornecedor.fornecedores.index') }}" 
+                   class="flex flex-col items-center gap-1 p-2 transition-colors
+                   {{ request()->routeIs('fornecedor.fornecedores.*') 
+                       ? 'text-[var(--cor-verde-serra)]' 
+                       : 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]' }}">
+                    <i data-lucide="package" class="w-5 h-5"></i>
+                    <span class="text-[10px] {{ request()->routeIs('fornecedor.fornecedores.*') ? 'font-semibold' : 'font-medium' }}">Fornecedores</span>
+                </a>
+            @endif
             
             {{-- Menu Hamburguer (sempre visível no mobile) --}}
             <button @click="menuAberto = true" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
@@ -262,80 +427,127 @@
 
             {{-- Lista de Menu --}}
             <div class="p-4 space-y-2 pb-6">
-                {{-- Dashboard --}}
-                <a href="{{ route('admin.dashboard') }}" 
-                   @click="menuAberto = false"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   {{ request()->routeIs('admin.dashboard') 
-                       ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
-                       : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-                    <span>Dashboard</span>
-                </a>
+                @if(auth()->user()->role === 'admin')
+                    {{-- DRAWER ADMIN --}}
+                    <a href="{{ route('admin.dashboard') }}" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('admin.dashboard') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                        <span>Dashboard</span>
+                    </a>
 
-                {{-- Aprovações --}}
-                <a href="{{ route('admin.usuarios.index') }}" 
-                   @click="menuAberto = false"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   {{ request()->routeIs('admin.usuarios.*') 
-                       ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
-                       : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
-                    <i data-lucide="user-check" class="w-5 h-5"></i>
-                    <span>Aprovações</span>
-                </a>
+                    <a href="{{ route('admin.usuarios.index') }}" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('admin.usuarios.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="user-check" class="w-5 h-5"></i>
+                        <span>Aprovações</span>
+                    </a>
 
-                {{-- Compradores --}}
-                <a href="{{ route('admin.compradores.index') }}" 
-                   @click="menuAberto = false"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   {{ request()->routeIs('admin.compradores.*') 
-                       ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
-                       : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
-                    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-                    <span>Compradores</span>
-                </a>
+                    <a href="{{ route('admin.compradores.index') }}" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('admin.compradores.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                        <span>Compradores</span>
+                    </a>
 
-                {{-- Fornecedores --}}
-                <a href="{{ route('admin.fornecedores.index') }}" 
-                   @click="menuAberto = false"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   {{ request()->routeIs('admin.fornecedores.*') 
-                       ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
-                       : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
-                    <i data-lucide="package" class="w-5 h-5"></i>
-                    <span>Fornecedores</span>
-                </a>
+                    <a href="{{ route('admin.fornecedores.index') }}" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('admin.fornecedores.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="package" class="w-5 h-5"></i>
+                        <span>Fornecedores</span>
+                    </a>
 
-                {{-- Talentos --}}
-                <a href="{{ route('admin.talentos.index') }}" 
-                   @click="menuAberto = false"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   {{ request()->routeIs('admin.talentos.*') 
-                       ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
-                       : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
-                    <i data-lucide="briefcase" class="w-5 h-5"></i>
-                    <span>Talentos</span>
-                </a>
+                    <a href="{{ route('admin.talentos.index') }}" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('admin.talentos.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="briefcase" class="w-5 h-5"></i>
+                        <span>Talentos</span>
+                    </a>
 
-                {{-- Segmentos --}}
-                <a href="{{ route('admin.segmentos.index') }}" 
-                   @click="menuAberto = false"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   {{ request()->routeIs('admin.segmentos.*') 
-                       ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
-                       : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
-                    <i data-lucide="tag" class="w-5 h-5"></i>
-                    <span>Segmentos</span>
-                </a>
+                    <a href="{{ route('admin.segmentos.index') }}" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('admin.segmentos.*') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="tag" class="w-5 h-5"></i>
+                        <span>Segmentos</span>
+                    </a>
 
-                {{-- Configurações --}}
-                <a href="#" 
-                   @click="menuAberto = false"
-                   class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
-                   text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
-                    <i data-lucide="settings" class="w-5 h-5"></i>
-                    <span>Configurações</span>
-                </a>
+                    <a href="#" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                        <span>Configurações</span>
+                    </a>
+                @else
+                    {{-- DRAWER COMPRADOR/FORNECEDOR --}}
+                    <a href="{{ route('dashboard') }}" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       {{ request()->routeIs('dashboard') 
+                           ? 'bg-[var(--cor-verde-serra)] text-white shadow-sm' 
+                           : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]' }}">
+                        <i data-lucide="home" class="w-5 h-5"></i>
+                        <span>Início</span>
+                    </a>
+
+                    <a href="#" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="package" class="w-5 h-5"></i>
+                        <span>{{ auth()->user()->role === 'comprador' ? 'Fornecedores' : 'Compradores' }}</span>
+                    </a>
+
+                    <a href="#" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="briefcase" class="w-5 h-5"></i>
+                        <span>Talentos</span>
+                    </a>
+
+                    <a href="#" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="file-text" class="w-5 h-5"></i>
+                        <span>Cotações</span>
+                    </a>
+
+                    <a href="#" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="shopping-basket" class="w-5 h-5"></i>
+                        <span>Compras Coletivas</span>
+                    </a>
+
+                    <a href="#" 
+                       @click="menuAberto = false"
+                       class="flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1
+                       text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]">
+                        <i data-lucide="book-open" class="w-5 h-5"></i>
+                        <span>Material de Gestão</span>
+                    </a>
+                @endif
             </div>
 
             {{-- Footer do Menu --}}

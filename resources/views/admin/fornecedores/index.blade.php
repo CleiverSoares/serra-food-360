@@ -60,7 +60,7 @@
 
         <!-- Botão Criar Novo -->
         <div class="mb-6">
-            <a href="{{ route('admin.usuarios.create') }}" 
+            <a href="{{ route('admin.fornecedores.create') }}" 
                class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:bg-green-700 transition-all font-medium shadow-sm hover:shadow-md">
                 <i data-lucide="plus" class="w-5 h-5"></i>
                 <span>Novo Fornecedor</span>

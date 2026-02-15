@@ -60,7 +60,7 @@ class AuthService
             'email' => $dados['email'],
             'password' => Hash::make($dados['password']),
             'role' => $role,
-            'status' => 'pendente',
+            'status' => $dados['status'] ?? 'pendente', // Respeita status passado
             'telefone' => $dados['telefone'] ?? null,
             'whatsapp' => $dados['whatsapp'] ?? null,
             'cidade' => $dados['cidade'] ?? null,
@@ -79,7 +79,7 @@ class AuthService
             $this->restauranteRepository->criar([
                 'user_id' => $usuario->id,
                 'cnpj' => $dadosPerfil['cnpj'],
-                'nome_estabelecimento' => $dadosPerfil['nome_estabelecimento'],
+                'nome_negocio' => $dadosPerfil['nome_estabelecimento'], // nome_negocio para compradores
                 'descricao' => $dadosPerfil['descricao'],
                 'logo_path' => $logoPath,
             ]);
@@ -87,7 +87,7 @@ class AuthService
             $this->fornecedorRepository->criar([
                 'user_id' => $usuario->id,
                 'cnpj' => $dadosPerfil['cnpj'],
-                'nome_empresa' => $dadosPerfil['nome_estabelecimento'], // usa mesmo campo
+                'nome_empresa' => $dadosPerfil['nome_estabelecimento'], // nome_empresa para fornecedores
                 'descricao' => $dadosPerfil['descricao'],
                 'logo_path' => $logoPath,
             ]);

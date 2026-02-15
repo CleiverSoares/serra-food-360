@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\UserService;
+use App\Services\AuthService;
 use App\Services\FilterService;
 use App\Repositories\SegmentoRepository;
+use App\Models\SegmentoModel;
 use Illuminate\Http\Request;
 
 class AdminCompradoresController extends Controller
 {
     public function __construct(
         private UserService $userService,
+        private AuthService $authService,
         private FilterService $filterService,
         private SegmentoRepository $segmentoRepository
     ) {}
@@ -58,6 +61,49 @@ class AdminCompradoresController extends Controller
             'segmentoId',
             'busca'
         ));
+    }
+
+    /**
+     * Exibir formulário de criar comprador
+     */
+    public function create()
+    {
+        $segmentos = SegmentoModel::where('ativo', true)
+            ->orderBy('nome')
+            ->get();
+        
+        return view('admin.compradores.create', compact('segmentos'));
+    }
+
+    /**
+     * Salvar novo comprador (já aprovado)
+     */
+    public function store(Request $request)
+    {
+        $dados = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+            'telefone' => 'required|string|max:20',
+            'whatsapp' => 'required|string|max:20',
+            'cnpj' => 'nullable|string|max:18',
+            'nome_estabelecimento' => 'required|string|max:255',
+            'cidade' => 'required|string|max:255',
+            'descricao' => 'nullable|string|max:500',
+            'segmentos' => 'required|array|min:1',
+            'segmentos.*' => 'exists:segmentos,id',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ]);
+
+        // Forçar role e status
+        $dados['role'] = 'comprador';
+        $dados['status'] = 'aprovado'; // Já cria aprovado!
+
+        $usuario = $this->authService->cadastrar($dados);
+
+        return redirect()
+            ->route('admin.compradores.index')
+            ->with('sucesso', 'Comprador criado e aprovado com sucesso!');
     }
 
     /**

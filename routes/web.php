@@ -8,6 +8,11 @@ use App\Http\Controllers\Admin\AdminCompradoresController;
 use App\Http\Controllers\Admin\AdminFornecedoresController;
 use App\Http\Controllers\Admin\AdminTalentosController;
 use App\Http\Controllers\Admin\AdminSegmentosController;
+use App\Http\Controllers\Comprador\CompradorFornecedoresController;
+use App\Http\Controllers\Comprador\CompradorCompradoresController;
+use App\Http\Controllers\Comprador\CompradorTalentosController;
+use App\Http\Controllers\Fornecedor\FornecedorCompradoresController;
+use App\Http\Controllers\Fornecedor\FornecedorFornecedoresController;
 use Illuminate\Support\Facades\Route;
 
 // Rota pública
@@ -34,6 +39,27 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     });
     
+    // Área COMPRADOR (apenas leitura)
+    Route::middleware(['approved', 'role:comprador'])->prefix('comprador')->name('comprador.')->group(function () {
+        Route::get('/fornecedores', [CompradorFornecedoresController::class, 'index'])->name('fornecedores.index');
+        Route::get('/fornecedores/{id}', [CompradorFornecedoresController::class, 'show'])->name('fornecedores.show');
+        
+        Route::get('/compradores', [CompradorCompradoresController::class, 'index'])->name('compradores.index');
+        Route::get('/compradores/{id}', [CompradorCompradoresController::class, 'show'])->name('compradores.show');
+        
+        Route::get('/talentos', [CompradorTalentosController::class, 'index'])->name('talentos.index');
+        Route::get('/talentos/{id}', [CompradorTalentosController::class, 'show'])->name('talentos.show');
+    });
+    
+    // Área FORNECEDOR (apenas leitura)
+    Route::middleware(['approved', 'role:fornecedor'])->prefix('fornecedor')->name('fornecedor.')->group(function () {
+        Route::get('/compradores', [FornecedorCompradoresController::class, 'index'])->name('compradores.index');
+        Route::get('/compradores/{id}', [FornecedorCompradoresController::class, 'show'])->name('compradores.show');
+        
+        Route::get('/fornecedores', [FornecedorFornecedoresController::class, 'index'])->name('fornecedores.index');
+        Route::get('/fornecedores/{id}', [FornecedorFornecedoresController::class, 'show'])->name('fornecedores.show');
+    });
+    
     // Área Admin (apenas admin)
     Route::middleware(['approved', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -48,6 +74,8 @@ Route::middleware('auth')->group(function () {
         
         // Gestão de Compradores
         Route::get('/compradores', [AdminCompradoresController::class, 'index'])->name('compradores.index');
+        Route::get('/compradores/criar', [AdminCompradoresController::class, 'create'])->name('compradores.create');
+        Route::post('/compradores', [AdminCompradoresController::class, 'store'])->name('compradores.store');
         Route::get('/compradores/{id}', [AdminCompradoresController::class, 'show'])->name('compradores.show');
         Route::get('/compradores/{id}/editar', [AdminCompradoresController::class, 'edit'])->name('compradores.edit');
         Route::put('/compradores/{id}', [AdminCompradoresController::class, 'update'])->name('compradores.update');
@@ -56,6 +84,8 @@ Route::middleware('auth')->group(function () {
         
         // Gestão de Fornecedores
         Route::get('/fornecedores', [AdminFornecedoresController::class, 'index'])->name('fornecedores.index');
+        Route::get('/fornecedores/criar', [AdminFornecedoresController::class, 'create'])->name('fornecedores.create');
+        Route::post('/fornecedores', [AdminFornecedoresController::class, 'store'])->name('fornecedores.store');
         Route::get('/fornecedores/{id}', [AdminFornecedoresController::class, 'show'])->name('fornecedores.show');
         Route::get('/fornecedores/{id}/editar', [AdminFornecedoresController::class, 'edit'])->name('fornecedores.edit');
         Route::put('/fornecedores/{id}', [AdminFornecedoresController::class, 'update'])->name('fornecedores.update');
