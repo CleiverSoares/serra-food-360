@@ -29,7 +29,7 @@
               this.currentX = e.touches[0].clientX;
               const diff = this.currentX - this.startX;
               if (diff > 0) {
-                  e.target.style.transform = \`translateX(\${diff}px)\`;
+                  e.target.style.transform = 'translateX(' + diff + 'px)';
               }
           },
           handleTouchEnd(e) {

@@ -3,9 +3,26 @@
 namespace App\Repositories;
 
 use App\Models\FornecedorModel;
+use Illuminate\Database\Eloquent\Builder;
 
 class FornecedorRepository
 {
+    /**
+     * Buscar todos os fornecedores (query builder)
+     */
+    public function buscarTodos(): Builder
+    {
+        return FornecedorModel::query()->with('usuario');
+    }
+
+    /**
+     * Buscar fornecedor por ID
+     */
+    public function buscarPorId(int $id): ?FornecedorModel
+    {
+        return FornecedorModel::with('usuario')->find($id);
+    }
+
     /**
      * Criar novo fornecedor
      */

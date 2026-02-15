@@ -2,45 +2,7 @@
 
 @section('titulo', 'Compradores')
 @section('page-title', 'Compradores')
-@section('page-subtitle', 'Gerenciar todos os compradores')
-
-@section('sidebar-nav')
-<a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
-    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-    <span>Dashboard</span>
-</a>
-<a href="{{ route('admin.usuarios.index') }}" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
-    <i data-lucide="user-check" class="w-5 h-5"></i>
-    <span>Aprovações</span>
-</a>
-<a href="{{ route('admin.compradores.index') }}" class="flex items-center gap-3 px-4 py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg font-medium">
-    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-    <span>Compradores</span>
-</a>
-<a href="{{ route('admin.fornecedores.index') }}" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
-    <i data-lucide="package" class="w-5 h-5"></i>
-    <span>Fornecedores</span>
-</a>
-<a href="#" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
-    <i data-lucide="briefcase" class="w-5 h-5"></i>
-    <span>Talentos</span>
-</a>
-@endsection
-
-@section('bottom-nav')
-<a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
-    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-    <span class="text-[10px] font-medium">Início</span>
-</a>
-<a href="{{ route('admin.compradores.index') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-verde-serra)]">
-    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-    <span class="text-[10px] font-semibold">Compradores</span>
-</a>
-<a href="{{ route('admin.fornecedores.index') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
-    <i data-lucide="package" class="w-5 h-5"></i>
-    <span class="text-[10px] font-medium">Fornecedores</span>
-</a>
-@endsection
+@section('page-subtitle', auth()->user()->role === 'admin' ? 'Gerenciar todos os compradores' : 'Diretório de compradores')
 
 @section('conteudo')
 <div class="p-4 lg:p-8">
@@ -58,14 +20,16 @@
             </div>
         @endif
 
-        <!-- Botão Criar Novo -->
-        <div class="mb-6">
-            <a href="{{ route('admin.compradores.create') }}" 
-               class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:bg-green-700 transition-all font-medium shadow-sm hover:shadow-md">
-                <i data-lucide="plus" class="w-5 h-5"></i>
-                <span>Novo Comprador</span>
-            </a>
-        </div>
+        <!-- Botão Criar Novo (apenas admin) -->
+        @if(auth()->user()->role === 'admin')
+            <div class="mb-6">
+                <a href="{{ route('admin.compradores.create') }}" 
+                   class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:bg-green-700 transition-all font-medium shadow-sm hover:shadow-md">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                    <span>Novo Comprador</span>
+                </a>
+            </div>
+        @endif
 
         <!-- Filtros -->
         <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-6 mb-6">
@@ -234,32 +198,35 @@
 
                             <!-- Ações -->
                             <div class="flex flex-wrap gap-2 mt-3">
-                                <a href="{{ route('admin.compradores.show', $comprador->id) }}" 
+                                <a href="{{ auth()->user()->role === 'admin' ? route('admin.compradores.show', $comprador->id) : route('compradores.show', $comprador->id) }}" 
                                    class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors text-sm font-medium">
                                     <i data-lucide="eye" class="w-4 h-4 flex-shrink-0"></i>
                                     <span class="whitespace-nowrap">Ver</span>
                                 </a>
-                                <a href="{{ route('admin.compradores.edit', $comprador->id) }}" 
-                                   class="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium">
-                                    <i data-lucide="edit" class="w-4 h-4 flex-shrink-0"></i>
-                                    <span class="whitespace-nowrap">Editar</span>
-                                </a>
-                                @if($comprador->status === 'inativo')
-                                    <form action="{{ route('admin.compradores.ativar', $comprador->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors text-sm font-medium">
-                                            <i data-lucide="check-circle" class="w-4 h-4 flex-shrink-0"></i>
-                                            <span class="whitespace-nowrap">Ativar</span>
-                                        </button>
-                                    </form>
-                                @else
-                                    <form action="{{ route('admin.compradores.inativar', $comprador->id) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 bg-orange-50 text-orange-700 rounded-lg hover:bg-orange-100 transition-colors text-sm font-medium">
-                                            <i data-lucide="pause-circle" class="w-4 h-4 flex-shrink-0"></i>
-                                            <span class="whitespace-nowrap">Inativar</span>
-                                        </button>
-                                    </form>
+                                
+                                @if(auth()->user()->role === 'admin')
+                                    <a href="{{ route('admin.compradores.edit', $comprador->id) }}" 
+                                       class="inline-flex items-center gap-1 px-3 py-1.5 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium">
+                                        <i data-lucide="edit" class="w-4 h-4 flex-shrink-0"></i>
+                                        <span class="whitespace-nowrap">Editar</span>
+                                    </a>
+                                    @if($comprador->status === 'inativo')
+                                        <form action="{{ route('admin.compradores.ativar', $comprador->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors text-sm font-medium">
+                                                <i data-lucide="check-circle" class="w-4 h-4 flex-shrink-0"></i>
+                                                <span class="whitespace-nowrap">Ativar</span>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <form action="{{ route('admin.compradores.inativar', $comprador->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 bg-orange-50 text-orange-700 rounded-lg hover:bg-orange-100 transition-colors text-sm font-medium">
+                                                <i data-lucide="pause-circle" class="w-4 h-4 flex-shrink-0"></i>
+                                                <span class="whitespace-nowrap">Inativar</span>
+                                            </button>
+                                        </form>
+                                    @endif
                                 @endif
                             </div>
                         </div>

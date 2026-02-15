@@ -28,7 +28,7 @@
             </a>
 
             {{-- Compradores --}}
-            <a href="{{ route('comprador.compradores.index') }}" 
+            <a href="{{ route('compradores.index') }}" 
                class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all hover:scale-[1.02] group">
                 <div class="flex items-center gap-4">
                     <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
@@ -62,7 +62,7 @@
         </div>
 
         {{-- Em Breve --}}
-        <div class="bg-gradient-to-r from-[var(--cor-verde-serra)] to-[var(--cor-verde-escuro)] rounded-xl shadow-lg p-6 md:p-8 text-white mb-6">
+        <div class="bg-[var(--cor-verde-serra)] rounded-xl shadow-lg p-6 md:p-8 text-white mb-6">
             <h2 class="text-2xl font-bold mb-3">🚀 Novidades em Breve</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="flex items-center gap-3">

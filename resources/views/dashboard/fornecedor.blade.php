@@ -46,7 +46,7 @@
         </div>
 
         {{-- Em Breve --}}
-        <div class="bg-gradient-to-r from-[var(--cor-verde-serra)] to-[var(--cor-verde-escuro)] rounded-xl shadow-lg p-6 md:p-8 text-white mb-6">
+        <div class="bg-[var(--cor-verde-serra)] rounded-xl shadow-lg p-6 md:p-8 text-white mb-6">
             <h2 class="text-2xl font-bold mb-3">🚀 Novidades em Breve</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="flex items-center gap-3">

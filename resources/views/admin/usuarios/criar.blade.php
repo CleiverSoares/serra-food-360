@@ -4,36 +4,6 @@
 @section('page-title', 'Criar Novo Usuário')
 @section('page-subtitle', 'Cadastrar comprador ou fornecedor')
 
-@section('sidebar-nav')
-<a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
-    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-    <span>Dashboard</span>
-</a>
-<a href="{{ route('admin.usuarios.index') }}" class="flex items-center gap-3 px-4 py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg font-medium">
-    <i data-lucide="users" class="w-5 h-5"></i>
-    <span>Usuários</span>
-</a>
-<a href="#" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
-    <i data-lucide="briefcase" class="w-5 h-5"></i>
-    <span>Talentos</span>
-</a>
-@endsection
-
-@section('bottom-nav')
-<a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
-    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-    <span class="text-[10px] font-medium">Início</span>
-</a>
-<a href="{{ route('admin.usuarios.index') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-verde-serra)]">
-    <i data-lucide="users" class="w-5 h-5"></i>
-    <span class="text-[10px] font-semibold">Usuários</span>
-</a>
-<a href="#" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
-    <i data-lucide="briefcase" class="w-5 h-5"></i>
-    <span class="text-[10px] font-medium">Talentos</span>
-</a>
-@endsection
-
 @section('header-actions')
 <a href="{{ route('admin.usuarios.index') }}" class="flex items-center gap-2 px-4 py-2 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-verde-serra)] transition-colors">
     <i data-lucide="arrow-left" class="w-4 h-4"></i>

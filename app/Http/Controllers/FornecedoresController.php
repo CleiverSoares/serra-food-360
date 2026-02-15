@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\FilterService;
-use App\Repositories\FornecedorRepository;
+use App\Models\UserModel;
 use App\Models\SegmentoModel;
 
 /**
@@ -12,33 +11,83 @@ use App\Models\SegmentoModel;
  */
 class FornecedoresController extends Controller
 {
-    private FornecedorRepository $fornecedorRepository;
-    private FilterService $filterService;
-
-    public function __construct(
-        FornecedorRepository $fornecedorRepository,
-        FilterService $filterService
-    ) {
-        $this->fornecedorRepository = $fornecedorRepository;
-        $this->filterService = $filterService;
-    }
 
     /**
      * Lista todos os fornecedores (apenas aprovados)
      */
     public function index()
     {
-        $query = $this->fornecedorRepository->buscarTodos()
-            ->with(['usuario', 'usuario.segmentos'])
-            ->where('users.status', 'aprovado');
-
+        $query = UserModel::where('role', 'fornecedor')
+            ->where('status', 'aprovado')
+            ->with(['fornecedor', 'segmentos']);
+        
+        // Obter filtros da requisição
+        $status = request()->get('status', '');
+        $plano = request()->get('plano', '');
+        $busca = request()->get('busca', '');
+        $segmentoId = request()->get('segmento', '');
+        $cidade = request()->get('cidade', '');
+        
         // Aplicar filtros
-        $query = $this->filterService->aplicarFiltros($query, request()->all(), 'fornecedor');
-
+        if ($busca) {
+            $query->where(function($q) use ($busca) {
+                $q->where('name', 'like', "%{$busca}%")
+                  ->orWhere('email', 'like', "%{$busca}%");
+            });
+        }
+        
+        if ($plano) {
+            $query->where('plano', $plano);
+        }
+        
+        if ($segmentoId) {
+            $query->whereHas('segmentos', function($q) use ($segmentoId) {
+                $q->where('segmentos.id', $segmentoId);
+            });
+        }
+        
+        if ($cidade) {
+            $query->where('cidade', 'like', "%{$cidade}%");
+        }
+        
         $fornecedores = $query->paginate(12);
+        
+        // Dados para filtros
+        $filtrosStatus = [
+            '' => 'Todos',
+            'ativo' => 'Ativo',
+            'inativo' => 'Inativo'
+        ];
+        
+        $filtrosPlano = [
+            '' => 'Todos',
+            'gratuito' => 'Gratuito',
+            'basico' => 'Básico',
+            'premium' => 'Premium'
+        ];
+        
+        // Buscar cidades únicas
+        $filtrosCidade = UserModel::where('role', 'fornecedor')
+            ->where('status', 'aprovado')
+            ->whereNotNull('cidade')
+            ->distinct()
+            ->pluck('cidade')
+            ->toArray();
+        
         $segmentos = SegmentoModel::where('ativo', true)->orderBy('nome')->get();
 
-        return view('fornecedores.index', compact('fornecedores', 'segmentos'));
+        return view('admin.fornecedores.index', compact(
+            'fornecedores',
+            'filtrosStatus',
+            'filtrosPlano',
+            'filtrosCidade',
+            'segmentos',
+            'status',
+            'plano',
+            'cidade',
+            'segmentoId',
+            'busca'
+        ));
     }
 
     /**
@@ -46,12 +95,16 @@ class FornecedoresController extends Controller
      */
     public function show($id)
     {
-        $fornecedor = $this->fornecedorRepository->buscarPorId($id);
+        $usuario = UserModel::where('id', $id)
+            ->where('role', 'fornecedor')
+            ->where('status', 'aprovado')
+            ->with(['fornecedor', 'segmentos'])
+            ->first();
 
-        if (!$fornecedor || $fornecedor->usuario->status !== 'aprovado') {
+        if (!$usuario) {
             abort(404, 'Fornecedor não encontrado.');
         }
 
-        return view('fornecedores.show', compact('fornecedor'));
+        return view('admin.fornecedores.show', ['fornecedor' => $usuario]);
     }
 }

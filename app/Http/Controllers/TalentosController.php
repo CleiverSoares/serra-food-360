@@ -20,44 +20,73 @@ class TalentosController extends Controller
             abort(403, 'Fornecedores não têm acesso ao banco de talentos.');
         }
 
-        $query = TalentoModel::query()
-            ->where('ativo', true)
-            ->where('disponivel', true);
+        $busca = request()->get('busca', '');
+        $cargo = request()->get('cargo', '');
+        $disponibilidade = request()->get('disponibilidade', '');
+        $tipoCobranca = request()->get('tipo_cobranca', '');
+        $valorMin = request()->get('valor_min', '');
+        $valorMax = request()->get('valor_max', '');
 
-        // Filtros
-        if (request('nome')) {
-            $query->where('nome_completo', 'like', '%' . request('nome') . '%');
+        $query = TalentoModel::where('ativo', true);
+
+        // Filtro de busca
+        if ($busca) {
+            $query->where(function ($q) use ($busca) {
+                $q->where('nome', 'like', "%{$busca}%")
+                  ->orWhere('whatsapp', 'like', "%{$busca}%")
+                  ->orWhere('cargo', 'like', "%{$busca}%");
+            });
         }
 
-        if (request('funcao')) {
-            $query->where('funcao', 'like', '%' . request('funcao') . '%');
+        // Filtro por cargo
+        if ($cargo) {
+            $query->where('cargo', 'like', "%{$cargo}%");
         }
 
-        if (request('tipo_cobranca')) {
-            $query->where('tipo_cobranca', request('tipo_cobranca'));
+        // Filtro por disponibilidade
+        if ($disponibilidade) {
+            $query->where('disponibilidade', 'like', "%{$disponibilidade}%");
         }
 
-        if (request('valor_min')) {
-            $query->where('valor_hora', '>=', request('valor_min'));
+        // Filtro por tipo de cobrança
+        if ($tipoCobranca) {
+            $query->where('tipo_cobranca', $tipoCobranca);
         }
 
-        if (request('valor_max')) {
-            $query->where('valor_hora', '<=', request('valor_max'));
+        // Filtro por valor mínimo
+        if ($valorMin !== '' && is_numeric($valorMin)) {
+            $query->where('pretensao', '>=', $valorMin);
         }
 
-        $talentos = $query->orderBy('nome_completo')->paginate(12);
+        // Filtro por valor máximo
+        if ($valorMax !== '' && is_numeric($valorMax)) {
+            $query->where('pretensao', '<=', $valorMax);
+        }
 
-        // Preservar filtros
-        $nome = request('nome');
-        $funcao = request('funcao');
-        $tipoCobranca = request('tipo_cobranca');
-        $valorMin = request('valor_min', 0);
-        $valorMax = request('valor_max', 500);
+        $talentos = $query->orderBy('nome')->paginate(12);
 
-        return view('talentos.index', compact(
+        // Obter lista única de cargos para o filtro
+        $cargos = TalentoModel::where('ativo', true)
+            ->select('cargo')
+            ->distinct()
+            ->orderBy('cargo')
+            ->pluck('cargo');
+
+        // Obter lista única de disponibilidades para o filtro
+        $disponibilidades = TalentoModel::where('ativo', true)
+            ->whereNotNull('disponibilidade')
+            ->select('disponibilidade')
+            ->distinct()
+            ->orderBy('disponibilidade')
+            ->pluck('disponibilidade');
+
+        return view('admin.talentos.index', compact(
             'talentos',
-            'nome',
-            'funcao',
+            'busca',
+            'cargo',
+            'disponibilidade',
+            'cargos',
+            'disponibilidades',
             'tipoCobranca',
             'valorMin',
             'valorMax'
@@ -80,6 +109,6 @@ class TalentosController extends Controller
             abort(404, 'Talento não encontrado.');
         }
 
-        return view('talentos.show', compact('talento'));
+        return view('admin.talentos.show', compact('talento'));
     }
 }
