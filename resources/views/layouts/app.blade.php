@@ -49,7 +49,7 @@
                     </a>
                     
                     {{-- Botão Login/Admin --}}
-                    <a href="/admin/login" class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--cor-verde-serra)] text-white rounded-xl font-bold hover:bg-[var(--cor-verde-serra-hover)] transition-all shadow-md hover:shadow-lg">
+                    <a href="{{ route('login') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--cor-verde-serra)] text-white rounded-xl font-bold hover:bg-[var(--cor-verde-serra-hover)] transition-all shadow-md hover:shadow-lg">
                         <i data-lucide="log-in" class="w-4 h-4"></i>
                         Login
                     </a>

@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Aguardando Aprovação - Serra Food 360')
+@section('titulo', 'Aguardando Aprovação')
 
-@section('content')
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[var(--cor-verde-serra)] to-[var(--cor-verde-escuro)] px-4 py-12">
+@section('conteudo')
+<div class="min-h-screen flex items-center justify-center bg-[var(--cor-verde-serra)] px-4 py-12">
     <div class="max-w-lg w-full">
         <!-- Card principal -->
         <div class="bg-white rounded-2xl shadow-2xl p-8 text-center">

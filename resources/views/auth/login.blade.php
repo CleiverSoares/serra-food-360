@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Login - Serra Food 360')
+@section('titulo', 'Login')
 
-@section('content')
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[var(--cor-verde-serra)] to-[var(--cor-verde-escuro)] px-4 py-12">
+@section('conteudo')
+<div class="min-h-screen flex items-center justify-center bg-[var(--cor-verde-serra)] px-4 py-12">
     <div class="max-w-md w-full">
         <!-- Logo e título -->
         <div class="text-center mb-8">

@@ -20,16 +20,9 @@ class UserModel extends Authenticatable
         'role',
         'status',
         'plano',
-        'nome_estabelecimento',
         'telefone',
         'whatsapp',
         'cidade',
-        'tipo_negocio',
-        'categorias',
-        'descricao',
-        'logo_path',
-        'site_url',
-        'colaboradores',
         'aprovado_por',
         'aprovado_em',
         'motivo_rejeicao',
@@ -46,16 +39,7 @@ class UserModel extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'aprovado_em' => 'datetime',
-            'categorias' => 'array',
         ];
-    }
-
-    /**
-     * Accessor: URL completa do logo
-     */
-    public function getLogoUrlAttribute(): ?string
-    {
-        return $this->logo_path ? Storage::url($this->logo_path) : null;
     }
 
     /**
@@ -139,16 +123,18 @@ class UserModel extends Authenticatable
     }
 
     /**
-     * Boot: deletar logo ao deletar user
+     * Relacionamento: Perfil de restaurante
      */
-    protected static function boot()
+    public function restaurante()
     {
-        parent::boot();
+        return $this->hasOne(RestauranteModel::class, 'user_id');
+    }
 
-        static::deleting(function ($user) {
-            if ($user->logo_path && Storage::disk('public')->exists($user->logo_path)) {
-                Storage::disk('public')->delete($user->logo_path);
-            }
-        });
+    /**
+     * Relacionamento: Perfil de fornecedor
+     */
+    public function fornecedor()
+    {
+        return $this->hasOne(FornecedorModel::class, 'user_id');
     }
 }

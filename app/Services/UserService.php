@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\UserModel;
 use App\Repositories\UserRepository;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Storage;
 
 class UserService
 {

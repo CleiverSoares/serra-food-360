@@ -46,9 +46,9 @@
                 
                 {{-- CTAs --}}
                 <div class="flex flex-col gap-3 w-full">
-                    <a href="https://wa.me/5551999999999?text=Olá!%20Quero%20conhecer%20o%20Serra%20Food%20360" target="_blank" rel="noopener" class="group flex items-center justify-center gap-2 px-6 py-4 bg-white text-[var(--cor-verde-serra)] rounded-xl font-bold text-[15px] hover:shadow-2xl active:scale-95 transition-all w-full">
-                        <i data-lucide="message-circle" class="w-4 h-4 flex-shrink-0"></i>
-                        <span>Solicitar entrada</span>
+                    <a href="{{ route('cadastro') }}" class="group flex items-center justify-center gap-2 px-6 py-4 bg-white text-[var(--cor-verde-serra)] rounded-xl font-bold text-[15px] hover:shadow-2xl active:scale-95 transition-all w-full">
+                        <i data-lucide="user-plus" class="w-4 h-4 flex-shrink-0"></i>
+                        <span>Criar conta grátis</span>
                         <i data-lucide="arrow-right" class="w-4 h-4 flex-shrink-0 group-hover:translate-x-1 transition-transform"></i>
                     </a>
                     <a href="#como-funciona" class="flex items-center justify-center gap-2 px-6 py-4 border-2 border-white/30 text-white rounded-xl font-bold text-[15px] hover:bg-white/10 hover:border-white/50 active:scale-95 transition-all backdrop-blur-sm w-full">
@@ -693,12 +693,10 @@
             
             {{-- CTAs principais --}}
             <div class="flex flex-col gap-3 justify-center items-stretch mb-8 sm:mb-10 md:mb-12 w-full max-w-md mx-auto px-4">
-                <a href="https://wa.me/5551999999999?text=Olá!%20Quero%20entrar%20para%20o%20Serra%20Food%20360%20agora!" 
-                   target="_blank" 
-                   rel="noopener" 
+                <a href="{{ route('cadastro') }}" 
                    class="group flex items-center justify-center gap-2 px-8 py-4 bg-white text-[var(--cor-verde-serra)] rounded-xl font-bold text-[15px] hover:shadow-2xl active:scale-95 transition-all shadow-xl w-full">
-                    <i data-lucide="message-circle" class="w-5 h-5 flex-shrink-0"></i>
-                    <span>Solicitar entrada</span>
+                    <i data-lucide="user-plus" class="w-5 h-5 flex-shrink-0"></i>
+                    <span>Criar conta grátis</span>
                     <i data-lucide="arrow-right" class="w-4 h-4 flex-shrink-0 group-hover:translate-x-1 transition-transform"></i>
                 </a>
                 
@@ -746,7 +744,7 @@
     <i data-lucide="message-circle" class="w-5 h-5"></i>
     <span class="text-[10px] font-medium">Contato</span>
 </a>
-<a href="/admin/login" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
+<a href="{{ route('login') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
     <i data-lucide="log-in" class="w-5 h-5"></i>
     <span class="text-[10px] font-medium">Login</span>
 </a>

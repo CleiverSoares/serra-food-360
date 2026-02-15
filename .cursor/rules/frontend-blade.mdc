@@ -33,6 +33,7 @@ alwaysApply: false
 - Evitar estética genérica ("AI slop")
 - Buscar identidade visual própria para food service e região serrana
 - Tipografia, cores e espaçamentos que destaquem o Serra Food 360 no mercado
+- **NUNCA usar gradientes** - apenas cores sólidas com variáveis CSS
 
 ## Temas e variáveis (Admin)
 
