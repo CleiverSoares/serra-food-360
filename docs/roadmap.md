@@ -54,9 +54,11 @@
 
 - [x] Projeto Laravel criado
 - [x] Tailwind CSS configurado
-- [x] Alpine.js integrado
+- [x] Alpine.js integrado (+ plugin collapse)
 - [x] Estrutura de pastas (resources/views, app, etc.)
 - [x] Configuração para domínio serrafood360.com.br (env, etc.)
+- [x] Lucide Icons integrado via CDN
+- [x] Fonts otimizadas (Fraunces + Plus Jakarta Sans)
 
 ### 0.2 Sistema de Variáveis CSS (Temas)
 
