@@ -1,0 +1,78 @@
+/**
+ * Serra Food 360 — Variáveis de tema
+ * Todas as cores em variáveis para personalização no admin
+ * Tema padrão: Serra (inspirado na região serrana, gastronomia, vinho)
+ */
+
+:root,
+[data-tema="serra"] {
+  /* Cores principais */
+  --cor-primaria: oklch(0.45 0.12 25);
+  --cor-primaria-hover: oklch(0.38 0.14 25);
+  --cor-primaria-clara: oklch(0.92 0.04 25);
+  
+  --cor-secundaria: oklch(0.42 0.1 145);
+  --cor-secundaria-hover: oklch(0.35 0.12 145);
+  --cor-secundaria-clara: oklch(0.93 0.03 145);
+  
+  --cor-destaque: oklch(0.72 0.15 75);
+  --cor-destaque-hover: oklch(0.65 0.16 75);
+  
+  /* Fundo e superfícies */
+  --cor-fundo: oklch(0.98 0.008 85);
+  --cor-fundo-secundario: oklch(0.99 0.004 85);
+  --cor-superficie: oklch(1 0 0);
+  --cor-superficie-elevada: oklch(1 0 0);
+  
+  /* Texto */
+  --cor-texto: oklch(0.22 0.02 60);
+  --cor-texto-secundario: oklch(0.5 0.02 60);
+  --cor-texto-muted: oklch(0.6 0.02 60);
+  
+  /* Bordas */
+  --cor-borda: oklch(0.9 0.01 85);
+  --cor-borda-forte: oklch(0.8 0.02 85);
+  
+  /* Estados */
+  --cor-sucesso: oklch(0.55 0.15 145);
+  --cor-erro: oklch(0.55 0.2 25);
+  --cor-aviso: oklch(0.75 0.15 85);
+  
+  /* Sombras (para usar em box-shadow) */
+  --sombra-sm: 0 1px 3px oklch(0.2 0.02 60 / 0.06);
+  --sombra-md: 0 4px 12px oklch(0.2 0.02 60 / 0.08);
+  --sombra-lg: 0 12px 24px oklch(0.2 0.02 60 / 0.1);
+  
+  /* Raios */
+  --raio-sm: 0.5rem;
+  --raio-md: 0.75rem;
+  --raio-lg: 1rem;
+  --raio-xl: 1.5rem;
+  --raio-full: 9999px;
+}
+
+/* Tema Oceano (exemplo alternativo) */
+[data-tema="oceano"] {
+  --cor-primaria: oklch(0.5 0.15 250);
+  --cor-primaria-hover: oklch(0.42 0.17 250);
+  --cor-primaria-clara: oklch(0.93 0.04 250);
+  --cor-secundaria: oklch(0.55 0.12 200);
+  --cor-secundaria-hover: oklch(0.47 0.14 200);
+  --cor-secundaria-clara: oklch(0.93 0.03 200);
+  --cor-destaque: oklch(0.7 0.15 280);
+  --cor-destaque-hover: oklch(0.62 0.16 280);
+  --cor-fundo: oklch(0.98 0.01 250);
+}
+
+/* Tema Neutro */
+[data-tema="neutro"] {
+  --cor-primaria: oklch(0.35 0.02 60);
+  --cor-primaria-hover: oklch(0.28 0.02 60);
+  --cor-primaria-clara: oklch(0.95 0.01 60);
+  --cor-secundaria: oklch(0.5 0.04 60);
+  --cor-secundaria-hover: oklch(0.42 0.04 60);
+  --cor-secundaria-clara: oklch(0.94 0.01 60);
+  --cor-destaque: oklch(0.55 0.1 85);
+  --cor-destaque-hover: oklch(0.48 0.1 85);
+  --cor-fundo: oklch(0.97 0.005 60);
+}
