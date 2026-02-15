@@ -7,12 +7,18 @@
 
 ## 1. Objetivo
 
-Criar um **hub** que conecta compradores e vendedores do setor de alimentação da região serrana, oferecendo:
+Criar um **hub** que conecta **compradores** (restaurantes, pet shops, estabelecimentos diversos) e **fornecedores** do setor comercial da região serrana, oferecendo:
 
 - Informações centralizadas
+- **Segmentação inteligente** (cruzamentos por segmento de mercado)
 - Negociações coletivas
 - Ferramentas de gestão
 - Conexão direta via WhatsApp
+
+**Nota importante:**
+- O sistema usa **"Comprador"** ao invés de "Restaurante" para ser mais genérico e escalável
+- Cada usuário pertence a um ou mais **segmentos** (alimentação, pet-shop, construção, varejo, serviços)
+- Fornecedores aparecem apenas para compradores com segmentos em comum
 
 ---
 
@@ -46,22 +52,31 @@ Criar um **hub** que conecta compradores e vendedores do setor de alimentação 
 
 ### 3.2 Dashboard Principal (Home)
 
-- **Navegação por ícones:** botões grandes para: Restaurantes, Fornecedores, Cotações, Talentos, Gestão, Consultor de IA
+- **Navegação por ícones:** botões grandes para: Compradores, Fornecedores, Cotações, Talentos, Gestão, Consultor de IA
 - **Destaques VIP:** banners/avisos exclusivos para Plano 2X (mentorias Zoom, promoções)
-- **Bottom navigation** (estilo app): barra fixa na parte inferior com principais ações
+- **Bottom navigation** (estilo app mobile): 3 ícones principais + menu hambúrguer
+- **Sidebar desktop** (estilo ERP): menu lateral completo com todos os módulos
+- **Drawer lateral mobile:** menu deslizante com swipe para fechar, overlay com blur
 
 **Descrição de foto para Gemini (ilustração de boas-vindas):**
 > Ilustração flat ou 3D suave de um chef ou dono de restaurante sorridente, cercado por ícones de comida, pratos e ingredientes. Cores da marca, tom profissional e acolhedor. Sensação de "seu parceiro no dia a dia".
 
 ---
 
-### 3.3 Banco de Talentos (Extras)
+### 3.3 Banco de Talentos (Extras) — ✅ IMPLEMENTADO
 
-- **Público:** profissionais universitários para trabalho extra
-- **Lista por cargos:** garçom, cozinheiro, recepcionista
-- **Cards de perfil:** foto, mini currículo, pretensão salarial, dias/horários disponíveis
-- **Tela de detalhes:** currículo em PDF ou carta de recomendação
+- **Público:** profissionais universitários para trabalho extra, freelancers, avulsos
+- **Lista por cargos:** garçom, cozinheiro, recepcionista, barman, sommelier, etc.
+- **Filtros avançados:**
+  - Busca por nome, cargo ou telefone
+  - Filtro por cargo
+  - Filtro por disponibilidade (finais de semana, noites, eventos, etc.)
+  - **Filtro por tipo de cobrança:** Por Hora ou Por Dia
+  - **Range de valor:** R$ mínimo e máximo
+- **Cards de perfil:** foto (ou avatar placeholder), mini currículo, pretensão, tipo cobrança, badges coloridas
+- **Tela de detalhes:** currículo completo, download de PDF, carta de recomendação
 - **Ação:** botão direto para WhatsApp
+- **Gerenciamento admin:** CRUD completo (criar, editar, ativar/inativar, deletar)
 
 **Descrição de foto para Gemini (placeholder de candidato):**
 > Silhueta ou avatar genérico de pessoa profissional em ambiente de restaurante. Tom neutro, profissional, adequado para placeholder quando o candidato não tiver foto. Formato quadrado, fundo suave.
@@ -92,11 +107,13 @@ Criar um **hub** que conecta compradores e vendedores do setor de alimentação 
 
 ---
 
-### 3.6 Diretório de Restaurantes
+### 3.6 Diretório de Compradores (ex-Restaurantes)
 
 - **Vitrine:** estabelecimentos pagantes com foto e descrição
-- **Dados:** quantidade de colaboradores (para planos de saúde, manutenção, etc.)
+- **Segmentação:** cada comprador pertence a 1+ segmentos (alimentação, pet-shop, etc.)
+- **Dados:** quantidade de colaboradores, CNPJ, cidade, tipo de negócio
 - **Contato:** botão WhatsApp em cada card
+- **Cruzamento inteligente:** fornecedores veem apenas compradores com segmentos em comum
 
 **Descrição de foto para Gemini (placeholder de restaurante):**
 > Fachada genérica de restaurante aconchegante na serra. Arquitetura típica, madeira e pedra. Ambiente gastronômico. Placeholder para quando não houver foto do estabelecimento.
@@ -108,9 +125,10 @@ Criar um **hub** que conecta compradores e vendedores do setor de alimentação 
 
 ### 3.7 Diretório de Fornecedores e Serviços
 
-- **Categorias:** Bebidas, Laticínios, Hortifrúti, Manutenção (ar-condicionado, refrigeração, etc.)
-- Um fornecedor pode aparecer em várias categorias
-- **Perfil:** nome do representante, marcas atendidas, e-mail, site, botão WhatsApp
+- **Segmentos:** Alimentação, Pet Shop, Construção, Varejo, Serviços (não "categorias")
+- Um fornecedor pode pertencer a vários **segmentos** (many-to-many)
+- **Perfil:** nome do representante, marcas atendidas, CNPJ, e-mail, site, botão WhatsApp
+- **Cruzamento inteligente:** compradores veem apenas fornecedores com segmentos em comum
 
 **Descrição de foto para Gemini (placeholder de fornecedor):**
 > Logotipo genérico ou imagem de caixas/insumos organizados. Tom profissional, neutro. Placeholder para fornecedor sem foto.
@@ -191,6 +209,18 @@ O admin será **altamente personalizável**:
 - Novos membros: pré-filtro ou entrevista antes da liberação
 - Admin atualiza cotações e currículos de forma ágil
 - Código preparado para escalar (ex.: Rio Food 360) e novos módulos
+- **Sistema de Segmentos:**
+  - Cada usuário (comprador ou fornecedor) pertence a 1+ segmentos
+  - 5 segmentos iniciais: alimentação, pet-shop, construção, varejo, serviços
+  - Cruzamentos inteligentes: fornecedor só aparece para compradores com segmentos em comum
+  - Escalável: novos segmentos podem ser adicionados facilmente
+- **Nomenclatura:**
+  - "Comprador" ao invés de "Restaurante" (mais genérico, escalável)
+  - Retrocompatibilidade mantida no código (aliases)
+- **Talentos (Banco de Extras):**
+  - Gerenciado apenas pelo admin (talentos não têm login)
+  - Cobrança flexível: por hora ou por dia
+  - Contato direto via WhatsApp
 
 ---
 

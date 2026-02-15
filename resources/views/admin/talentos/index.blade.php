@@ -125,25 +125,76 @@
                 </div>
 
                 <!-- Filtro por Range de Valor -->
-                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <label class="block text-sm font-medium text-[var(--cor-texto)] mb-3">
+                <div class="bg-gray-50 rounded-lg p-4 md:p-6 border border-gray-200"
+                     x-data="{
+                         min: {{ $valorMin ?: 0 }},
+                         max: {{ $valorMax ?: 500 }},
+                         absoluteMin: 0,
+                         absoluteMax: 500,
+                         formatCurrency(value) {
+                             return 'R$ ' + parseFloat(value).toFixed(2).replace('.', ',');
+                         }
+                     }">
+                    <label class="block text-sm font-medium text-[var(--cor-texto)] mb-4">
                         <i data-lucide="dollar-sign" class="w-4 h-4 inline mr-1"></i>
-                        Faixa de Valor (R$)
+                        Faixa de Valor
                     </label>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs text-gray-600 mb-1">Valor Mínimo</label>
-                            <input type="number" name="valor_min" value="{{ $valorMin }}" 
-                                   placeholder="Ex: 50" step="0.01" min="0"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)]">
+                    
+                    <!-- Valores selecionados -->
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="text-center flex-1">
+                            <span class="text-xs text-gray-600 block mb-1">Mínimo</span>
+                            <span class="text-lg font-bold text-emerald-600" x-text="formatCurrency(min)"></span>
                         </div>
-                        <div>
-                            <label class="block text-xs text-gray-600 mb-1">Valor Máximo</label>
-                            <input type="number" name="valor_max" value="{{ $valorMax }}" 
-                                   placeholder="Ex: 200" step="0.01" min="0"
-                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)]">
+                        <div class="px-3 text-gray-400">—</div>
+                        <div class="text-center flex-1">
+                            <span class="text-xs text-gray-600 block mb-1">Máximo</span>
+                            <span class="text-lg font-bold text-emerald-600" x-text="formatCurrency(max)"></span>
                         </div>
                     </div>
+
+                    <!-- Range Slider -->
+                    <div class="relative h-2 mb-8">
+                        <!-- Track de fundo -->
+                        <div class="absolute w-full h-2 bg-gray-300 rounded-full"></div>
+                        
+                        <!-- Track ativo (entre min e max) -->
+                        <div class="absolute h-2 bg-emerald-500 rounded-full"
+                             :style="`left: ${(min / absoluteMax) * 100}%; right: ${100 - (max / absoluteMax) * 100}%`"></div>
+                        
+                        <!-- Input Range Mínimo -->
+                        <input type="range" 
+                               :min="absoluteMin" 
+                               :max="absoluteMax" 
+                               x-model.number="min"
+                               @input="if (min > max - 10) min = max - 10"
+                               step="5"
+                               class="absolute w-full h-2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-emerald-500 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:transition-transform [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-emerald-500 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:hover:scale-110 [&::-moz-range-thumb]:transition-transform"
+                               style="z-index: 1">
+                        
+                        <!-- Input Range Máximo -->
+                        <input type="range" 
+                               :min="absoluteMin" 
+                               :max="absoluteMax" 
+                               x-model.number="max"
+                               @input="if (max < min + 10) max = min + 10"
+                               step="5"
+                               class="absolute w-full h-2 appearance-none bg-transparent pointer-events-none [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-emerald-500 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:transition-transform [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-emerald-500 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:hover:scale-110 [&::-moz-range-thumb]:transition-transform"
+                               style="z-index: 2">
+                    </div>
+
+                    <!-- Marcações de valores -->
+                    <div class="flex justify-between text-xs text-gray-500 mb-4">
+                        <span>R$ 0</span>
+                        <span>R$ 125</span>
+                        <span>R$ 250</span>
+                        <span>R$ 375</span>
+                        <span>R$ 500</span>
+                    </div>
+
+                    <!-- Hidden inputs para enviar no formulário -->
+                    <input type="hidden" name="valor_min" :value="min">
+                    <input type="hidden" name="valor_max" :value="max">
                 </div>
 
                 <!-- Botões -->
