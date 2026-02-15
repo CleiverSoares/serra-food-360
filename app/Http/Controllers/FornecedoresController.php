@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Comprador;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Services\FilterService;
 use App\Repositories\FornecedorRepository;
 use App\Models\SegmentoModel;
 
 /**
- * Controller para Compradores visualizarem Fornecedores
- * APENAS LEITURA - sem ações de edição
+ * Controller PÚBLICO de Fornecedores
+ * Todos podem VER, apenas admin pode EDITAR
  */
-class CompradorFornecedoresController extends Controller
+class FornecedoresController extends Controller
 {
     private FornecedorRepository $fornecedorRepository;
     private FilterService $filterService;
@@ -39,7 +38,7 @@ class CompradorFornecedoresController extends Controller
         $fornecedores = $query->paginate(12);
         $segmentos = SegmentoModel::where('ativo', true)->orderBy('nome')->get();
 
-        return view('comprador.fornecedores.index', compact('fornecedores', 'segmentos'));
+        return view('fornecedores.index', compact('fornecedores', 'segmentos'));
     }
 
     /**
@@ -53,6 +52,6 @@ class CompradorFornecedoresController extends Controller
             abort(404, 'Fornecedor não encontrado.');
         }
 
-        return view('comprador.fornecedores.show', compact('fornecedor'));
+        return view('fornecedores.show', compact('fornecedor'));
     }
 }

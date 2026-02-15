@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Comprador;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Services\FilterService;
 use App\Repositories\CompradorRepository;
 use App\Models\SegmentoModel;
 
 /**
- * Controller para Compradores visualizarem outros Compradores (networking)
- * APENAS LEITURA
+ * Controller PÚBLICO de Compradores
+ * Todos podem VER, apenas admin pode EDITAR
  */
-class CompradorCompradoresController extends Controller
+class CompradoresController extends Controller
 {
     private CompradorRepository $compradorRepository;
     private FilterService $filterService;
@@ -39,7 +38,7 @@ class CompradorCompradoresController extends Controller
         $compradores = $query->paginate(12);
         $segmentos = SegmentoModel::where('ativo', true)->orderBy('nome')->get();
 
-        return view('comprador.compradores.index', compact('compradores', 'segmentos'));
+        return view('compradores.index', compact('compradores', 'segmentos'));
     }
 
     /**
@@ -53,6 +52,6 @@ class CompradorCompradoresController extends Controller
             abort(404, 'Comprador não encontrado.');
         }
 
-        return view('comprador.compradores.show', compact('comprador'));
+        return view('compradores.show', compact('comprador'));
     }
 }

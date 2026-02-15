@@ -2,17 +2,15 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\CompradoresController;
+use App\Http\Controllers\FornecedoresController;
+use App\Http\Controllers\TalentosController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUsuariosController;
 use App\Http\Controllers\Admin\AdminCompradoresController;
 use App\Http\Controllers\Admin\AdminFornecedoresController;
 use App\Http\Controllers\Admin\AdminTalentosController;
 use App\Http\Controllers\Admin\AdminSegmentosController;
-use App\Http\Controllers\Comprador\CompradorFornecedoresController;
-use App\Http\Controllers\Comprador\CompradorCompradoresController;
-use App\Http\Controllers\Comprador\CompradorTalentosController;
-use App\Http\Controllers\Fornecedor\FornecedorCompradoresController;
-use App\Http\Controllers\Fornecedor\FornecedorFornecedoresController;
 use Illuminate\Support\Facades\Route;
 
 // Rota pública
@@ -34,33 +32,23 @@ Route::middleware('auth')->group(function () {
     // Página de aguardando aprovação (qualquer usuário autenticado)
     Route::get('/aguardando', [AuthController::class, 'aguardando'])->name('aguardando');
     
-    // Dashboard (apenas usuários aprovados)
+    // Rotas para usuários aprovados (TODOS veem)
     Route::middleware('approved')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        
+        // Diretórios públicos (todos podem ver)
+        Route::get('/compradores', [CompradoresController::class, 'index'])->name('compradores.index');
+        Route::get('/compradores/{id}', [CompradoresController::class, 'show'])->name('compradores.show');
+        
+        Route::get('/fornecedores', [FornecedoresController::class, 'index'])->name('fornecedores.index');
+        Route::get('/fornecedores/{id}', [FornecedoresController::class, 'show'])->name('fornecedores.show');
+        
+        // Talentos (fornecedor não vê - controle no controller)
+        Route::get('/talentos', [TalentosController::class, 'index'])->name('talentos.index');
+        Route::get('/talentos/{id}', [TalentosController::class, 'show'])->name('talentos.show');
     });
     
-    // Área COMPRADOR (apenas leitura)
-    Route::middleware(['approved', 'role:comprador'])->prefix('comprador')->name('comprador.')->group(function () {
-        Route::get('/fornecedores', [CompradorFornecedoresController::class, 'index'])->name('fornecedores.index');
-        Route::get('/fornecedores/{id}', [CompradorFornecedoresController::class, 'show'])->name('fornecedores.show');
-        
-        Route::get('/compradores', [CompradorCompradoresController::class, 'index'])->name('compradores.index');
-        Route::get('/compradores/{id}', [CompradorCompradoresController::class, 'show'])->name('compradores.show');
-        
-        Route::get('/talentos', [CompradorTalentosController::class, 'index'])->name('talentos.index');
-        Route::get('/talentos/{id}', [CompradorTalentosController::class, 'show'])->name('talentos.show');
-    });
-    
-    // Área FORNECEDOR (apenas leitura)
-    Route::middleware(['approved', 'role:fornecedor'])->prefix('fornecedor')->name('fornecedor.')->group(function () {
-        Route::get('/compradores', [FornecedorCompradoresController::class, 'index'])->name('compradores.index');
-        Route::get('/compradores/{id}', [FornecedorCompradoresController::class, 'show'])->name('compradores.show');
-        
-        Route::get('/fornecedores', [FornecedorFornecedoresController::class, 'index'])->name('fornecedores.index');
-        Route::get('/fornecedores/{id}', [FornecedorFornecedoresController::class, 'show'])->name('fornecedores.show');
-    });
-    
-    // Área Admin (apenas admin)
+    // Área Admin (apenas admin - CRUD completo)
     Route::middleware(['approved', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
         

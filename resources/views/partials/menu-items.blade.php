@@ -1,0 +1,113 @@
+{{-- 
+    Itens do Menu Unificado
+    Usado em: sidebar, bottom-nav, drawer
+    
+    Parâmetros:
+    - $context: 'sidebar', 'bottom-nav', 'drawer'
+--}}
+
+@php
+    $isSidebar = $context === 'sidebar';
+    $isBottomNav = $context === 'bottom-nav';
+    $isDrawer = $context === 'drawer';
+    
+    $role = auth()->user()->role;
+    $isAdmin = $role === 'admin';
+    $isFornecedor = $role === 'fornecedor';
+    
+    // Classes condicionais
+    $linkClass = $isBottomNav 
+        ? 'flex flex-col items-center gap-1 p-2 transition-colors'
+        : 'flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all hover:translate-x-1';
+    
+    $activeClass = $isBottomNav
+        ? 'text-[var(--cor-verde-serra)]'
+        : 'bg-[var(--cor-verde-serra)] text-white shadow-sm';
+    
+    $inactiveClass = $isBottomNav
+        ? 'text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)]'
+        : 'text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)]';
+@endphp
+
+{{-- Início --}}
+<a href="{{ $isAdmin ? route('admin.dashboard') : route('dashboard') }}" 
+   class="{{ $linkClass }} {{ request()->routeIs(['admin.dashboard', 'dashboard']) ? $activeClass : $inactiveClass }}"
+   @if($isDrawer) @click="menuAberto = false" @endif>
+    <i data-lucide="home" class="w-5 h-5"></i>
+    @if(!$isBottomNav || $isBottomNav)
+        <span class="{{ $isBottomNav ? 'text-[10px]' : '' }} {{ request()->routeIs(['admin.dashboard', 'dashboard']) && $isBottomNav ? 'font-semibold' : ($isBottomNav ? 'font-medium' : '') }}">Início</span>
+    @endif
+</a>
+
+{{-- Aprovações (apenas admin, não aparece no bottom nav) --}}
+@if($isAdmin && !$isBottomNav)
+    <a href="{{ route('admin.usuarios.index') }}" 
+       class="{{ $linkClass }} {{ request()->routeIs('admin.usuarios.*') ? $activeClass : $inactiveClass }}"
+       @if($isDrawer) @click="menuAberto = false" @endif>
+        <i data-lucide="user-check" class="w-5 h-5"></i>
+        <span>Aprovações</span>
+    </a>
+@endif
+
+{{-- Compradores (todos veem) --}}
+<a href="{{ $isAdmin ? route('admin.compradores.index') : route('compradores.index') }}" 
+   class="{{ $linkClass }} {{ request()->routeIs(['admin.compradores.*', 'compradores.*']) ? $activeClass : $inactiveClass }}"
+   @if($isDrawer) @click="menuAberto = false" @endif>
+    <i data-lucide="store" class="w-5 h-5"></i>
+    <span class="{{ $isBottomNav ? 'text-[10px]' : '' }} {{ request()->routeIs(['admin.compradores.*', 'compradores.*']) && $isBottomNav ? 'font-semibold' : ($isBottomNav ? 'font-medium' : '') }}">Compradores</span>
+</a>
+
+{{-- Fornecedores (todos veem) --}}
+<a href="{{ $isAdmin ? route('admin.fornecedores.index') : route('fornecedores.index') }}" 
+   class="{{ $linkClass }} {{ request()->routeIs(['admin.fornecedores.*', 'fornecedores.*']) ? $activeClass : $inactiveClass }}"
+   @if($isDrawer) @click="menuAberto = false" @endif>
+    <i data-lucide="package" class="w-5 h-5"></i>
+    <span class="{{ $isBottomNav ? 'text-[10px]' : '' }} {{ request()->routeIs(['admin.fornecedores.*', 'fornecedores.*']) && $isBottomNav ? 'font-semibold' : ($isBottomNav ? 'font-medium' : '') }}">Fornecedores</span>
+</a>
+
+{{-- Talentos (fornecedor NÃO vê) --}}
+@if(!$isFornecedor)
+    <a href="{{ $isAdmin ? route('admin.talentos.index') : route('talentos.index') }}" 
+       class="{{ $linkClass }} {{ request()->routeIs(['admin.talentos.*', 'talentos.*']) ? $activeClass : $inactiveClass }}"
+       @if($isDrawer) @click="menuAberto = false" @endif>
+        <i data-lucide="briefcase" class="w-5 h-5"></i>
+        <span class="{{ $isBottomNav ? 'text-[10px]' : '' }} {{ request()->routeIs(['admin.talentos.*', 'talentos.*']) && $isBottomNav ? 'font-semibold' : ($isBottomNav ? 'font-medium' : '') }}">Talentos</span>
+    </a>
+@endif
+
+{{-- Segmentos (apenas admin, não aparece no bottom nav) --}}
+@if($isAdmin && !$isBottomNav)
+    <a href="{{ route('admin.segmentos.index') }}" 
+       class="{{ $linkClass }} {{ request()->routeIs('admin.segmentos.*') ? $activeClass : $inactiveClass }}"
+       @if($isDrawer) @click="menuAberto = false" @endif>
+        <i data-lucide="tag" class="w-5 h-5"></i>
+        <span>Segmentos</span>
+    </a>
+@endif
+
+{{-- Em breve (não aparece no bottom nav) --}}
+@if(!$isBottomNav)
+    <a href="#" 
+       class="{{ $linkClass }} {{ $inactiveClass }}"
+       @if($isDrawer) @click="menuAberto = false" @endif>
+        <i data-lucide="file-text" class="w-5 h-5"></i>
+        <span>Cotações</span>
+        <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
+    </a>
+
+    <a href="#" 
+       class="{{ $linkClass }} {{ $inactiveClass }}"
+       @if($isDrawer) @click="menuAberto = false" @endif>
+        <i data-lucide="shopping-basket" class="w-5 h-5"></i>
+        <span>Compras Coletivas</span>
+        <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
+    </a>
+
+    <a href="#" 
+       class="{{ $linkClass }} {{ $inactiveClass }}"
+       @if($isDrawer) @click="menuAberto = false" @endif>
+        <i data-lucide="book-open" class="w-5 h-5"></i>
+        <span>Material de Gestão</span>
+        <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
+    </a>
+@endif

@@ -1,0 +1,54 @@
+---
+description: 🚨 OBRIGATÓRIO - Ler TODAS as rules ANTES de qualquer tarefa
+alwaysApply: true
+priority: 999
+---
+
+# 🚨 PROTOCOLO OBRIGATÓRIO - LEIA ISTO PRIMEIRO
+
+## Antes de QUALQUER tarefa, você DEVE:
+
+### 1️⃣ Listar todas as rules
+```
+Glob .cursor/rules/**/*.mdc
+```
+
+### 2️⃣ Ler TODAS as rules encontradas
+Use `Read` em cada arquivo `.mdc` encontrado.
+
+### 3️⃣ Confirmar entendimento
+Diga ao usuário:
+- Quantas rules você leu
+- Quais são os pontos principais de cada uma
+- Perguntar se entendeu corretamente antes de prosseguir
+
+### 4️⃣ SÓ ENTÃO iniciar a tarefa
+Após confirmar com o usuário que entendeu as rules.
+
+---
+
+## ⛔ NUNCA faça:
+
+- ❌ Começar a codar sem ler as rules
+- ❌ Pular a confirmação com o usuário
+- ❌ Assumir que já sabe o que fazer
+- ❌ Duplicar código existente
+- ❌ Criar arquivos sem entender o padrão do projeto
+
+---
+
+## ✅ SEMPRE faça:
+
+- ✅ Ler as rules PRIMEIRO
+- ✅ Seguir: **Entender → Planejar → Executar**
+- ✅ Reutilizar código existente (DRY)
+- ✅ Manter simplicidade (KISS)
+- ✅ Perguntar quando tiver dúvida
+
+---
+
+## 🔥 Regra de Ouro:
+
+**SE VOCÊ COMEÇAR A CODAR SEM LER AS RULES, O USUÁRIO VAI TE CORRIGIR.**
+
+Não ignore este aviso.

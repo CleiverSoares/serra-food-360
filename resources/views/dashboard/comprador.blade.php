@@ -1,53 +1,85 @@
 @extends('layouts.dashboard')
 
-@section('titulo', 'Dashboard Comprador')
-@section('page-title', 'Dashboard')
-@section('page-subtitle', 'Bem-vindo ao seu negócio')
-
-@section('sidebar-nav')
-<a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-4 py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg font-medium">
-    <i data-lucide="home" class="w-5 h-5"></i>
-    <span>Início</span>
-</a>
-<a href="#" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
-    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-    <span>Compradores</span>
-</a>
-<a href="#" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
-    <i data-lucide="package" class="w-5 h-5"></i>
-    <span>Fornecedores</span>
-</a>
-<a href="#" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-50 rounded-lg font-medium transition-all">
-    <i data-lucide="briefcase" class="w-5 h-5"></i>
-    <span>Talentos</span>
-</a>
-@endsection
-
-@section('bottom-nav')
-<a href="{{ route('dashboard') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-verde-serra)]">
-    <i data-lucide="home" class="w-5 h-5"></i>
-    <span class="text-[10px] font-semibold">Início</span>
-</a>
-<a href="#" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
-    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-    <span class="text-[10px] font-medium">Compradores</span>
-</a>
-<a href="#" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
-    <i data-lucide="package" class="w-5 h-5"></i>
-    <span class="text-[10px] font-medium">Fornecedores</span>
-</a>
-<a href="#" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
-    <i data-lucide="briefcase" class="w-5 h-5"></i>
-    <span class="text-[10px] font-medium">Talentos</span>
-</a>
-@endsection
+@section('titulo', 'Dashboard')
+@section('page-title', 'Olá, ' . auth()->user()->name . '!')
+@section('page-subtitle', 'Bem-vindo ao seu painel')
 
 @section('conteudo')
 <div class="p-4 lg:p-8">
     <div class="max-w-7xl mx-auto">
-        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-            <p class="text-yellow-800 font-semibold">Dashboard em desenvolvimento...</p>
+        
+        {{-- Cards de Atalhos --}}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8">
+            
+            {{-- Fornecedores --}}
+            <a href="{{ route('fornecedores.index') }}" 
+               class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all hover:scale-[1.02] group">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                        <i data-lucide="package" class="w-6 h-6 text-blue-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-[var(--cor-texto)] group-hover:text-[var(--cor-verde-serra)] transition-colors">
+                            Fornecedores
+                        </h3>
+                        <p class="text-sm text-[var(--cor-texto-secundario)]">Encontre fornecedores</p>
+                    </div>
+                </div>
+            </a>
+
+            {{-- Compradores --}}
+            <a href="{{ route('comprador.compradores.index') }}" 
+               class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all hover:scale-[1.02] group">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                        <i data-lucide="store" class="w-6 h-6 text-purple-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-[var(--cor-texto)] group-hover:text-[var(--cor-verde-serra)] transition-colors">
+                            Compradores
+                        </h3>
+                        <p class="text-sm text-[var(--cor-texto-secundario)]">Networking com outros</p>
+                    </div>
+                </div>
+            </a>
+
+            {{-- Talentos --}}
+            <a href="{{ route('talentos.index') }}" 
+               class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all hover:scale-[1.02] group">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center group-hover:bg-amber-200 transition-colors">
+                        <i data-lucide="briefcase" class="w-6 h-6 text-amber-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-[var(--cor-texto)] group-hover:text-[var(--cor-verde-serra)] transition-colors">
+                            Talentos
+                        </h3>
+                        <p class="text-sm text-[var(--cor-texto-secundario)]">Contrate profissionais</p>
+                    </div>
+                </div>
+            </a>
+
         </div>
+
+        {{-- Em Breve --}}
+        <div class="bg-gradient-to-r from-[var(--cor-verde-serra)] to-[var(--cor-verde-escuro)] rounded-xl shadow-lg p-6 md:p-8 text-white mb-6">
+            <h2 class="text-2xl font-bold mb-3">🚀 Novidades em Breve</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="file-text" class="w-5 h-5"></i>
+                    <span>Cotações da Semana</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i data-lucide="shopping-basket" class="w-5 h-5"></i>
+                    <span>Compras Coletivas</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    <span>Material de Gestão</span>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 @endsection

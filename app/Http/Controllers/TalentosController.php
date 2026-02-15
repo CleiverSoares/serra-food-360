@@ -1,21 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Comprador;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\TalentoModel;
 
 /**
- * Controller para Compradores visualizarem Talentos
- * APENAS LEITURA - para contratação
+ * Controller PÚBLICO de Talentos
+ * Compradores podem VER, apenas admin pode EDITAR
  */
-class CompradorTalentosController extends Controller
+class TalentosController extends Controller
 {
     /**
      * Lista todos os talentos disponíveis
      */
     public function index()
     {
+        // Fornecedores NÃO veem talentos
+        if (auth()->user()->role === 'fornecedor') {
+            abort(403, 'Fornecedores não têm acesso ao banco de talentos.');
+        }
+
         $query = TalentoModel::query()
             ->where('ativo', true)
             ->where('disponivel', true);
@@ -50,7 +54,7 @@ class CompradorTalentosController extends Controller
         $valorMin = request('valor_min', 0);
         $valorMax = request('valor_max', 500);
 
-        return view('comprador.talentos.index', compact(
+        return view('talentos.index', compact(
             'talentos',
             'nome',
             'funcao',
@@ -65,12 +69,17 @@ class CompradorTalentosController extends Controller
      */
     public function show($id)
     {
+        // Fornecedores NÃO veem talentos
+        if (auth()->user()->role === 'fornecedor') {
+            abort(403, 'Fornecedores não têm acesso ao banco de talentos.');
+        }
+
         $talento = TalentoModel::findOrFail($id);
 
         if (!$talento->ativo) {
             abort(404, 'Talento não encontrado.');
         }
 
-        return view('comprador.talentos.show', compact('talento'));
+        return view('talentos.show', compact('talento'));
     }
 }
