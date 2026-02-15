@@ -6,42 +6,51 @@
 
 :root,
 [data-tema="serra"] {
-  /* Cores principais */
-  --cor-primaria: oklch(0.45 0.12 25);
-  --cor-primaria-hover: oklch(0.38 0.14 25);
-  --cor-primaria-clara: oklch(0.92 0.04 25);
+  /* Verde e terra da serra — paleta protagonista */
+  --cor-verde-serra: #1a5c3a;
+  --cor-verde-serra-claro: #2d6b4a;
+  --cor-verde-serra-hover: #145230;
+  --cor-terra: #8b4512;
+  --cor-terra-clara: #a0522d;
+  --cor-terra-hover: #6e3610;
   
-  --cor-secundaria: oklch(0.42 0.1 145);
-  --cor-secundaria-hover: oklch(0.35 0.12 145);
-  --cor-secundaria-clara: oklch(0.93 0.03 145);
+  /* Aliases para compatibilidade */
+  --cor-primaria: #1a5c3a;
+  --cor-primaria-hover: #145230;
+  --cor-primaria-clara: #e8f3ed;
+  --cor-primaria-escura: #0d3d26;
   
-  --cor-destaque: oklch(0.72 0.15 75);
-  --cor-destaque-hover: oklch(0.65 0.16 75);
+  --cor-secundaria: #8b4512;
+  --cor-secundaria-hover: #6e3610;
+  --cor-secundaria-clara: #f5ebe0;
+  
+  --cor-destaque: #a0522d;
+  --cor-destaque-hover: #8b4512;
   
   /* Fundo e superfícies */
-  --cor-fundo: oklch(0.98 0.008 85);
-  --cor-fundo-secundario: oklch(0.99 0.004 85);
-  --cor-superficie: oklch(1 0 0);
-  --cor-superficie-elevada: oklch(1 0 0);
+  --cor-fundo: #faf9f7;
+  --cor-fundo-secundario: #f5f2ed;
+  --cor-superficie: #ffffff;
+  --cor-superficie-elevada: #ffffff;
   
   /* Texto */
-  --cor-texto: oklch(0.22 0.02 60);
-  --cor-texto-secundario: oklch(0.5 0.02 60);
-  --cor-texto-muted: oklch(0.6 0.02 60);
+  --cor-texto: #2d2520;
+  --cor-texto-secundario: #5c524a;
+  --cor-texto-muted: #7a7068;
   
   /* Bordas */
-  --cor-borda: oklch(0.9 0.01 85);
-  --cor-borda-forte: oklch(0.8 0.02 85);
+  --cor-borda: #e8e2dc;
+  --cor-borda-forte: #d4ccc4;
   
   /* Estados */
-  --cor-sucesso: oklch(0.55 0.15 145);
-  --cor-erro: oklch(0.55 0.2 25);
-  --cor-aviso: oklch(0.75 0.15 85);
+  --cor-sucesso: #2d6b4a;
+  --cor-erro: #b83d2e;
+  --cor-aviso: #c9a227;
   
-  /* Sombras (para usar em box-shadow) */
-  --sombra-sm: 0 1px 3px oklch(0.2 0.02 60 / 0.06);
-  --sombra-md: 0 4px 12px oklch(0.2 0.02 60 / 0.08);
-  --sombra-lg: 0 12px 24px oklch(0.2 0.02 60 / 0.1);
+  /* Sombras */
+  --sombra-sm: 0 1px 3px rgba(45,24,18,0.06);
+  --sombra-md: 0 4px 12px rgba(45,24,18,0.08);
+  --sombra-lg: 0 12px 24px rgba(45,24,18,0.1);
   
   /* Raios */
   --raio-sm: 0.5rem;
@@ -51,28 +60,30 @@
   --raio-full: 9999px;
 }
 
-/* Tema Oceano (exemplo alternativo) */
+/* Tema Oceano (alternativo) */
 [data-tema="oceano"] {
-  --cor-primaria: oklch(0.5 0.15 250);
-  --cor-primaria-hover: oklch(0.42 0.17 250);
-  --cor-primaria-clara: oklch(0.93 0.04 250);
-  --cor-secundaria: oklch(0.55 0.12 200);
-  --cor-secundaria-hover: oklch(0.47 0.14 200);
-  --cor-secundaria-clara: oklch(0.93 0.03 200);
-  --cor-destaque: oklch(0.7 0.15 280);
-  --cor-destaque-hover: oklch(0.62 0.16 280);
-  --cor-fundo: oklch(0.98 0.01 250);
+  --cor-primaria: #2563eb;
+  --cor-primaria-hover: #1d4ed8;
+  --cor-primaria-clara: #dbeafe;
+  --cor-primaria-escura: #0f172a;
+  --cor-secundaria: #0d9488;
+  --cor-secundaria-hover: #0f766e;
+  --cor-secundaria-clara: #ccfbf1;
+  --cor-destaque: #a78bfa;
+  --cor-destaque-hover: #8b5cf6;
+  --cor-fundo: #f8fafc;
 }
 
 /* Tema Neutro */
 [data-tema="neutro"] {
-  --cor-primaria: oklch(0.35 0.02 60);
-  --cor-primaria-hover: oklch(0.28 0.02 60);
-  --cor-primaria-clara: oklch(0.95 0.01 60);
-  --cor-secundaria: oklch(0.5 0.04 60);
-  --cor-secundaria-hover: oklch(0.42 0.04 60);
-  --cor-secundaria-clara: oklch(0.94 0.01 60);
-  --cor-destaque: oklch(0.55 0.1 85);
-  --cor-destaque-hover: oklch(0.48 0.1 85);
-  --cor-fundo: oklch(0.97 0.005 60);
+  --cor-primaria: #4b5563;
+  --cor-primaria-hover: #374151;
+  --cor-primaria-clara: #f3f4f6;
+  --cor-primaria-escura: #1f2937;
+  --cor-secundaria: #6b7280;
+  --cor-secundaria-hover: #4b5563;
+  --cor-secundaria-clara: #f9fafb;
+  --cor-destaque: #d97706;
+  --cor-destaque-hover: #b45309;
+  --cor-fundo: #f9fafb;
 }

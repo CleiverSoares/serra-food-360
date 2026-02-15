@@ -91,12 +91,23 @@
 ### 1.2 Landing Page (visitantes não membros)
 
 - [x] Página inicial pública em `/` ou rota dedicada
-- [ ] Hero com imagem
+- [x] Hero com imagem (placeholder SVG, pronto para substituir)
   - **Imagem (criar no Gemini):** Cozinha/restaurante profissional na serra gaúcha. Atmosfera clean, tons quentes, pratos ou ingredientes de qualidade. Sensação de comunidade e profissionalismo. Estilo editorial, não stock. Cozinha com vista para montanhas ou produtores locais.
-- [ ] Texto explicando benefícios do ecossistema
-- [ ] Como solicitar entrada (contato com administrador, validação manual)
-- [ ] CTA para cadastro ou contato (WhatsApp do admin, por exemplo)
-- [ ] Design responsivo, mobile-first
+- [x] Texto explicando benefícios do ecossistema
+- [x] Como solicitar entrada (contato com administrador, validação manual)
+- [x] CTA para cadastro ou contato (WhatsApp do admin)
+- [x] Design responsivo, mobile-first
+- [x] 8 módulos apresentados com ícones
+- [x] Seção "Como funciona" (3 passos)
+- [x] Comparação de planos (Comum vs VIP)
+- [x] Depoimentos de clientes
+- [x] FAQ com accordion
+- [x] CTA final com urgência
+- [x] Otimizações mobile completas
+- [x] Navbar desktop com logo
+- [x] Bottom navigation mobile (5 itens incluindo Login)
+- [x] Favicon configurado
+- [x] Logo implementado
 
 ### 1.3 Tela de Login/Cadastro
 

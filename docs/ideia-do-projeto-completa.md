@@ -40,7 +40,7 @@ Criar um **hub** que conecta compradores e vendedores do setor de alimentação 
 - Fluxo de validação manual
 
 **Descrição de foto para Gemini (hero da landing):**
-> Imagem moderna e acolhedora de um ambiente de restaurante ou cozinha profissional na serra gaúcha. Atmosfera clean, tons quentes, pratos ou ingredientes de qualidade em destaque. Sensação de comunidade e profissionalismo. Estilo fotográfico editorial, não stock genérico. Sugestão: cozinha com vista para montanhas ou produtores locais.
+> Imagem moderna e acolhedora de um ambiente de restaurante ou cozinha profissional em Teresópolis / Região Serrana Fluminense. Atmosfera clean, tons quentes, pratos ou ingredientes de qualidade em destaque. Sensação de comunidade e profissionalismo. Estilo fotográfico editorial, não stock genérico. Sugestão: cozinha com vista para montanhas ou produtores locais.
 
 ---
 

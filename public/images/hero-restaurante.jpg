@@ -1,0 +1,34 @@
+<!-- Placeholder SVG - Substitua por uma foto real de restaurante -->
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <!-- Fundo gradiente suave -->
+  <rect fill="#f5f2ed" width="1200" height="900"/>
+  
+  <!-- Montanhas estilizadas (representando a serra) -->
+  <path d="M 0 600 L 200 400 L 400 500 L 600 300 L 800 450 L 1000 350 L 1200 500 L 1200 900 L 0 900 Z" fill="#d4ccc4" opacity="0.3"/>
+  <path d="M 0 650 L 300 450 L 500 550 L 700 400 L 900 500 L 1200 450 L 1200 900 L 0 900 Z" fill="#e8e2dc" opacity="0.5"/>
+  
+  <!-- Mesa/balcão representando restaurante -->
+  <rect x="100" y="600" width="1000" height="200" fill="#8b4512" opacity="0.2" rx="10"/>
+  
+  <!-- Elementos decorativos (pratos/comida) -->
+  <circle cx="300" cy="500" r="60" fill="#1a5c3a" opacity="0.2"/>
+  <circle cx="600" cy="480" r="70" fill="#8b4512" opacity="0.2"/>
+  <circle cx="900" cy="520" r="55" fill="#1a5c3a" opacity="0.2"/>
+  
+  <!-- Texto central -->
+  <text x="600" y="400" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="48" font-weight="bold" fill="#2d2520" opacity="0.3">
+    Serra Food 360
+  </text>
+  <text x="600" y="460" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#5c524a" opacity="0.4">
+    Restaurante Profissional na Região Serrana
+  </text>
+  
+  <!-- Ícone de substituição -->
+  <g transform="translate(560, 700)">
+    <rect width="80" height="60" fill="#1a5c3a" opacity="0.1" rx="8"/>
+    <text x="40" y="38" text-anchor="middle" font-family="system-ui" font-size="32" fill="#1a5c3a" opacity="0.3">=÷</text>
+  </g>
+  <text x="600" y="800" text-anchor="middle" font-family="system-ui" font-size="14" fill="#7a7068" opacity="0.6">
+    Substitua esta imagem por uma foto real do seu restaurante
+  </text>
+</svg>
