@@ -37,7 +37,6 @@ class FilterService
     {
         $dados = [
             'filtrosStatus' => $this->obterOpcoesStatus(),
-            'filtrosPlano' => $this->obterOpcoesPlano(),
             'segmentos' => $this->segmentoRepository->buscarAtivos(),
         ];
 
@@ -64,21 +63,6 @@ class FilterService
     }
 
     /**
-     * Opções de filtro de plano
-     */
-    public function obterOpcoesPlano(): array
-    {
-        return [
-            '' => 'Todos',
-            'gratuito' => 'Gratuito',
-            'basico' => 'Básico',
-            'premium' => 'Premium',
-            'comum' => 'Comum',
-            'vip' => 'VIP',
-        ];
-    }
-
-    /**
      * Extrair filtros aplicados para passar para view
      */
     public function extrairFiltrosAplicados(array $parametros): array
@@ -86,7 +70,6 @@ class FilterService
         return [
             'busca' => $parametros['busca'] ?? '',
             'status' => $parametros['status'] ?? '',
-            'plano' => $parametros['plano'] ?? '',
             'cidade' => $parametros['cidade'] ?? '',
             'segmentoId' => $parametros['segmento'] ?? '',
             'cargo' => $parametros['cargo'] ?? '',

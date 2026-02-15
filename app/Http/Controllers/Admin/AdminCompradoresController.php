@@ -129,17 +129,15 @@ class AdminCompradoresController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'status' => 'required|in:pendente,aprovado,rejeitado,inativo',
-            'plano' => 'nullable|in:comum,vip',
             'segmentos' => 'required|array|min:1',
             'segmentos.*' => 'exists:segmentos,id',
         ]);
 
-        // Atualizar user (SEM campos antigos)
+        // Atualizar user
         $this->userService->atualizarPerfil($comprador, [
             'name' => $dados['name'],
             'email' => $dados['email'],
             'status' => $dados['status'],
-            'plano' => $dados['plano'],
         ]);
 
         // Atualizar segmentos (usando Repository ao invés de query direta)

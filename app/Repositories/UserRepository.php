@@ -366,13 +366,10 @@ class UserRepository
     }
 
     /**
-     * Buscar usuários compradores e fornecedores com suas assinaturas
+     * Buscar usuários pendentes de aprovação
      */
-    public function buscarUsuariosComAssinatura()
+    public function contarPendentesAprovacao(): int
     {
-        return UserModel::whereIn('role', ['comprador', 'fornecedor'])
-            ->with(['assinaturaAtiva'])
-            ->orderBy('name')
-            ->paginate(20);
+        return UserModel::where('status', 'pendente')->count();
     }
 }

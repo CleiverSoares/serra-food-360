@@ -41,11 +41,19 @@
 
 {{-- Aprovações (apenas admin, não aparece no bottom nav) --}}
 @if($isAdmin && !$isBottomNav)
+    @php
+        $pendentesCount = \App\Models\UserModel::where('status', 'pendente')->count();
+    @endphp
     <a href="{{ route('admin.usuarios.index') }}" 
-       class="{{ $linkClass }} {{ request()->routeIs('admin.usuarios.*') ? $activeClass : $inactiveClass }}"
+       class="{{ $linkClass }} {{ request()->routeIs('admin.usuarios.*') ? $activeClass : $inactiveClass }} relative"
        @if($isDrawer) @click="menuAberto = false" @endif>
         <i data-lucide="user-check" class="w-5 h-5"></i>
         <span>Aprovações</span>
+        @if($pendentesCount > 0)
+            <span class="ml-auto inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-600 rounded-full">
+                {{ $pendentesCount }}
+            </span>
+        @endif
     </a>
 @endif
 
@@ -82,6 +90,13 @@
        @if($isDrawer) @click="menuAberto = false" @endif>
         <i data-lucide="tag" class="w-5 h-5"></i>
         <span>Segmentos</span>
+    </a>
+    
+    <a href="{{ route('admin.configuracoes.index') }}" 
+       class="{{ $linkClass }} {{ request()->routeIs('admin.configuracoes.*') ? $activeClass : $inactiveClass }}"
+       @if($isDrawer) @click="menuAberto = false" @endif>
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span>Configurações</span>
     </a>
 @endif
 

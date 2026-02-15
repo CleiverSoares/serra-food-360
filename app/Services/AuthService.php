@@ -8,9 +8,11 @@ use App\Repositories\RestauranteRepository;
 use App\Repositories\FornecedorRepository;
 use App\Repositories\EnderecoRepository;
 use App\Repositories\ContatoRepository;
+use App\Mail\NovoCadastroParaAprovacao;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 class AuthService
 {
@@ -19,7 +21,8 @@ class AuthService
         private RestauranteRepository $restauranteRepository,
         private FornecedorRepository $fornecedorRepository,
         private EnderecoRepository $enderecoRepository,
-        private ContatoRepository $contatoRepository
+        private ContatoRepository $contatoRepository,
+        private ConfiguracaoService $configuracaoService
     ) {}
 
     /**
@@ -119,6 +122,17 @@ class AuthService
                 'descricao' => $dadosPerfil['descricao'],
                 'logo_path' => $logoPath,
             ]);
+        }
+        
+        // Enviar email para admin se cadastro for de novo usuário externo (status pendente)
+        if ($usuario->status === 'pendente') {
+            try {
+                $emailAdmin = $this->configuracaoService->emailAdminAprovacoes();
+                Mail::to($emailAdmin)->send(new NovoCadastroParaAprovacao($usuario));
+            } catch (\Exception $e) {
+                // Log erro mas não impede o cadastro
+                \Log::error('Erro ao enviar email de novo cadastro: ' . $e->getMessage());
+            }
         }
         
         return $usuario;

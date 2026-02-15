@@ -56,17 +56,10 @@
                         <input type="tel" name="whatsapp" value="{{ old('whatsapp', $fornecedor->whatsapp) }}" required
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
-                    <div>
+                    <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Cidade *</label>
                         <input type="text" name="cidade" value="{{ old('cidade', $fornecedor->cidade) }}" required
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Plano</label>
-                        <select name="plano" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)]">
-                            <option value="gratis" {{ old('plano', $fornecedor->plano) === 'gratis' ? 'selected' : '' }}>Grátis</option>
-                            <option value="premium" {{ old('plano', $fornecedor->plano) === 'premium' ? 'selected' : '' }}>Premium</option>
-                        </select>
                     </div>
                 </div>
             </div>
@@ -169,11 +162,6 @@
                             </div>
                         </div>
                         <div class="flex flex-wrap gap-2">
-                            <a href="{{ route('admin.assinaturas.exibir', $assinatura->id) }}" 
-                               class="inline-flex items-center gap-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
-                                <i data-lucide="eye" class="w-4 h-4"></i>
-                                Ver Detalhes
-                            </a>
                             <button type="button" onclick="document.getElementById('form-renovar-{{ $assinatura->id }}').submit()" 
                                     class="inline-flex items-center gap-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
                                 <i data-lucide="refresh-cw" class="w-4 h-4"></i>
@@ -194,15 +182,28 @@
                         </form>
                     </div>
                 @else
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-                        <i data-lucide="alert-triangle" class="w-12 h-12 text-yellow-600 mx-auto mb-3"></i>
-                        <p class="text-yellow-800 font-medium mb-1">Sem Assinatura Ativa</p>
-                        <p class="text-yellow-700 text-sm mb-4">Este usuário não possui uma assinatura ativa no momento.</p>
-                        <a href="{{ route('admin.assinaturas.criar', $fornecedor->id) }}" 
-                           class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
-                            <i data-lucide="plus" class="w-4 h-4"></i>
-                            Criar Nova Assinatura
-                        </a>
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <p class="text-yellow-800 font-medium mb-4">Este usuário não possui assinatura ativa. Crie uma agora:</p>
+                        <form action="{{ route('admin.assinaturas.armazenar', $fornecedor->id) }}" method="POST" class="space-y-3">
+                            @csrf
+                            <div class="grid md:grid-cols-2 gap-3">
+                                <select name="plano" required class="px-3 py-2 border border-yellow-300 rounded-lg text-sm">
+                                    <option value="">Selecione o plano</option>
+                                    <option value="basico">Básico</option>
+                                    <option value="profissional">Profissional</option>
+                                    <option value="empresarial">Empresarial</option>
+                                </select>
+                                <select name="tipo_pagamento" required class="px-3 py-2 border border-yellow-300 rounded-lg text-sm">
+                                    <option value="">Tipo de pagamento</option>
+                                    <option value="mensal">Mensal (1 mês)</option>
+                                    <option value="anual">Anual (12 meses)</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                Criar Assinatura
+                            </button>
+                        </form>
                     </div>
                 @endif
             </div>

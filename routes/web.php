@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AdminFornecedoresController;
 use App\Http\Controllers\Admin\AdminTalentosController;
 use App\Http\Controllers\Admin\AdminSegmentosController;
 use App\Http\Controllers\Admin\AdminAssinaturasController;
+use App\Http\Controllers\Admin\AdminConfiguracoesController;
 use Illuminate\Support\Facades\Route;
 
 // Rota pública
@@ -102,13 +103,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/segmentos/{id}/ativar', [AdminSegmentosController::class, 'ativar'])->name('segmentos.ativar');
         Route::delete('/segmentos/{id}', [AdminSegmentosController::class, 'destroy'])->name('segmentos.destroy');
 
-        // Assinaturas
-        Route::get('/assinaturas', [AdminAssinaturasController::class, 'index'])->name('assinaturas.index');
-        Route::get('/assinaturas/usuario/{userId}/criar', [AdminAssinaturasController::class, 'criar'])->name('assinaturas.criar');
+        // Assinaturas (apenas actions, sem views)
         Route::post('/assinaturas/usuario/{userId}', [AdminAssinaturasController::class, 'armazenar'])->name('assinaturas.armazenar');
-        Route::get('/assinaturas/{id}', [AdminAssinaturasController::class, 'exibir'])->name('assinaturas.exibir');
         Route::post('/assinaturas/{id}/renovar', [AdminAssinaturasController::class, 'renovar'])->name('assinaturas.renovar');
         Route::post('/assinaturas/{id}/cancelar', [AdminAssinaturasController::class, 'cancelar'])->name('assinaturas.cancelar');
-        Route::get('/assinaturas/usuario/{userId}/historico', [AdminAssinaturasController::class, 'historico'])->name('assinaturas.historico');
+
+        // Configurações
+        Route::get('/configuracoes', [AdminConfiguracoesController::class, 'index'])->name('configuracoes.index');
+        Route::post('/configuracoes', [AdminConfiguracoesController::class, 'salvar'])->name('configuracoes.salvar');
     });
 });
+
+// Rota de assinatura vencida (autenticado, mas bloqueado)
+Route::middleware(['auth'])->get('/assinatura/vencida', function () {
+    return view('assinatura-vencida');
+})->name('assinatura.vencida');

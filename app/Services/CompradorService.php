@@ -21,7 +21,7 @@ class CompradorService
     public function buscarCompradoresComFiltros(array $parametros)
     {
         $filtros = $this->filterService->prepararFiltros($parametros, [
-            'busca', 'plano', 'segmento', 'cidade'
+            'busca', 'segmento', 'cidade'
         ]);
         
         return $this->userRepository->buscarCompradoresComFiltros($filtros, 12);
@@ -33,11 +33,11 @@ class CompradorService
     public function buscarCompradoresAdmin(array $parametros)
     {
         $filtros = $this->filterService->prepararFiltros($parametros, [
-            'busca', 'status', 'plano', 'segmento', 'cidade'
+            'busca', 'status', 'segmento', 'cidade'
         ]);
         
-        // Admin vê todos (999999 = sem paginação)
-        return $this->userRepository->buscarCompradoresComFiltros($filtros, 999999)->items();
+        // Admin vê todos
+        return $this->userRepository->buscarCompradoresComFiltros($filtros, 999999);
     }
 
     /**

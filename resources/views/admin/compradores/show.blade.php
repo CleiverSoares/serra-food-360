@@ -52,9 +52,12 @@
                                 {{ $comprador->status === 'rejeitado' ? 'bg-red-100 text-red-800' : '' }}">
                                 {{ ucfirst($comprador->status) }}
                             </span>
-                            @if($comprador->plano)
-                                <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold uppercase">
-                                    {{ $comprador->plano }}
+                            @php
+                                $assinaturaAtiva = $comprador->assinaturaAtiva;
+                            @endphp
+                            @if($assinaturaAtiva && $assinaturaAtiva->estaAtiva())
+                                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold uppercase">
+                                    {{ ucfirst($assinaturaAtiva->plano) }}
                                 </span>
                             @endif
                         </div>
@@ -119,11 +122,6 @@
                         </div>
                         @if(auth()->user()->role === 'admin')
                             <div class="flex flex-wrap gap-2 mt-4 pt-4 border-t border-blue-200">
-                                <a href="{{ route('admin.assinaturas.exibir', $assinatura->id) }}" 
-                                   class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
-                                    <i data-lucide="eye" class="w-4 h-4"></i>
-                                    Ver Detalhes
-                                </a>
                                 <button onclick="document.getElementById('form-renovar-{{ $assinatura->id }}').submit()" 
                                         class="inline-flex items-center gap-1 px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
                                     <i data-lucide="refresh-cw" class="w-4 h-4"></i>
@@ -137,13 +135,12 @@
                         @endif
                     @else
                         <div class="text-center py-4">
-                            <i data-lucide="alert-triangle" class="w-12 h-12 text-yellow-600 mx-auto mb-2"></i>
                             <p class="text-[var(--cor-texto-muted)] text-sm mb-3">Este usuário não possui assinatura ativa</p>
                             @if(auth()->user()->role === 'admin')
-                                <a href="{{ route('admin.assinaturas.criar', $comprador->id) }}" 
+                                <a href="{{ route('admin.compradores.edit', $comprador->id) }}" 
                                    class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
-                                    <i data-lucide="plus" class="w-4 h-4"></i>
-                                    Criar Assinatura
+                                    <i data-lucide="edit" class="w-4 h-4"></i>
+                                    Criar Assinatura (ir para Editar)
                                 </a>
                             @endif
                         </div>

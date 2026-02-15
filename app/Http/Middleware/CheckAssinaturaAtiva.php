@@ -30,20 +30,19 @@ class CheckAssinaturaAtiva
 
         // Verificar se é comprador ou fornecedor
         if (in_array($user->role, ['comprador', 'fornecedor'])) {
-            // Verificar se tem assinatura ativa
-            if (!$this->assinaturaService->temAssinaturaAtiva($user->id)) {
-                // Buscar assinatura (pode estar vencida ou não existir)
-                $assinatura = $this->assinaturaService->buscarAssinaturaAtiva($user->id);
-                
-                if ($assinatura && $assinatura->estaVencida()) {
-                    // Assinatura vencida
-                    return redirect()->route('assinatura.vencida')
-                        ->with('error', 'Sua assinatura venceu. Renove para continuar acessando a plataforma.');
+            
+            // Buscar assinatura ativa
+            $assinatura = $this->assinaturaService->buscarAssinaturaAtiva($user->id);
+            
+            // Se não tiver assinatura OU estiver vencida
+            if (!$assinatura || $assinatura->estaVencida()) {
+                // Já está na página de assinatura vencida? Permite
+                if ($request->is('assinatura/vencida')) {
+                    return $next($request);
                 }
                 
-                // Sem assinatura
-                return redirect()->route('assinatura.criar')
-                    ->with('warning', 'Você precisa de uma assinatura ativa para acessar esta área.');
+                // Redireciona para página de assinatura vencida
+                return redirect()->route('assinatura.vencida');
             }
         }
 

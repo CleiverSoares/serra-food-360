@@ -51,7 +51,7 @@
                 </div>
 
                 <!-- Filtros em linha -->
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     
                     <!-- Status -->
                     <div>
@@ -59,18 +59,6 @@
                         <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)]">
                             @foreach($filtrosStatus as $key => $label)
                                 <option value="{{ $key }}" {{ $status == $key ? 'selected' : '' }}>
-                                    {{ $label }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Plano -->
-                    <div>
-                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Plano</label>
-                        <select name="plano" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)]">
-                            @foreach($filtrosPlano as $key => $label)
-                                <option value="{{ $key }}" {{ $plano == $key ? 'selected' : '' }}>
                                     {{ $label }}
                                 </option>
                             @endforeach
