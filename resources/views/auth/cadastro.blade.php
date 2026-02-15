@@ -193,25 +193,40 @@
                     >
                 </div>
 
-                <!-- Categorias (apenas para fornecedores) -->
-                <div x-show="role === 'fornecedor'" x-cloak>
+                <!-- Segmentos de Atuação -->
+                <div>
                     <label class="block text-sm font-medium text-gray-700 mb-3">
-                        Categorias * (selecione pelo menos uma)
+                        <i data-lucide="tag" class="w-4 h-4 inline mr-1"></i>
+                        Segmentos de Atuação * (selecione pelo menos um)
                     </label>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        @foreach(['Bebidas', 'Laticínios', 'Hortifrúti', 'Manutenção', 'Carnes', 'Massas', 'Panificação', 'Descartáveis', 'Equipamentos'] as $categoria)
-                            <label class="flex items-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[var(--cor-verde-serra)] transition-all">
+                    <p class="text-sm text-gray-600 mb-3">
+                        Selecione os segmentos onde seu negócio atua. Isso ajuda a conectar você com parceiros relevantes.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        @foreach($segmentos as $segmento)
+                            <label class="relative flex items-start p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[var(--cor-verde-serra)] hover:bg-green-50 transition-all group">
                                 <input 
                                     type="checkbox" 
-                                    name="categorias[]" 
-                                    value="{{ $categoria }}"
-                                    {{ in_array($categoria, old('categorias', [])) ? 'checked' : '' }}
-                                    class="w-4 h-4 text-[var(--cor-verde-serra)] border-gray-300 rounded focus:ring-[var(--cor-verde-serra)]"
+                                    name="segmentos[]" 
+                                    value="{{ $segmento->id }}"
+                                    {{ in_array($segmento->id, old('segmentos', [])) ? 'checked' : '' }}
+                                    class="w-5 h-5 text-[var(--cor-verde-serra)] border-gray-300 rounded focus:ring-[var(--cor-verde-serra)] mt-0.5 flex-shrink-0"
                                 >
-                                <span class="ml-2 text-sm text-gray-700">{{ $categoria }}</span>
+                                <div class="ml-3 flex-1">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-2xl">{{ $segmento->icone }}</span>
+                                        <span class="font-semibold text-gray-900">{{ $segmento->nome }}</span>
+                                    </div>
+                                    @if($segmento->descricao)
+                                        <p class="text-xs text-gray-600">{{ $segmento->descricao }}</p>
+                                    @endif
+                                </div>
                             </label>
                         @endforeach
                     </div>
+                    <p class="text-xs text-gray-500 mt-2">
+                        💡 Você pode selecionar múltiplos segmentos se seu negócio atua em diferentes áreas.
+                    </p>
                 </div>
 
                 <!-- Descrição -->

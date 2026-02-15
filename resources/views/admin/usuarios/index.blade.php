@@ -143,10 +143,29 @@
                                     </span>
                                 </div>
                                 <p class="text-sm text-[var(--cor-texto-secundario)] truncate">{{ $usuario->email }}</p>
+                                
+                                {{-- Badges de Segmentos --}}
+                                @if($usuario->segmentos->count() > 0)
+                                    <div class="flex flex-wrap gap-1 mt-2">
+                                        @foreach($usuario->segmentos->take(3) as $segmento)
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
+                                                  style="background-color: {{ $segmento->cor }}20; color: {{ $segmento->cor }}">
+                                                <span>{{ $segmento->icone }}</span>
+                                                <span>{{ $segmento->nome }}</span>
+                                            </span>
+                                        @endforeach
+                                        @if($usuario->segmentos->count() > 3)
+                                            <span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs font-medium">
+                                                +{{ $usuario->segmentos->count() - 3 }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                @endif
+                                
                                 @if($usuario->restaurante)
-                                    <p class="text-sm text-[var(--cor-texto-muted)] truncate">{{ $usuario->restaurante->nome_estabelecimento }}</p>
+                                    <p class="text-sm text-[var(--cor-texto-muted)] truncate mt-1">{{ $usuario->restaurante->nome_estabelecimento }}</p>
                                 @elseif($usuario->fornecedor)
-                                    <p class="text-sm text-[var(--cor-texto-muted)] truncate">{{ $usuario->fornecedor->nome_empresa }}</p>
+                                    <p class="text-sm text-[var(--cor-texto-muted)] truncate mt-1">{{ $usuario->fornecedor->nome_empresa }}</p>
                                 @endif
                             </div>
 
@@ -278,6 +297,22 @@
                                                         </div>
                                                     </div>
                                                 @endif
+                                            @endif
+                                            
+                                            {{-- Segmentos (para todos) --}}
+                                            @if($usuario->segmentos->count() > 0)
+                                                <div>
+                                                    <span class="text-[var(--cor-texto-muted)] block mb-2">Segmentos de Atuação:</span>
+                                                    <div class="flex flex-wrap gap-2">
+                                                        @foreach($usuario->segmentos as $segmento)
+                                                            <span class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium border-2"
+                                                                  style="background-color: {{ $segmento->cor }}10; border-color: {{ $segmento->cor }}30; color: {{ $segmento->cor }}">
+                                                                <span class="text-lg">{{ $segmento->icone }}</span>
+                                                                <span>{{ $segmento->nome }}</span>
+                                                            </span>
+                                                        @endforeach
+                                                    </div>
+                                                </div>
                                             @endif
                                         </div>
                                     </div>

@@ -162,14 +162,31 @@
                     </div>
                 </div>
 
-                <!-- Categorias (apenas fornecedor) -->
-                <div x-show="role === 'fornecedor'" x-cloak>
-                    <label class="block text-sm font-medium text-gray-700 mb-3">Categorias *</label>
-                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        @foreach(['Bebidas', 'Laticínios', 'Hortifrúti', 'Manutenção', 'Carnes', 'Massas', 'Panificação', 'Descartáveis', 'Equipamentos'] as $categoria)
-                            <label class="flex items-center p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[var(--cor-verde-serra)] transition-all">
-                                <input type="checkbox" name="categorias[]" value="{{ $categoria }}" class="w-4 h-4 text-[var(--cor-verde-serra)] rounded">
-                                <span class="ml-2 text-sm">{{ $categoria }}</span>
+                <!-- Segmentos de Atuação -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-3">
+                        <i data-lucide="tag" class="w-4 h-4 inline mr-1"></i>
+                        Segmentos de Atuação * (selecione pelo menos um)
+                    </label>
+                    <p class="text-sm text-gray-600 mb-3">
+                        Defina os segmentos onde este usuário atua. Isso permite cruzamentos inteligentes.
+                    </p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                        @foreach($segmentos as $segmento)
+                            <label class="relative flex items-start p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-[var(--cor-verde-serra)] hover:bg-green-50 transition-all group">
+                                <input 
+                                    type="checkbox" 
+                                    name="segmentos[]" 
+                                    value="{{ $segmento->id }}"
+                                    {{ in_array($segmento->id, old('segmentos', [])) ? 'checked' : '' }}
+                                    class="w-4 h-4 text-[var(--cor-verde-serra)] border-gray-300 rounded focus:ring-[var(--cor-verde-serra)] mt-1 flex-shrink-0"
+                                >
+                                <div class="ml-3 flex-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xl">{{ $segmento->icone }}</span>
+                                        <span class="font-semibold text-sm text-gray-900">{{ $segmento->nome }}</span>
+                                    </div>
+                                </div>
                             </label>
                         @endforeach
                     </div>

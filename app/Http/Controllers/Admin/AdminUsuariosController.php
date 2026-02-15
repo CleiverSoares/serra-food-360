@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\AuthService;
 use App\Services\UserService;
+use App\Models\SegmentoModel;
 use Illuminate\Http\Request;
 
 class AdminUsuariosController extends Controller
@@ -36,7 +37,11 @@ class AdminUsuariosController extends Controller
      */
     public function criar()
     {
-        return view('admin.usuarios.criar');
+        $segmentos = SegmentoModel::where('ativo', true)
+            ->orderBy('nome')
+            ->get();
+        
+        return view('admin.usuarios.criar', compact('segmentos'));
     }
 
     /**
@@ -56,7 +61,8 @@ class AdminUsuariosController extends Controller
             'nome_estabelecimento' => 'required|string|max:255',
             'cidade' => 'required|string|max:255',
             'descricao' => 'nullable|string|max:500',
-            'categorias' => 'required_if:role,fornecedor|array',
+            'segmentos' => 'required|array|min:1',
+            'segmentos.*' => 'exists:segmentos,id',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 

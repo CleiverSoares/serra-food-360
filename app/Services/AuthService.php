@@ -46,7 +46,6 @@ class AuthService
             'cnpj' => $dados['cnpj'] ?? null,
             'nome_estabelecimento' => $dados['nome_estabelecimento'] ?? null,
             'descricao' => $dados['descricao'] ?? null,
-            'categorias' => $dados['categorias'] ?? null,
         ];
         
         // Upload do logo se fornecido
@@ -70,6 +69,11 @@ class AuthService
         // Criar usuário
         $usuario = $this->userRepository->criar($dadosUser);
         
+        // Associar segmentos ao usuário
+        if (isset($dados['segmentos']) && is_array($dados['segmentos'])) {
+            $usuario->segmentos()->attach($dados['segmentos']);
+        }
+        
         // Criar perfil específico
         if ($role === 'comprador') {
             $this->restauranteRepository->criar([
@@ -85,7 +89,6 @@ class AuthService
                 'cnpj' => $dadosPerfil['cnpj'],
                 'nome_empresa' => $dadosPerfil['nome_estabelecimento'], // usa mesmo campo
                 'descricao' => $dadosPerfil['descricao'],
-                'categorias' => $dadosPerfil['categorias'],
                 'logo_path' => $logoPath,
             ]);
         }

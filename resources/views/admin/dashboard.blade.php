@@ -4,48 +4,6 @@
 @section('page-title', 'Dashboard')
 @section('page-subtitle', 'Visão geral do sistema')
 
-@section('sidebar-nav')
-<a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-[var(--cor-verde-serra)] to-green-600 text-white rounded-xl font-medium shadow-md">
-    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-    <span>Dashboard</span>
-</a>
-<a href="{{ route('admin.usuarios.index') }}" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)] rounded-xl font-medium transition-all hover:translate-x-1">
-    <i data-lucide="user-check" class="w-5 h-5"></i>
-    <span>Aprovações</span>
-</a>
-<a href="{{ route('admin.compradores.index') }}" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-[var(--cor-verde-serra)] rounded-xl font-medium transition-all hover:translate-x-1">
-    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-    <span>Compradores</span>
-</a>
-<a href="{{ route('admin.fornecedores.index') }}" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-purple-600 rounded-xl font-medium transition-all hover:translate-x-1">
-    <i data-lucide="package" class="w-5 h-5"></i>
-    <span>Fornecedores</span>
-</a>
-<a href="{{ route('admin.talentos.index') }}" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-amber-600 rounded-xl font-medium transition-all hover:translate-x-1">
-    <i data-lucide="briefcase" class="w-5 h-5"></i>
-    <span>Talentos</span>
-</a>
-<a href="#" class="flex items-center gap-3 px-4 py-3 text-[var(--cor-texto-secundario)] hover:bg-gray-100 hover:text-blue-600 rounded-xl font-medium transition-all hover:translate-x-1">
-    <i data-lucide="settings" class="w-5 h-5"></i>
-    <span>Configurações</span>
-</a>
-@endsection
-
-@section('bottom-nav')
-<a href="{{ route('admin.dashboard') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-verde-serra)]">
-    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-    <span class="text-[10px] font-semibold">Início</span>
-</a>
-<a href="{{ route('admin.compradores.index') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
-    <i data-lucide="shopping-cart" class="w-5 h-5"></i>
-    <span class="text-[10px] font-medium">Compradores</span>
-</a>
-<a href="{{ route('admin.fornecedores.index') }}" class="flex flex-col items-center gap-1 p-2 text-[var(--cor-texto-muted)] hover:text-[var(--cor-verde-serra)] transition-colors">
-    <i data-lucide="package" class="w-5 h-5"></i>
-    <span class="text-[10px] font-medium">Fornecedores</span>
-</a>
-@endsection
-
 @section('conteudo')
 <div class="p-4 lg:p-8">
     <div class="max-w-7xl mx-auto">

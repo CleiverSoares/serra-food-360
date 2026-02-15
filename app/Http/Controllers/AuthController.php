@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\AuthService;
+use App\Models\SegmentoModel;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -63,7 +64,11 @@ class AuthController extends Controller
      */
     public function exibirCadastro()
     {
-        return view('auth.cadastro');
+        $segmentos = SegmentoModel::where('ativo', true)
+            ->orderBy('nome')
+            ->get();
+        
+        return view('auth.cadastro', compact('segmentos'));
     }
 
     /**
@@ -82,8 +87,8 @@ class AuthController extends Controller
             'nome_estabelecimento' => 'required|string|max:255',
             'cidade' => 'required|string|max:255',
             'descricao' => 'nullable|string|max:500',
-            'categorias' => 'required_if:role,fornecedor|array',
-            'categorias.*' => 'in:Bebidas,Laticínios,Hortifrúti,Manutenção,Carnes,Massas,Panificação,Descartáveis,Equipamentos',
+            'segmentos' => 'required|array|min:1',
+            'segmentos.*' => 'exists:segmentos,id',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ], [
             'name.required' => 'O campo nome é obrigatório.',
@@ -97,6 +102,8 @@ class AuthController extends Controller
             'whatsapp.required' => 'O campo WhatsApp é obrigatório.',
             'role.required' => 'Selecione o tipo de perfil.',
             'nome_estabelecimento.required' => 'O campo nome do estabelecimento é obrigatório.',
+            'segmentos.required' => 'Selecione pelo menos um segmento de atuação.',
+            'segmentos.min' => 'Selecione pelo menos um segmento de atuação.',
             'cidade.required' => 'O campo cidade é obrigatório.',
             'categorias.required_if' => 'Selecione pelo menos uma categoria.',
             'logo.image' => 'O arquivo deve ser uma imagem.',

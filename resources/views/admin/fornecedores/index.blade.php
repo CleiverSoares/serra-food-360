@@ -58,6 +58,15 @@
             </div>
         @endif
 
+        <!-- Botão Criar Novo -->
+        <div class="mb-6">
+            <a href="{{ route('admin.usuarios.create') }}" 
+               class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:bg-green-700 transition-all font-medium shadow-sm hover:shadow-md">
+                <i data-lucide="plus" class="w-5 h-5"></i>
+                <span>Novo Fornecedor</span>
+            </a>
+        </div>
+
         <!-- Filtros -->
         <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-6 mb-6">
             <form method="GET" action="{{ route('admin.fornecedores.index') }}" class="space-y-4">

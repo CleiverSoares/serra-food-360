@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminUsuariosController;
 use App\Http\Controllers\Admin\AdminCompradoresController;
 use App\Http\Controllers\Admin\AdminFornecedoresController;
 use App\Http\Controllers\Admin\AdminTalentosController;
+use App\Http\Controllers\Admin\AdminSegmentosController;
 use Illuminate\Support\Facades\Route;
 
 // Rota pública
@@ -71,5 +72,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/talentos/{id}/inativar', [AdminTalentosController::class, 'inativar'])->name('talentos.inativar');
         Route::post('/talentos/{id}/ativar', [AdminTalentosController::class, 'ativar'])->name('talentos.ativar');
         Route::delete('/talentos/{id}', [AdminTalentosController::class, 'destroy'])->name('talentos.destroy');
+
+        // Segmentos
+        Route::get('/segmentos', [AdminSegmentosController::class, 'index'])->name('segmentos.index');
+        Route::get('/segmentos/criar', [AdminSegmentosController::class, 'create'])->name('segmentos.create');
+        Route::post('/segmentos', [AdminSegmentosController::class, 'store'])->name('segmentos.store');
+        Route::get('/segmentos/{id}/editar', [AdminSegmentosController::class, 'edit'])->name('segmentos.edit');
+        Route::put('/segmentos/{id}', [AdminSegmentosController::class, 'update'])->name('segmentos.update');
+        Route::post('/segmentos/{id}/inativar', [AdminSegmentosController::class, 'inativar'])->name('segmentos.inativar');
+        Route::post('/segmentos/{id}/ativar', [AdminSegmentosController::class, 'ativar'])->name('segmentos.ativar');
+        Route::delete('/segmentos/{id}', [AdminSegmentosController::class, 'destroy'])->name('segmentos.destroy');
     });
 });

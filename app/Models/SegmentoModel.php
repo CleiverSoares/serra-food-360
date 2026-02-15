@@ -34,6 +34,14 @@ class SegmentoModel extends Model
     }
 
     /**
+     * Alias para usuarios() (para compatibilidade com withCount)
+     */
+    public function users()
+    {
+        return $this->usuarios();
+    }
+
+    /**
      * Escopo: apenas segmentos ativos
      */
     public function scopeAtivos($query)
