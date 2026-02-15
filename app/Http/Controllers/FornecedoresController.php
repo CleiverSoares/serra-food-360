@@ -2,91 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserModel;
-use App\Models\SegmentoModel;
+use App\Services\FornecedorService;
+use App\Services\FilterService;
+use Illuminate\Http\Request;
 
 /**
  * Controller PÚBLICO de Fornecedores
- * Todos podem VER, apenas admin pode EDITAR
+ * Controller → Service → Repository → Model
  */
 class FornecedoresController extends Controller
 {
+    public function __construct(
+        private FornecedorService $fornecedorService,
+        private FilterService $filterService
+    ) {}
 
     /**
      * Lista todos os fornecedores (apenas aprovados)
      */
-    public function index()
+    public function index(Request $request)
     {
-        $query = UserModel::where('role', 'fornecedor')
-            ->where('status', 'aprovado')
-            ->with(['fornecedor', 'segmentos']);
-        
-        // Obter filtros da requisição
-        $status = request()->get('status', '');
-        $plano = request()->get('plano', '');
-        $busca = request()->get('busca', '');
-        $segmentoId = request()->get('segmento', '');
-        $cidade = request()->get('cidade', '');
-        
-        // Aplicar filtros
-        if ($busca) {
-            $query->where(function($q) use ($busca) {
-                $q->where('name', 'like', "%{$busca}%")
-                  ->orWhere('email', 'like', "%{$busca}%");
-            });
-        }
-        
-        if ($plano) {
-            $query->where('plano', $plano);
-        }
-        
-        if ($segmentoId) {
-            $query->whereHas('segmentos', function($q) use ($segmentoId) {
-                $q->where('segmentos.id', $segmentoId);
-            });
-        }
-        
-        if ($cidade) {
-            $query->where('cidade', 'like', "%{$cidade}%");
-        }
-        
-        $fornecedores = $query->paginate(12);
-        
-        // Dados para filtros
-        $filtrosStatus = [
-            '' => 'Todos',
-            'ativo' => 'Ativo',
-            'inativo' => 'Inativo'
-        ];
-        
-        $filtrosPlano = [
-            '' => 'Todos',
-            'gratuito' => 'Gratuito',
-            'basico' => 'Básico',
-            'premium' => 'Premium'
-        ];
-        
-        // Buscar cidades únicas
-        $filtrosCidade = UserModel::where('role', 'fornecedor')
-            ->where('status', 'aprovado')
-            ->whereNotNull('cidade')
-            ->distinct()
-            ->pluck('cidade')
-            ->toArray();
-        
-        $segmentos = SegmentoModel::where('ativo', true)->orderBy('nome')->get();
+        // Controller apenas orquestra
+        $fornecedores = $this->fornecedorService->buscarFornecedoresComFiltros($request->all());
+        $dadosFiltros = $this->fornecedorService->obterDadosFiltros();
+        $filtrosAplicados = $this->filterService->extrairFiltrosAplicados($request->all());
 
-        return view('admin.fornecedores.index', compact(
-            'fornecedores',
-            'filtrosStatus',
-            'filtrosPlano',
-            'filtrosCidade',
-            'segmentos',
-            'status',
-            'plano',
-            'cidade',
-            'segmentoId',
-            'busca'
+        return view('admin.fornecedores.index', array_merge(
+            ['fornecedores' => $fornecedores],
+            $dadosFiltros,
+            $filtrosAplicados
         ));
     }
 
@@ -95,11 +39,7 @@ class FornecedoresController extends Controller
      */
     public function show($id)
     {
-        $usuario = UserModel::where('id', $id)
-            ->where('role', 'fornecedor')
-            ->where('status', 'aprovado')
-            ->with(['fornecedor', 'segmentos'])
-            ->first();
+        $usuario = $this->fornecedorService->buscarFornecedor($id);
 
         if (!$usuario) {
             abort(404, 'Fornecedor não encontrado.');

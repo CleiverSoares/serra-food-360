@@ -100,20 +100,24 @@
                             </div>
                             <div>
                                 <span class="text-[var(--cor-texto-muted)] block mb-1">Telefone:</span>
-                                <span class="font-medium text-[var(--cor-texto)]">{{ $comprador->telefone }}</span>
+                                <span class="font-medium text-[var(--cor-texto)]">{{ $comprador->telefonePrincipal?->formatado() ?? 'Não informado' }}</span>
                             </div>
                             <div>
                                 <span class="text-[var(--cor-texto-muted)] block mb-1">WhatsApp:</span>
-                                <a href="https://wa.me/55{{ preg_replace('/[^0-9]/', '', $comprador->whatsapp) }}" 
-                                   target="_blank"
-                                   class="inline-flex items-center gap-1 font-medium text-green-600 hover:underline">
-                                    {{ $comprador->whatsapp }}
-                                    <i data-lucide="external-link" class="w-3 h-3"></i>
-                                </a>
+                                @if($comprador->whatsappPrincipal)
+                                    <a href="{{ $comprador->whatsappPrincipal->linkWhatsApp() }}" 
+                                       target="_blank"
+                                       class="inline-flex items-center gap-1 font-medium text-green-600 hover:underline">
+                                        {{ $comprador->whatsappPrincipal->formatado() }}
+                                        <i data-lucide="external-link" class="w-3 h-3"></i>
+                                    </a>
+                                @else
+                                    <span class="font-medium text-[var(--cor-texto)]">Não informado</span>
+                                @endif
                             </div>
                             <div>
                                 <span class="text-[var(--cor-texto-muted)] block mb-1">Cidade:</span>
-                                <span class="font-medium text-[var(--cor-texto)]">{{ $comprador->cidade }}</span>
+                                <span class="font-medium text-[var(--cor-texto)]">{{ $comprador->enderecoPrincipal?->cidadeEstado() ?? 'Não informado' }}</span>
                             </div>
                         </div>
                     </div>
@@ -198,7 +202,7 @@
                         </a>
                     @endif
                     
-                    <a href="https://wa.me/55{{ preg_replace('/[^0-9]/', '', $comprador->whatsapp) }}" 
+                    <a href="{{ $comprador->whatsappPrincipal?->linkWhatsApp() ?? '#' }}" 
                        target="_blank"
                        class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-sm md:text-base">
                         <i data-lucide="message-circle" class="w-4 h-4 flex-shrink-0"></i>

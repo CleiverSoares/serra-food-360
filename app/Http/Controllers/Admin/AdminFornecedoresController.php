@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\UserService;
 use App\Services\AuthService;
+use App\Services\FornecedorService;
 use App\Services\FilterService;
 use App\Repositories\SegmentoRepository;
-use App\Models\SegmentoModel;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 
 class AdminFornecedoresController extends Controller
@@ -15,8 +16,10 @@ class AdminFornecedoresController extends Controller
     public function __construct(
         private UserService $userService,
         private AuthService $authService,
+        private FornecedorService $fornecedorService,
         private FilterService $filterService,
-        private SegmentoRepository $segmentoRepository
+        private SegmentoRepository $segmentoRepository,
+        private UserRepository $userRepository
     ) {}
 
     /**
@@ -24,29 +27,22 @@ class AdminFornecedoresController extends Controller
      */
     public function index(Request $request)
     {
-        $status = $request->get('status');
-        $plano = $request->get('plano');
-        $cidade = $request->get('cidade');
-        $segmentoId = $request->get('segmento');
-        $busca = $request->get('busca');
+        // Filtros (SEM queries diretas - tudo via repository/service)
+        $filtros = [
+            'status' => $request->get('status'),
+            'plano' => $request->get('plano'),
+            'cidade' => $request->get('cidade'),
+            'segmento' => $request->get('segmento'),
+            'busca' => $request->get('busca'),
+        ];
 
-        // Query base
-        $query = \App\Models\UserModel::where('role', 'fornecedor')
-            ->with(['fornecedor', 'segmentos', 'aprovador']);
-
-        // Aplicar filtros
-        $query = $this->filterService->aplicarFiltroStatus($query, $status);
-        $query = $this->filterService->aplicarFiltroPlano($query, $plano);
-        $query = $this->filterService->aplicarFiltroCidade($query, $cidade);
-        $query = $this->filterService->aplicarFiltroSegmento($query, $segmentoId);
-        $query = $this->filterService->aplicarFiltroBusca($query, $busca);
-
-        $fornecedores = $query->orderBy('created_at', 'desc')->get();
+        // Buscar fornecedores (sem paginação para admin)
+        $fornecedores = $this->userRepository->buscarFornecedoresComFiltros($filtros, 999999)->items();
 
         // Dados para filtros
         $filtrosStatus = $this->filterService->obterFiltrosStatus();
         $filtrosPlano = $this->filterService->obterFiltrosPlano();
-        $filtrosCidade = $this->filterService->obterFiltrosCidade();
+        $filtrosCidade = $this->enderecoRepository->buscarCidadesUnicasPorRole('fornecedor');
         $segmentos = $this->segmentoRepository->buscarAtivos();
 
         return view('admin.fornecedores.index', compact(
@@ -54,13 +50,8 @@ class AdminFornecedoresController extends Controller
             'filtrosStatus',
             'filtrosPlano',
             'filtrosCidade',
-            'segmentos',
-            'status',
-            'plano',
-            'cidade',
-            'segmentoId',
-            'busca'
-        ));
+            'segmentos'
+        ) + $filtros + ['status' => $filtros['status'], 'segmentoId' => $filtros['segmento']]);
     }
 
     /**
@@ -68,9 +59,7 @@ class AdminFornecedoresController extends Controller
      */
     public function create()
     {
-        $segmentos = SegmentoModel::where('ativo', true)
-            ->orderBy('nome')
-            ->get();
+        $segmentos = $this->segmentoRepository->buscarAtivos();
         
         return view('admin.fornecedores.create', compact('segmentos'));
     }
@@ -84,11 +73,12 @@ class AdminFornecedoresController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'telefone' => 'required|string|max:20',
-            'whatsapp' => 'required|string|max:20',
+            'telefone' => 'nullable|string|max:20',
+            'whatsapp' => 'nullable|string|max:20',
             'cnpj' => 'nullable|string|max:18',
             'nome_estabelecimento' => 'required|string|max:255',
-            'cidade' => 'required|string|max:255',
+            'cidade' => 'nullable|string|max:255',
+            'estado' => 'nullable|string|size:2',
             'descricao' => 'nullable|string|max:500',
             'segmentos' => 'required|array|min:1',
             'segmentos.*' => 'exists:segmentos,id',
@@ -107,35 +97,32 @@ class AdminFornecedoresController extends Controller
     }
 
     /**
-     * Exibir detalhes do fornecedor
+     * Exibir detalhes do fornecedor (via Service)
      */
     public function show(int $id)
     {
-        $fornecedor = $this->userService->buscarPorId($id);
+        $fornecedor = $this->fornecedorService->buscarFornecedorAdmin($id);
 
-        if (!$fornecedor || $fornecedor->role !== 'fornecedor') {
+        if (!$fornecedor) {
             return redirect()->route('admin.fornecedores.index')
                 ->with('erro', 'Fornecedor não encontrado.');
         }
-
-        $fornecedor->load(['fornecedor', 'segmentos', 'aprovador']);
 
         return view('admin.fornecedores.show', compact('fornecedor'));
     }
 
     /**
-     * Exibir formulário de edição
+     * Exibir formulário de edição (via Service)
      */
     public function edit(int $id)
     {
-        $fornecedor = $this->userService->buscarPorId($id);
+        $fornecedor = $this->fornecedorService->buscarFornecedorAdmin($id);
 
-        if (!$fornecedor || $fornecedor->role !== 'fornecedor') {
+        if (!$fornecedor) {
             return redirect()->route('admin.fornecedores.index')
                 ->with('erro', 'Fornecedor não encontrado.');
         }
 
-        $fornecedor->load(['fornecedor', 'segmentos']);
         $segmentos = $this->segmentoRepository->buscarAtivos();
 
         return view('admin.fornecedores.edit', compact('fornecedor', 'segmentos'));
@@ -156,28 +143,22 @@ class AdminFornecedoresController extends Controller
         $dados = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
-            'telefone' => 'required|string|max:20',
-            'whatsapp' => 'required|string|max:20',
-            'cidade' => 'required|string|max:255',
             'status' => 'required|in:pendente,aprovado,rejeitado,inativo',
             'plano' => 'nullable|in:comum,vip',
             'segmentos' => 'required|array|min:1',
             'segmentos.*' => 'exists:segmentos,id',
         ]);
 
-        // Atualizar user
+        // Atualizar user (SEM campos antigos)
         $this->userService->atualizarPerfil($fornecedor, [
             'name' => $dados['name'],
             'email' => $dados['email'],
-            'telefone' => $dados['telefone'],
-            'whatsapp' => $dados['whatsapp'],
-            'cidade' => $dados['cidade'],
             'status' => $dados['status'],
             'plano' => $dados['plano'],
         ]);
 
-        // Atualizar segmentos
-        $fornecedor->segmentos()->sync($dados['segmentos']);
+        // Atualizar segmentos (usando Repository ao invés de query direta)
+        $this->userRepository->sincronizarSegmentos($fornecedor, $dados['segmentos']);
 
         return redirect()->route('admin.fornecedores.index')
             ->with('sucesso', 'Fornecedor atualizado com sucesso!');

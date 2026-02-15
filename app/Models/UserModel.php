@@ -20,9 +20,6 @@ class UserModel extends Authenticatable
         'role',
         'status',
         'plano',
-        'telefone',
-        'whatsapp',
-        'cidade',
         'aprovado_por',
         'aprovado_em',
         'motivo_rejeicao',
@@ -182,5 +179,74 @@ class UserModel extends Authenticatable
         $segmentosOutro = $outroUsuario->segmentos->pluck('id');
         
         return $meusSegmentos->intersect($segmentosOutro)->isNotEmpty();
+    }
+
+    /**
+     * Relacionamento: Endereços do usuário
+     */
+    public function enderecos()
+    {
+        return $this->hasMany(EnderecoModel::class, 'user_id');
+    }
+
+    /**
+     * Relacionamento: Endereço principal do usuário
+     */
+    public function enderecoPrincipal()
+    {
+        return $this->hasOne(EnderecoModel::class, 'user_id')
+                    ->where('is_padrao', true);
+    }
+
+    /**
+     * Relacionamento: Contatos do usuário
+     */
+    public function contatos()
+    {
+        return $this->hasMany(ContatoModel::class, 'user_id');
+    }
+
+    /**
+     * Relacionamento: Telefone principal
+     */
+    public function telefonePrincipal()
+    {
+        return $this->hasOne(ContatoModel::class, 'user_id')
+                    ->where('tipo', 'telefone')
+                    ->where('is_principal', true);
+    }
+
+    /**
+     * Relacionamento: WhatsApp principal
+     */
+    public function whatsappPrincipal()
+    {
+        return $this->hasOne(ContatoModel::class, 'user_id')
+                    ->where('tipo', 'whatsapp')
+                    ->where('is_principal', true);
+    }
+
+    /**
+     * Retorna endereço completo (retrocompatibilidade)
+     */
+    public function getEnderecoCompletoAttribute(): ?string
+    {
+        return $this->enderecoPrincipal?->enderecoCompleto();
+    }
+
+    /**
+     * Retorna telefone formatado (retrocompatibilidade)
+     */
+    public function getTelefoneFormatadoAttribute(): ?string
+    {
+        return $this->telefonePrincipal?->formatado();
+    }
+
+    /**
+     * Retorna link do WhatsApp (retrocompatibilidade)
+     */
+    public function getLinkWhatsappAttribute(): ?string
+    {
+        return $this->whatsappPrincipal?->linkWhatsApp();
     }
 }

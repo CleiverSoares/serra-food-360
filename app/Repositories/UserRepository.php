@@ -237,4 +237,112 @@ class UserRepository
             ->orderBy('name')
             ->get();
     }
+
+    /**
+     * Buscar compradores com filtros e paginação
+     */
+    public function buscarCompradoresComFiltros(array $filtros = [], int $porPagina = 12)
+    {
+        $query = UserModel::where('role', 'comprador')
+            ->where('status', 'aprovado')
+            ->with(['comprador', 'segmentos', 'enderecoPrincipal']);
+
+        // Filtro de busca
+        if (!empty($filtros['busca'])) {
+            $busca = $filtros['busca'];
+            $query->where(function($q) use ($busca) {
+                $q->where('name', 'like', "%{$busca}%")
+                  ->orWhere('email', 'like', "%{$busca}%");
+            });
+        }
+
+        // Filtro de plano
+        if (!empty($filtros['plano'])) {
+            $query->where('plano', $filtros['plano']);
+        }
+
+        // Filtro de segmento
+        if (!empty($filtros['segmento'])) {
+            $query->whereHas('segmentos', function($q) use ($filtros) {
+                $q->where('segmentos.id', $filtros['segmento']);
+            });
+        }
+
+        // Filtro de cidade
+        if (!empty($filtros['cidade'])) {
+            $query->whereHas('enderecos', function($q) use ($filtros) {
+                $q->where('cidade', 'like', "%{$filtros['cidade']}%");
+            });
+        }
+
+        return $query->paginate($porPagina);
+    }
+
+    /**
+     * Buscar fornecedores com filtros e paginação
+     */
+    public function buscarFornecedoresComFiltros(array $filtros = [], int $porPagina = 12)
+    {
+        $query = UserModel::where('role', 'fornecedor')
+            ->where('status', 'aprovado')
+            ->with(['fornecedor', 'segmentos', 'enderecoPrincipal']);
+
+        // Filtro de busca
+        if (!empty($filtros['busca'])) {
+            $busca = $filtros['busca'];
+            $query->where(function($q) use ($busca) {
+                $q->where('name', 'like', "%{$busca}%")
+                  ->orWhere('email', 'like', "%{$busca}%");
+            });
+        }
+
+        // Filtro de plano
+        if (!empty($filtros['plano'])) {
+            $query->where('plano', $filtros['plano']);
+        }
+
+        // Filtro de segmento
+        if (!empty($filtros['segmento'])) {
+            $query->whereHas('segmentos', function($q) use ($filtros) {
+                $q->where('segmentos.id', $filtros['segmento']);
+            });
+        }
+
+        // Filtro de cidade
+        if (!empty($filtros['cidade'])) {
+            $query->whereHas('enderecos', function($q) use ($filtros) {
+                $q->where('cidade', 'like', "%{$filtros['cidade']}%");
+            });
+        }
+
+        return $query->paginate($porPagina);
+    }
+
+    /**
+     * Buscar usuário por ID e role com relacionamentos
+     */
+    public function buscarPorIdERole(int $id, string $role, string $status = 'aprovado'): ?UserModel
+    {
+        return UserModel::where('id', $id)
+            ->where('role', $role)
+            ->where('status', $status)
+            ->with(['comprador', 'fornecedor', 'segmentos', 'enderecoPrincipal', 'contatos'])
+            ->first();
+    }
+
+    /**
+     * Sincronizar segmentos do usuário
+     */
+    public function sincronizarSegmentos(UserModel $usuario, array $segmentosIds): void
+    {
+        $usuario->segmentos()->sync($segmentosIds);
+    }
+
+    /**
+     * Associar segmentos ao usuário
+     */
+    public function associarSegmentos(UserModel $usuario, array $segmentosIds): void
+    {
+        $usuario->segmentos()->attach($segmentosIds);
+    }
 }

@@ -3,78 +3,35 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\TalentoModel;
+use App\Services\TalentoService;
+use App\Services\FilterService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
+/**
+ * Controller Admin de Talentos
+ * Controller → Service → Repository → Model
+ */
 class AdminTalentosController extends Controller
 {
+    public function __construct(
+        private TalentoService $talentoService,
+        private FilterService $filterService
+    ) {}
+
     /**
      * Listar todos os talentos
      */
     public function index(Request $request)
     {
-        $busca = $request->get('busca', '');
-        $cargo = $request->get('cargo', '');
-        $disponibilidade = $request->get('disponibilidade', '');
-        $tipoCobranca = $request->get('tipo_cobranca', '');
-        $valorMin = $request->get('valor_min', '');
-        $valorMax = $request->get('valor_max', '');
+        // Controller apenas orquestra
+        $talentos = $this->talentoService->buscarTalentosAdmin($request->all());
+        $dadosFiltros = $this->talentoService->obterDadosFiltros(false);
+        $filtrosAplicados = $this->filterService->extrairFiltrosAplicados($request->all());
 
-        $query = TalentoModel::query();
-
-        // Filtro de busca
-        if ($busca) {
-            $query->where(function ($q) use ($busca) {
-                $q->where('nome', 'like', "%{$busca}%")
-                  ->orWhere('whatsapp', 'like', "%{$busca}%")
-                  ->orWhere('cargo', 'like', "%{$busca}%");
-            });
-        }
-
-        // Filtro por cargo
-        if ($cargo) {
-            $query->where('cargo', 'like', "%{$cargo}%");
-        }
-
-        // Filtro por disponibilidade
-        if ($disponibilidade) {
-            $query->where('disponibilidade', 'like', "%{$disponibilidade}%");
-        }
-
-        // Filtro por tipo de cobrança
-        if ($tipoCobranca) {
-            $query->where('tipo_cobranca', $tipoCobranca);
-        }
-
-        // Filtro por valor mínimo
-        if ($valorMin !== '' && is_numeric($valorMin)) {
-            $query->where('pretensao', '>=', $valorMin);
-        }
-
-        // Filtro por valor máximo
-        if ($valorMax !== '' && is_numeric($valorMax)) {
-            $query->where('pretensao', '<=', $valorMax);
-        }
-
-        $talentos = $query->orderBy('created_at', 'desc')->get();
-
-        // Obter lista única de cargos para o filtro
-        $cargos = TalentoModel::select('cargo')
-            ->distinct()
-            ->orderBy('cargo')
-            ->pluck('cargo');
-
-        // Obter lista única de disponibilidades para o filtro
-        $disponibilidades = TalentoModel::whereNotNull('disponibilidade')
-            ->select('disponibilidade')
-            ->distinct()
-            ->orderBy('disponibilidade')
-            ->pluck('disponibilidade');
-
-        return view('admin.talentos.index', compact(
-            'talentos', 'busca', 'cargo', 'disponibilidade', 'cargos', 'disponibilidades',
-            'tipoCobranca', 'valorMin', 'valorMax'
+        return view('admin.talentos.index', array_merge(
+            ['talentos' => $talentos],
+            $dadosFiltros,
+            $filtrosAplicados
         ));
     }
 
@@ -104,24 +61,7 @@ class AdminTalentosController extends Controller
             'carta_recomendacao' => 'nullable|mimes:pdf|max:5120',
         ]);
 
-        $talento = new TalentoModel($validated);
-
-        // Upload da foto
-        if ($request->hasFile('foto')) {
-            $talento->foto_path = $request->file('foto')->store('talentos/fotos', 'public');
-        }
-
-        // Upload do currículo
-        if ($request->hasFile('curriculo_pdf')) {
-            $talento->curriculo_path = $request->file('curriculo_pdf')->store('talentos/curriculos', 'public');
-        }
-
-        // Upload da carta de recomendação
-        if ($request->hasFile('carta_recomendacao')) {
-            $talento->carta_recomendacao_path = $request->file('carta_recomendacao')->store('talentos/cartas', 'public');
-        }
-
-        $talento->save();
+        $talento = $this->talentoService->criar($validated);
 
         return redirect()
             ->route('admin.talentos.show', $talento->id)
@@ -133,7 +73,7 @@ class AdminTalentosController extends Controller
      */
     public function show(int $id)
     {
-        $talento = TalentoModel::findOrFail($id);
+        $talento = $this->talentoService->buscarPorIdOuFalhar($id);
         return view('admin.talentos.show', compact('talento'));
     }
 
@@ -142,7 +82,7 @@ class AdminTalentosController extends Controller
      */
     public function edit(int $id)
     {
-        $talento = TalentoModel::findOrFail($id);
+        $talento = $this->talentoService->buscarPorIdOuFalhar($id);
         return view('admin.talentos.edit', compact('talento'));
     }
 
@@ -151,7 +91,7 @@ class AdminTalentosController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $talento = TalentoModel::findOrFail($id);
+        $talento = $this->talentoService->buscarPorIdOuFalhar($id);
 
         $validated = $request->validate([
             'nome' => 'required|string|max:255',
@@ -166,33 +106,7 @@ class AdminTalentosController extends Controller
             'carta_recomendacao' => 'nullable|mimes:pdf|max:5120',
         ]);
 
-        $talento->fill($validated);
-
-        // Upload da foto (remove antiga se houver nova)
-        if ($request->hasFile('foto')) {
-            if ($talento->foto_path) {
-                Storage::disk('public')->delete($talento->foto_path);
-            }
-            $talento->foto_path = $request->file('foto')->store('talentos/fotos', 'public');
-        }
-
-        // Upload do currículo (remove antigo se houver novo)
-        if ($request->hasFile('curriculo_pdf')) {
-            if ($talento->curriculo_path) {
-                Storage::disk('public')->delete($talento->curriculo_path);
-            }
-            $talento->curriculo_path = $request->file('curriculo_pdf')->store('talentos/curriculos', 'public');
-        }
-
-        // Upload da carta de recomendação (remove antiga se houver nova)
-        if ($request->hasFile('carta_recomendacao')) {
-            if ($talento->carta_recomendacao_path) {
-                Storage::disk('public')->delete($talento->carta_recomendacao_path);
-            }
-            $talento->carta_recomendacao_path = $request->file('carta_recomendacao')->store('talentos/cartas', 'public');
-        }
-
-        $talento->save();
+        $this->talentoService->atualizar($talento, $validated);
 
         return redirect()
             ->route('admin.talentos.show', $talento->id)
@@ -204,10 +118,7 @@ class AdminTalentosController extends Controller
      */
     public function inativar(int $id)
     {
-        $talento = TalentoModel::findOrFail($id);
-        $talento->ativo = false;
-        $talento->save();
-
+        $this->talentoService->inativar($id);
         return back()->with('sucesso', 'Talento inativado com sucesso!');
     }
 
@@ -216,10 +127,7 @@ class AdminTalentosController extends Controller
      */
     public function ativar(int $id)
     {
-        $talento = TalentoModel::findOrFail($id);
-        $talento->ativo = true;
-        $talento->save();
-
+        $this->talentoService->ativar($id);
         return back()->with('sucesso', 'Talento ativado com sucesso!');
     }
 
@@ -228,20 +136,8 @@ class AdminTalentosController extends Controller
      */
     public function destroy(int $id)
     {
-        $talento = TalentoModel::findOrFail($id);
-
-        // Remove arquivos
-        if ($talento->foto_path) {
-            Storage::disk('public')->delete($talento->foto_path);
-        }
-        if ($talento->curriculo_path) {
-            Storage::disk('public')->delete($talento->curriculo_path);
-        }
-        if ($talento->carta_recomendacao_path) {
-            Storage::disk('public')->delete($talento->carta_recomendacao_path);
-        }
-
-        $talento->delete();
+        $talento = $this->talentoService->buscarPorIdOuFalhar($id);
+        $this->talentoService->deletar($talento);
 
         return redirect()
             ->route('admin.talentos.index')

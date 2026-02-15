@@ -3,20 +3,25 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\SegmentoModel;
+use App\Services\SegmentoService;
 use Illuminate\Http\Request;
 
+/**
+ * Controller Admin de Segmentos
+ * Controller → Service → Repository → Model
+ */
 class AdminSegmentosController extends Controller
 {
+    public function __construct(
+        private SegmentoService $segmentoService
+    ) {}
+
     /**
      * Listar todos os segmentos
      */
     public function index()
     {
-        $segmentos = SegmentoModel::withCount('users')
-            ->orderBy('nome')
-            ->get();
-
+        $segmentos = $this->segmentoService->listarTodosComContagem();
         return view('admin.segmentos.index', compact('segmentos'));
     }
 
@@ -38,7 +43,7 @@ class AdminSegmentosController extends Controller
             'slug' => 'required|string|max:100|unique:segmentos,slug',
             'descricao' => 'nullable|string|max:500',
             'icone' => 'required|string|max:10',
-            'cor' => 'required|string|max:7', // hex color
+            'cor' => 'required|string|max:7',
             'ativo' => 'nullable|boolean',
         ], [
             'nome.required' => 'O nome é obrigatório.',
@@ -50,8 +55,7 @@ class AdminSegmentosController extends Controller
         ]);
 
         $validated['ativo'] = $request->has('ativo');
-
-        SegmentoModel::create($validated);
+        $this->segmentoService->criar($validated);
 
         return redirect()
             ->route('admin.segmentos.index')
@@ -63,8 +67,7 @@ class AdminSegmentosController extends Controller
      */
     public function edit($id)
     {
-        $segmento = SegmentoModel::withCount('users')->findOrFail($id);
-
+        $segmento = $this->segmentoService->buscarPorIdComContagemOuFalhar($id);
         return view('admin.segmentos.edit', compact('segmento'));
     }
 
@@ -73,7 +76,7 @@ class AdminSegmentosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $segmento = SegmentoModel::findOrFail($id);
+        $segmento = $this->segmentoService->buscarPorIdComContagemOuFalhar($id);
 
         $validated = $request->validate([
             'nome' => 'required|string|max:100|unique:segmentos,nome,' . $id,
@@ -92,8 +95,7 @@ class AdminSegmentosController extends Controller
         ]);
 
         $validated['ativo'] = $request->has('ativo');
-
-        $segmento->update($validated);
+        $this->segmentoService->atualizar($segmento, $validated);
 
         return redirect()
             ->route('admin.segmentos.index')
@@ -105,19 +107,17 @@ class AdminSegmentosController extends Controller
      */
     public function destroy($id)
     {
-        $segmento = SegmentoModel::withCount('users')->findOrFail($id);
+        $resultado = $this->segmentoService->deletar($id);
 
-        if ($segmento->users_count > 0) {
+        if (!$resultado['sucesso']) {
             return redirect()
                 ->route('admin.segmentos.index')
-                ->with('erro', 'Não é possível deletar este segmento pois existem ' . $segmento->users_count . ' usuários associados a ele.');
+                ->with('erro', $resultado['mensagem']);
         }
-
-        $segmento->delete();
 
         return redirect()
             ->route('admin.segmentos.index')
-            ->with('sucesso', 'Segmento deletado com sucesso!');
+            ->with('sucesso', $resultado['mensagem']);
     }
 
     /**
@@ -125,8 +125,7 @@ class AdminSegmentosController extends Controller
      */
     public function ativar($id)
     {
-        $segmento = SegmentoModel::findOrFail($id);
-        $segmento->update(['ativo' => true]);
+        $this->segmentoService->ativar($id);
 
         return redirect()
             ->route('admin.segmentos.index')
@@ -138,8 +137,7 @@ class AdminSegmentosController extends Controller
      */
     public function inativar($id)
     {
-        $segmento = SegmentoModel::findOrFail($id);
-        $segmento->update(['ativo' => false]);
+        $this->segmentoService->inativar($id);
 
         return redirect()
             ->route('admin.segmentos.index')

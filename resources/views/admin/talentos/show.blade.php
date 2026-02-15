@@ -176,16 +176,17 @@
                                 </button>
                             </form>
                         @endif
+                        
+                        <form action="{{ route('admin.talentos.destroy', $talento->id) }}" method="POST" class="inline" 
+                              onsubmit="return confirm('Tem certeza que deseja excluir este talento? Esta ação não pode ser desfeita.')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors font-medium text-sm md:text-base">
+                                <i data-lucide="trash-2" class="w-4 h-4 flex-shrink-0"></i>
+                                <span class="whitespace-nowrap">Excluir</span>
+                            </button>
+                        </form>
                     @endif
-                    <form action="{{ route('admin.talentos.destroy', $talento->id) }}" method="POST" class="inline" 
-                          onsubmit="return confirm('Tem certeza que deseja excluir este talento? Esta ação não pode ser desfeita.')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors font-medium text-sm md:text-base">
-                            <i data-lucide="trash-2" class="w-4 h-4 flex-shrink-0"></i>
-                            <span class="whitespace-nowrap">Excluir</span>
-                        </button>
-                    </form>
                 </div>
 
             </div>

@@ -4,21 +4,43 @@ namespace App\Services;
 
 use App\Models\TalentoModel;
 use App\Repositories\TalentoRepository;
-use Illuminate\Database\Eloquent\Collection;
+use App\Services\FilterService;
 use Illuminate\Support\Facades\Storage;
 
 class TalentoService
 {
     public function __construct(
-        private TalentoRepository $talentoRepository
+        private TalentoRepository $talentoRepository,
+        private FilterService $filterService
     ) {}
 
     /**
-     * Listar todos os talentos
+     * Buscar talentos com filtros (PÚBLICO - apenas ativos)
      */
-    public function listarTodos(): Collection
+    public function buscarTalentosComFiltros(array $parametros)
     {
-        return $this->talentoRepository->buscarTodos();
+        $filtros = $this->prepararFiltros($parametros);
+        return $this->talentoRepository->buscarComFiltros($filtros, true)->paginate(12);
+    }
+
+    /**
+     * Buscar talentos ADMIN (todos os status)
+     */
+    public function buscarTalentosAdmin(array $parametros)
+    {
+        $filtros = $this->prepararFiltros($parametros);
+        return $this->talentoRepository->buscarComFiltros($filtros, false)->get();
+    }
+
+    /**
+     * Obter dados de filtros para view
+     */
+    public function obterDadosFiltros(bool $apenasAtivos = true): array
+    {
+        return [
+            'cargos' => $this->talentoRepository->buscarCargosUnicos($apenasAtivos),
+            'disponibilidades' => $this->talentoRepository->buscarDisponibilidadesUnicas($apenasAtivos),
+        ];
     }
 
     /**
@@ -30,91 +52,60 @@ class TalentoService
     }
 
     /**
-     * Criar novo talento
+     * Buscar talento por ID ou falhar
+     */
+    public function buscarPorIdOuFalhar(int $id): TalentoModel
+    {
+        return $this->talentoRepository->buscarPorIdOuFalhar($id);
+    }
+
+    /**
+     * Criar talento (REGRA: processar uploads)
      */
     public function criar(array $dados): TalentoModel
     {
-        // Upload de foto se fornecida
-        if (isset($dados['foto']) && $dados['foto']) {
-            $dados['foto_path'] = $dados['foto']->store('talentos/fotos', 'public');
-            unset($dados['foto']);
-        }
-
-        // Upload de currículo se fornecido
-        if (isset($dados['curriculo_pdf']) && $dados['curriculo_pdf']) {
-            $dados['curriculo_pdf_path'] = $dados['curriculo_pdf']->store('talentos/curriculos', 'public');
-            unset($dados['curriculo_pdf']);
-        }
-
-        // Upload de carta de recomendação se fornecida
-        if (isset($dados['carta_recomendacao']) && $dados['carta_recomendacao']) {
-            $dados['carta_recomendacao_path'] = $dados['carta_recomendacao']->store('talentos/cartas', 'public');
-            unset($dados['carta_recomendacao']);
-        }
-
+        // REGRA DE NEGÓCIO: processar uploads
+        $dados = $this->processarUploads($dados);
+        
         return $this->talentoRepository->criar($dados);
     }
 
     /**
-     * Atualizar talento
+     * Atualizar talento (REGRA: processar uploads, deletar antigos)
      */
     public function atualizar(TalentoModel $talento, array $dados): bool
     {
-        // Upload de nova foto se fornecida
-        if (isset($dados['foto']) && $dados['foto']) {
-            // Deletar foto antiga
-            if ($talento->foto_path) {
-                Storage::disk('public')->delete($talento->foto_path);
-            }
-            $dados['foto_path'] = $dados['foto']->store('talentos/fotos', 'public');
-            unset($dados['foto']);
-        }
-
-        // Upload de novo currículo se fornecido
-        if (isset($dados['curriculo_pdf']) && $dados['curriculo_pdf']) {
-            // Deletar currículo antigo
-            if ($talento->curriculo_pdf_path) {
-                Storage::disk('public')->delete($talento->curriculo_pdf_path);
-            }
-            $dados['curriculo_pdf_path'] = $dados['curriculo_pdf']->store('talentos/curriculos', 'public');
-            unset($dados['curriculo_pdf']);
-        }
-
-        // Upload de nova carta se fornecida
-        if (isset($dados['carta_recomendacao']) && $dados['carta_recomendacao']) {
-            // Deletar carta antiga
-            if ($talento->carta_recomendacao_path) {
-                Storage::disk('public')->delete($talento->carta_recomendacao_path);
-            }
-            $dados['carta_recomendacao_path'] = $dados['carta_recomendacao']->store('talentos/cartas', 'public');
-            unset($dados['carta_recomendacao']);
-        }
-
+        // REGRA DE NEGÓCIO: processar uploads e deletar antigos
+        $dados = $this->processarUploadsAtualizacao($talento, $dados);
+        
         return $this->talentoRepository->atualizar($talento, $dados);
     }
 
     /**
-     * Deletar talento
+     * Deletar talento (REGRA: deletar arquivos antes)
      */
     public function deletar(TalentoModel $talento): bool
     {
+        // REGRA DE NEGÓCIO: deletar arquivos primeiro
+        $this->deletarArquivos($talento);
+        
         return $this->talentoRepository->deletar($talento);
     }
 
     /**
-     * Buscar talentos por cargo
+     * Ativar talento
      */
-    public function buscarPorCargo(string $cargo): Collection
+    public function ativar(int $id): bool
     {
-        return $this->talentoRepository->buscarPorCargo($cargo);
+        return $this->talentoRepository->ativar($id);
     }
 
     /**
-     * Buscar talentos por pretensão máxima
+     * Inativar talento
      */
-    public function buscarPorPretensaoMaxima(float $valorMaximo): Collection
+    public function inativar(int $id): bool
     {
-        return $this->talentoRepository->buscarPorPretensaoMaxima($valorMaximo);
+        return $this->talentoRepository->inativar($id);
     }
 
     /**
@@ -123,5 +114,91 @@ class TalentoService
     public function contar(): int
     {
         return $this->talentoRepository->contar();
+    }
+
+    /**
+     * Preparar filtros (REGRA DE NEGÓCIO)
+     */
+    private function prepararFiltros(array $parametros): array
+    {
+        return [
+            'busca' => $parametros['busca'] ?? '',
+            'cargo' => $parametros['cargo'] ?? '',
+            'disponibilidade' => $parametros['disponibilidade'] ?? '',
+            'tipoCobranca' => $parametros['tipo_cobranca'] ?? '',
+            'valorMin' => $parametros['valor_min'] ?? '',
+            'valorMax' => $parametros['valor_max'] ?? '',
+        ];
+    }
+
+    /**
+     * Processar uploads (REGRA DE NEGÓCIO)
+     */
+    private function processarUploads(array $dados): array
+    {
+        if (isset($dados['foto']) && $dados['foto']) {
+            $dados['foto_path'] = $dados['foto']->store('talentos/fotos', 'public');
+            unset($dados['foto']);
+        }
+
+        if (isset($dados['curriculo_pdf']) && $dados['curriculo_pdf']) {
+            $dados['curriculo_path'] = $dados['curriculo_pdf']->store('talentos/curriculos', 'public');
+            unset($dados['curriculo_pdf']);
+        }
+
+        if (isset($dados['carta_recomendacao']) && $dados['carta_recomendacao']) {
+            $dados['carta_recomendacao_path'] = $dados['carta_recomendacao']->store('talentos/cartas', 'public');
+            unset($dados['carta_recomendacao']);
+        }
+
+        return $dados;
+    }
+
+    /**
+     * Processar uploads em atualização (REGRA: deletar antigos)
+     */
+    private function processarUploadsAtualizacao(TalentoModel $talento, array $dados): array
+    {
+        if (isset($dados['foto']) && $dados['foto']) {
+            if ($talento->foto_path) {
+                Storage::disk('public')->delete($talento->foto_path);
+            }
+            $dados['foto_path'] = $dados['foto']->store('talentos/fotos', 'public');
+            unset($dados['foto']);
+        }
+
+        if (isset($dados['curriculo_pdf']) && $dados['curriculo_pdf']) {
+            if ($talento->curriculo_path) {
+                Storage::disk('public')->delete($talento->curriculo_path);
+            }
+            $dados['curriculo_path'] = $dados['curriculo_pdf']->store('talentos/curriculos', 'public');
+            unset($dados['curriculo_pdf']);
+        }
+
+        if (isset($dados['carta_recomendacao']) && $dados['carta_recomendacao']) {
+            if ($talento->carta_recomendacao_path) {
+                Storage::disk('public')->delete($talento->carta_recomendacao_path);
+            }
+            $dados['carta_recomendacao_path'] = $dados['carta_recomendacao']->store('talentos/cartas', 'public');
+            unset($dados['carta_recomendacao']);
+        }
+
+        return $dados;
+    }
+
+    /**
+     * Deletar arquivos (REGRA DE NEGÓCIO)
+     */
+    private function deletarArquivos(TalentoModel $talento): void
+    {
+        if ($talento->foto_path) {
+            Storage::disk('public')->delete($talento->foto_path);
+        }
+        if ($talento->curriculo_path) {
+            Storage::disk('public')->delete($talento->curriculo_path);
+        }
+        if ($talento->carta_recomendacao_path) {
+            Storage::disk('public')->delete($talento->carta_recomendacao_path);
+        }
     }
 }

@@ -2,8 +2,8 @@
 <aside class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col bg-white border-r border-[var(--cor-borda)] z-40">
     <div class="flex flex-col flex-1 min-h-0">
         {{-- Logo --}}
-        <div class="flex items-center h-20 px-6 border-b border-[var(--cor-borda)]">
-            <img src="/images/logo-serra.png" alt="Serra Food 360" class="h-10 w-auto">
+        <div class="flex items-center justify-center h-20 px-6 border-b border-[var(--cor-borda)]">
+            <img src="/images/logo-serra.png" alt="Serra Food 360" class="h-16 w-auto">
         </div>
 
         {{-- Navigation --}}

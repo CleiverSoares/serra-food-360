@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Services\UserService;
 use App\Services\AuthService;
+use App\Services\CompradorService;
 use App\Services\FilterService;
 use App\Repositories\SegmentoRepository;
-use App\Models\SegmentoModel;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 
 class AdminCompradoresController extends Controller
@@ -15,51 +16,26 @@ class AdminCompradoresController extends Controller
     public function __construct(
         private UserService $userService,
         private AuthService $authService,
+        private CompradorService $compradorService,
         private FilterService $filterService,
-        private SegmentoRepository $segmentoRepository
+        private SegmentoRepository $segmentoRepository,
+        private UserRepository $userRepository
     ) {}
 
     /**
-     * Listar todos os compradores
+     * Listar todos os compradores (Controller → Service → Repository)
      */
     public function index(Request $request)
     {
-        $status = $request->get('status');
-        $plano = $request->get('plano');
-        $cidade = $request->get('cidade');
-        $segmentoId = $request->get('segmento');
-        $busca = $request->get('busca');
+        // Controller apenas orquestra
+        $compradores = $this->compradorService->buscarCompradoresAdmin($request->all());
+        $dadosFiltros = $this->compradorService->obterDadosFiltros();
+        $filtrosAplicados = $this->filterService->extrairFiltrosAplicados($request->all());
 
-        // Query base
-        $query = \App\Models\UserModel::where('role', 'comprador')
-            ->with(['comprador', 'segmentos', 'aprovador']);
-
-        // Aplicar filtros
-        $query = $this->filterService->aplicarFiltroStatus($query, $status);
-        $query = $this->filterService->aplicarFiltroPlano($query, $plano);
-        $query = $this->filterService->aplicarFiltroCidade($query, $cidade);
-        $query = $this->filterService->aplicarFiltroSegmento($query, $segmentoId);
-        $query = $this->filterService->aplicarFiltroBusca($query, $busca);
-
-        $compradores = $query->orderBy('created_at', 'desc')->get();
-
-        // Dados para filtros
-        $filtrosStatus = $this->filterService->obterFiltrosStatus();
-        $filtrosPlano = $this->filterService->obterFiltrosPlano();
-        $filtrosCidade = $this->filterService->obterFiltrosCidade();
-        $segmentos = $this->segmentoRepository->buscarAtivos();
-
-        return view('admin.compradores.index', compact(
-            'compradores',
-            'filtrosStatus',
-            'filtrosPlano',
-            'filtrosCidade',
-            'segmentos',
-            'status',
-            'plano',
-            'cidade',
-            'segmentoId',
-            'busca'
+        return view('admin.compradores.index', array_merge(
+            ['compradores' => $compradores],
+            $dadosFiltros,
+            $filtrosAplicados
         ));
     }
 
@@ -68,9 +44,7 @@ class AdminCompradoresController extends Controller
      */
     public function create()
     {
-        $segmentos = SegmentoModel::where('ativo', true)
-            ->orderBy('nome')
-            ->get();
+        $segmentos = $this->segmentoRepository->buscarAtivos();
         
         return view('admin.compradores.create', compact('segmentos'));
     }
@@ -84,11 +58,12 @@ class AdminCompradoresController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'telefone' => 'required|string|max:20',
-            'whatsapp' => 'required|string|max:20',
+            'telefone' => 'nullable|string|max:20',
+            'whatsapp' => 'nullable|string|max:20',
             'cnpj' => 'nullable|string|max:18',
             'nome_estabelecimento' => 'required|string|max:255',
-            'cidade' => 'required|string|max:255',
+            'cidade' => 'nullable|string|max:255',
+            'estado' => 'nullable|string|size:2',
             'descricao' => 'nullable|string|max:500',
             'segmentos' => 'required|array|min:1',
             'segmentos.*' => 'exists:segmentos,id',
@@ -107,35 +82,32 @@ class AdminCompradoresController extends Controller
     }
 
     /**
-     * Exibir detalhes do comprador
+     * Exibir detalhes do comprador (via Service)
      */
     public function show(int $id)
     {
-        $comprador = $this->userService->buscarPorId($id);
+        $comprador = $this->compradorService->buscarCompradorAdmin($id);
 
-        if (!$comprador || $comprador->role !== 'comprador') {
+        if (!$comprador) {
             return redirect()->route('admin.compradores.index')
                 ->with('erro', 'Comprador não encontrado.');
         }
-
-        $comprador->load(['comprador', 'segmentos', 'aprovador']);
 
         return view('admin.compradores.show', compact('comprador'));
     }
 
     /**
-     * Exibir formulário de edição
+     * Exibir formulário de edição (via Service)
      */
     public function edit(int $id)
     {
-        $comprador = $this->userService->buscarPorId($id);
+        $comprador = $this->compradorService->buscarCompradorAdmin($id);
 
-        if (!$comprador || $comprador->role !== 'comprador') {
+        if (!$comprador) {
             return redirect()->route('admin.compradores.index')
                 ->with('erro', 'Comprador não encontrado.');
         }
 
-        $comprador->load(['comprador', 'segmentos']);
         $segmentos = $this->segmentoRepository->buscarAtivos();
 
         return view('admin.compradores.edit', compact('comprador', 'segmentos'));
@@ -156,28 +128,22 @@ class AdminCompradoresController extends Controller
         $dados = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
-            'telefone' => 'required|string|max:20',
-            'whatsapp' => 'required|string|max:20',
-            'cidade' => 'required|string|max:255',
             'status' => 'required|in:pendente,aprovado,rejeitado,inativo',
             'plano' => 'nullable|in:comum,vip',
             'segmentos' => 'required|array|min:1',
             'segmentos.*' => 'exists:segmentos,id',
         ]);
 
-        // Atualizar user
+        // Atualizar user (SEM campos antigos)
         $this->userService->atualizarPerfil($comprador, [
             'name' => $dados['name'],
             'email' => $dados['email'],
-            'telefone' => $dados['telefone'],
-            'whatsapp' => $dados['whatsapp'],
-            'cidade' => $dados['cidade'],
             'status' => $dados['status'],
             'plano' => $dados['plano'],
         ]);
 
-        // Atualizar segmentos
-        $comprador->segmentos()->sync($dados['segmentos']);
+        // Atualizar segmentos (usando Repository ao invés de query direta)
+        $this->userRepository->sincronizarSegmentos($comprador, $dados['segmentos']);
 
         return redirect()->route('admin.compradores.index')
             ->with('sucesso', 'Comprador atualizado com sucesso!');

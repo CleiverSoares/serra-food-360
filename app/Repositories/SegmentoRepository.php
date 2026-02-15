@@ -63,4 +63,46 @@ class SegmentoRepository
     {
         return $segmento->delete();
     }
+
+    /**
+     * Buscar todos com contagem de users
+     */
+    public function buscarTodosComContagem()
+    {
+        return SegmentoModel::withCount('users')
+            ->orderBy('nome')
+            ->get();
+    }
+
+    /**
+     * Buscar por ID com contagem de users
+     */
+    public function buscarPorIdComContagem(int $id): ?SegmentoModel
+    {
+        return SegmentoModel::withCount('users')->find($id);
+    }
+
+    /**
+     * Buscar por ID ou falhar com contagem
+     */
+    public function buscarPorIdComContagemOuFalhar(int $id): SegmentoModel
+    {
+        return SegmentoModel::withCount('users')->findOrFail($id);
+    }
+
+    /**
+     * Ativar segmento
+     */
+    public function ativar(int $id): bool
+    {
+        return SegmentoModel::where('id', $id)->update(['ativo' => true]);
+    }
+
+    /**
+     * Inativar segmento
+     */
+    public function inativar(int $id): bool
+    {
+        return SegmentoModel::where('id', $id)->update(['ativo' => false]);
+    }
 }

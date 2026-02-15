@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Services\AuthService;
-use App\Models\SegmentoModel;
+use App\Repositories\SegmentoRepository;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     public function __construct(
-        private AuthService $authService
+        private AuthService $authService,
+        private SegmentoRepository $segmentoRepository
     ) {}
 
     /**
@@ -64,9 +65,7 @@ class AuthController extends Controller
      */
     public function exibirCadastro()
     {
-        $segmentos = SegmentoModel::where('ativo', true)
-            ->orderBy('nome')
-            ->get();
+        $segmentos = $this->segmentoRepository->buscarAtivos();
         
         return view('auth.cadastro', compact('segmentos'));
     }
@@ -80,12 +79,13 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'telefone' => 'required|string|max:20',
-            'whatsapp' => 'required|string|max:20',
+            'telefone' => 'nullable|string|max:20',
+            'whatsapp' => 'nullable|string|max:20',
             'role' => 'required|in:comprador,fornecedor',
             'cnpj' => 'nullable|string|max:18',
             'nome_estabelecimento' => 'required|string|max:255',
-            'cidade' => 'required|string|max:255',
+            'cidade' => 'nullable|string|max:255',
+            'estado' => 'nullable|string|size:2',
             'descricao' => 'nullable|string|max:500',
             'segmentos' => 'required|array|min:1',
             'segmentos.*' => 'exists:segmentos,id',
@@ -98,14 +98,10 @@ class AuthController extends Controller
             'password.required' => 'O campo senha é obrigatório.',
             'password.min' => 'A senha deve ter no mínimo 6 caracteres.',
             'password.confirmed' => 'As senhas não conferem.',
-            'telefone.required' => 'O campo telefone é obrigatório.',
-            'whatsapp.required' => 'O campo WhatsApp é obrigatório.',
             'role.required' => 'Selecione o tipo de perfil.',
             'nome_estabelecimento.required' => 'O campo nome do estabelecimento é obrigatório.',
             'segmentos.required' => 'Selecione pelo menos um segmento de atuação.',
             'segmentos.min' => 'Selecione pelo menos um segmento de atuação.',
-            'cidade.required' => 'O campo cidade é obrigatório.',
-            'categorias.required_if' => 'Selecione pelo menos uma categoria.',
             'logo.image' => 'O arquivo deve ser uma imagem.',
             'logo.mimes' => 'A imagem deve ser JPG, JPEG, PNG ou WEBP.',
             'logo.max' => 'A imagem não pode ter mais de 2MB.',

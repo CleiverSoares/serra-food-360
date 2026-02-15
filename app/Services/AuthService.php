@@ -6,6 +6,8 @@ use App\Models\UserModel;
 use App\Repositories\UserRepository;
 use App\Repositories\RestauranteRepository;
 use App\Repositories\FornecedorRepository;
+use App\Repositories\EnderecoRepository;
+use App\Repositories\ContatoRepository;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -15,7 +17,9 @@ class AuthService
     public function __construct(
         private UserRepository $userRepository,
         private RestauranteRepository $restauranteRepository,
-        private FornecedorRepository $fornecedorRepository
+        private FornecedorRepository $fornecedorRepository,
+        private EnderecoRepository $enderecoRepository,
+        private ContatoRepository $contatoRepository
     ) {}
 
     /**
@@ -54,24 +58,48 @@ class AuthService
             $logoPath = $this->salvarLogo($dados['logo'], $role);
         }
         
-        // Dados do usuário (apenas campos da tabela users)
+        // Dados do usuário (apenas campos da tabela users - SEM telefone/whatsapp/cidade)
         $dadosUser = [
             'name' => $dados['name'],
             'email' => $dados['email'],
             'password' => Hash::make($dados['password']),
             'role' => $role,
             'status' => $dados['status'] ?? 'pendente', // Respeita status passado
-            'telefone' => $dados['telefone'] ?? null,
-            'whatsapp' => $dados['whatsapp'] ?? null,
-            'cidade' => $dados['cidade'] ?? null,
         ];
         
         // Criar usuário
         $usuario = $this->userRepository->criar($dadosUser);
         
-        // Associar segmentos ao usuário
+        // Criar endereço principal (se fornecido)
+        if (isset($dados['cidade']) && $dados['cidade']) {
+            $this->enderecoRepository->criarPrincipal(
+                $usuario->id,
+                $dados['cidade'],
+                $dados['estado'] ?? 'ES'
+            );
+        }
+        
+        // Criar contato telefone (se fornecido)
+        if (isset($dados['telefone']) && $dados['telefone']) {
+            $this->contatoRepository->criarPrincipal(
+                $usuario->id,
+                'telefone',
+                $dados['telefone']
+            );
+        }
+        
+        // Criar contato WhatsApp (se fornecido)
+        if (isset($dados['whatsapp']) && $dados['whatsapp']) {
+            $this->contatoRepository->criarPrincipal(
+                $usuario->id,
+                'whatsapp',
+                $dados['whatsapp']
+            );
+        }
+        
+        // Associar segmentos ao usuário (usando Repository)
         if (isset($dados['segmentos']) && is_array($dados['segmentos'])) {
-            $usuario->segmentos()->attach($dados['segmentos']);
+            $this->userRepository->associarSegmentos($usuario, $dados['segmentos']);
         }
         
         // Criar perfil específico

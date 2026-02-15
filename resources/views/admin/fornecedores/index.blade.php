@@ -175,11 +175,11 @@
                                 </div>
                                 <div class="flex items-center gap-1 min-w-0">
                                     <i data-lucide="phone" class="w-4 h-4 flex-shrink-0 text-gray-400"></i>
-                                    <span class="text-[var(--cor-texto-muted)] truncate">{{ $fornecedor->whatsapp }}</span>
+                                    <span class="text-[var(--cor-texto-muted)] truncate">{{ $fornecedor->whatsappPrincipal?->formatado() ?? 'N/A' }}</span>
                                 </div>
                                 <div class="flex items-center gap-1 min-w-0">
                                     <i data-lucide="map-pin" class="w-4 h-4 flex-shrink-0 text-gray-400"></i>
-                                    <span class="text-[var(--cor-texto-muted)] truncate">{{ $fornecedor->cidade }}</span>
+                                    <span class="text-[var(--cor-texto-muted)] truncate">{{ $fornecedor->enderecoPrincipal?->cidade ?? 'N/A' }}</span>
                                 </div>
                             </div>
 

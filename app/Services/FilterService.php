@@ -2,15 +2,60 @@
 
 namespace App\Services;
 
+use App\Repositories\EnderecoRepository;
+use App\Repositories\SegmentoRepository;
+
+/**
+ * Service GENÉRICO de Filtros
+ * Reutilizável para qualquer entidade (Comprador, Fornecedor, Talento, etc)
+ */
 class FilterService
 {
+    public function __construct(
+        private EnderecoRepository $enderecoRepository,
+        private SegmentoRepository $segmentoRepository
+    ) {}
+
     /**
-     * Filtros disponíveis para status
+     * Preparar filtros de request (GENÉRICO)
      */
-    public function obterFiltrosStatus(): array
+    public function prepararFiltros(array $parametros, array $camposPermitidos = []): array
+    {
+        $filtros = [];
+        
+        foreach ($camposPermitidos as $campo) {
+            $filtros[$campo] = $parametros[$campo] ?? '';
+        }
+        
+        return $filtros;
+    }
+
+    /**
+     * Obter dados de filtros para view (DINÂMICO)
+     */
+    public function obterDadosFiltrosParaView(string $role = null): array
+    {
+        $dados = [
+            'filtrosStatus' => $this->obterOpcoesStatus(),
+            'filtrosPlano' => $this->obterOpcoesPlano(),
+            'segmentos' => $this->segmentoRepository->buscarAtivos(),
+        ];
+
+        // Adicionar cidades se role for especificado
+        if ($role) {
+            $dados['filtrosCidade'] = $this->enderecoRepository->buscarCidadesUnicasPorRole($role);
+        }
+
+        return $dados;
+    }
+
+    /**
+     * Opções de filtro de status
+     */
+    public function obterOpcoesStatus(): array
     {
         return [
-            'todos' => 'Todos',
+            '' => 'Todos',
             'aprovado' => 'Aprovados',
             'pendente' => 'Pendentes',
             'rejeitado' => 'Rejeitados',
@@ -19,96 +64,36 @@ class FilterService
     }
 
     /**
-     * Filtros disponíveis para plano
+     * Opções de filtro de plano
      */
-    public function obterFiltrosPlano(): array
+    public function obterOpcoesPlano(): array
     {
         return [
-            'todos' => 'Todos',
+            '' => 'Todos',
+            'gratuito' => 'Gratuito',
+            'basico' => 'Básico',
+            'premium' => 'Premium',
             'comum' => 'Comum',
             'vip' => 'VIP',
         ];
     }
 
     /**
-     * Filtros disponíveis para cidade
+     * Extrair filtros aplicados para passar para view
      */
-    public function obterFiltrosCidade(): array
+    public function extrairFiltrosAplicados(array $parametros): array
     {
         return [
-            'Todos',
-            'Domingos Martins',
-            'Santa Maria de Jetibá',
-            'Venda Nova do Imigrante',
-            'Marechal Floriano',
-            'Viana',
-            'Serra',
-            'Cariacica',
+            'busca' => $parametros['busca'] ?? '',
+            'status' => $parametros['status'] ?? '',
+            'plano' => $parametros['plano'] ?? '',
+            'cidade' => $parametros['cidade'] ?? '',
+            'segmentoId' => $parametros['segmento'] ?? '',
+            'cargo' => $parametros['cargo'] ?? '',
+            'disponibilidade' => $parametros['disponibilidade'] ?? '',
+            'tipoCobranca' => $parametros['tipo_cobranca'] ?? '',
+            'valorMin' => $parametros['valor_min'] ?? '',
+            'valorMax' => $parametros['valor_max'] ?? '',
         ];
-    }
-
-    /**
-     * Aplicar filtro de status
-     */
-    public function aplicarFiltroStatus($query, ?string $status)
-    {
-        if (!$status || $status === 'todos') {
-            return $query;
-        }
-
-        return $query->where('status', $status);
-    }
-
-    /**
-     * Aplicar filtro de plano
-     */
-    public function aplicarFiltroPlano($query, ?string $plano)
-    {
-        if (!$plano || $plano === 'todos') {
-            return $query;
-        }
-
-        return $query->where('plano', $plano);
-    }
-
-    /**
-     * Aplicar filtro de cidade
-     */
-    public function aplicarFiltroCidade($query, ?string $cidade)
-    {
-        if (!$cidade || $cidade === 'Todos') {
-            return $query;
-        }
-
-        return $query->where('cidade', $cidade);
-    }
-
-    /**
-     * Aplicar filtro de segmento
-     */
-    public function aplicarFiltroSegmento($query, ?int $segmentoId)
-    {
-        if (!$segmentoId) {
-            return $query;
-        }
-
-        return $query->whereHas('segmentos', function ($q) use ($segmentoId) {
-            $q->where('segmentos.id', $segmentoId);
-        });
-    }
-
-    /**
-     * Aplicar filtro de busca por nome
-     */
-    public function aplicarFiltroBusca($query, ?string $busca)
-    {
-        if (!$busca) {
-            return $query;
-        }
-
-        return $query->where(function ($q) use ($busca) {
-            $q->where('name', 'like', "%{$busca}%")
-              ->orWhere('email', 'like', "%{$busca}%");
-        });
     }
 }
