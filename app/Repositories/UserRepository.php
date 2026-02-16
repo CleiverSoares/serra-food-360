@@ -425,4 +425,44 @@ class UserRepository
     {
         return $usuario->segmentos()->pluck('segmentos.id')->toArray();
     }
+
+    /**
+     * Atualizar contato e endereço do usuário
+     */
+    public function atualizarContatoEEndereco(int $userId, array $dados): void
+    {
+        $usuario = $this->buscarPorId($userId);
+        
+        if (!$usuario) {
+            return;
+        }
+
+        // Telefone
+        if (isset($dados['telefone']) && !empty($dados['telefone'])) {
+            $usuario->contatos()->updateOrCreate(
+                ['tipo' => 'telefone', 'is_principal' => true],
+                ['valor' => $dados['telefone']]
+            );
+        }
+
+        // WhatsApp
+        if (isset($dados['whatsapp']) && !empty($dados['whatsapp'])) {
+            $usuario->contatos()->updateOrCreate(
+                ['tipo' => 'whatsapp', 'is_principal' => true],
+                ['valor' => $dados['whatsapp']]
+            );
+        }
+
+        // Endereço
+        if (isset($dados['cidade']) && !empty($dados['cidade'])) {
+            $usuario->enderecos()->updateOrCreate(
+                ['is_padrao' => true],
+                [
+                    'cidade' => $dados['cidade'],
+                    'estado' => $dados['estado'] ?? 'ES',
+                    'tipo' => 'principal',
+                ]
+            );
+        }
+    }
 }

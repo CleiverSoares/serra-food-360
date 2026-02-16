@@ -119,6 +119,16 @@
     </a>
 @endif
 
+{{-- Meu Perfil (comprador/fornecedor, não aparece no bottom nav) --}}
+@if(!$isAdmin && !$isBottomNav)
+    <a href="{{ route('perfil.editar') }}" 
+       class="{{ $linkClass }} {{ request()->routeIs('perfil.*') ? $activeClass : $inactiveClass }}"
+       @if($isDrawer) @click="menuAberto = false" @endif>
+        <i data-lucide="user-circle" class="w-5 h-5"></i>
+        <span>Meu Perfil</span>
+    </a>
+@endif
+
 {{-- Configurações (apenas admin, no final de tudo) --}}
 @if($isAdmin && !$isBottomNav)
     <a href="{{ route('admin.configuracoes.index') }}" 

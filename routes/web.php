@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\AdminAssinaturasController;
 use App\Http\Controllers\Admin\AdminConfiguracoesController;
 use App\Http\Controllers\Admin\AdminCotacoesController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\PerfilController;
 use Illuminate\Support\Facades\Route;
 
 // Rota pública
@@ -42,6 +43,10 @@ Route::middleware('auth')->group(function () {
     
     // Página de aguardando aprovação (qualquer usuário autenticado)
     Route::get('/aguardando', [AuthController::class, 'aguardando'])->name('aguardando');
+    
+    // Perfil do usuário logado
+    Route::get('/perfil/editar', [PerfilController::class, 'edit'])->name('perfil.editar');
+    Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.atualizar');
     
     // Rotas para usuários aprovados (TODOS veem)
     Route::middleware('approved')->group(function () {
