@@ -30,7 +30,26 @@ class AuthService
      */
     public function autenticar(array $credenciais, bool $lembrar = false): bool
     {
-        return Auth::attempt($credenciais, $lembrar);
+        $email = $credenciais['email'] ?? 'não informado';
+        
+        \Log::info('[AUTH] Tentativa de login', ['email' => $email]);
+
+        $sucesso = Auth::attempt($credenciais, $lembrar);
+
+        if ($sucesso) {
+            $usuario = Auth::user();
+            \Log::info('[AUTH] Login bem-sucedido', [
+                'user_id' => $usuario->id,
+                'email' => $usuario->email,
+                'nome' => $usuario->name,
+                'role' => $usuario->role,
+                'status' => $usuario->status
+            ]);
+        } else {
+            \Log::warning('[AUTH] Login falhou - credenciais inválidas', ['email' => $email]);
+        }
+
+        return $sucesso;
     }
 
     /**
@@ -46,6 +65,12 @@ class AuthService
      */
     public function cadastrar(array $dados): UserModel
     {
+        \Log::info('[AUTH] Novo cadastro iniciado', [
+            'email' => $dados['email'],
+            'role' => $dados['role'],
+            'nome' => $dados['name']
+        ]);
+
         $role = $dados['role'];
         
         // Separar dados específicos do perfil
@@ -130,10 +155,20 @@ class AuthService
                 $emailAdmin = $this->configuracaoService->emailAdminAprovacoes();
                 Mail::to($emailAdmin)->send(new NovoCadastroParaAprovacao($usuario));
             } catch (\Exception $e) {
-                // Log erro mas não impede o cadastro
-                \Log::error('Erro ao enviar email de novo cadastro: ' . $e->getMessage());
+                \Log::error('[AUTH] Erro ao enviar email de novo cadastro', [
+                    'user_id' => $usuario->id,
+                    'email' => $usuario->email,
+                    'erro' => $e->getMessage()
+                ]);
             }
         }
+
+        \Log::info('[AUTH] Cadastro concluído com sucesso', [
+            'user_id' => $usuario->id,
+            'email' => $usuario->email,
+            'role' => $usuario->role,
+            'status' => $usuario->status
+        ]);
         
         return $usuario;
     }

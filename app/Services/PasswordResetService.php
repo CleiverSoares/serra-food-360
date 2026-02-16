@@ -20,22 +20,37 @@ class PasswordResetService
      */
     public function enviarLinkRedefinicao(string $email): bool
     {
+        \Log::info('[RECUPERAÇÃO SENHA] Solicitação recebida', ['email' => $email]);
+
         // Verificar se usuário existe
         $usuario = $this->userRepository->buscarPorEmail($email);
         
         if (!$usuario) {
+            \Log::warning('[RECUPERAÇÃO SENHA] Email não encontrado', ['email' => $email]);
             return false;
         }
 
+        \Log::info('[RECUPERAÇÃO SENHA] Usuário encontrado', [
+            'user_id' => $usuario->id,
+            'email' => $email,
+            'nome' => $usuario->name
+        ]);
+
         // Criar token
         $token = $this->passwordResetRepository->criarToken($email);
+        \Log::info('[RECUPERAÇÃO SENHA] Token gerado', ['email' => $email]);
 
         // Enviar email
         try {
             Mail::to($email)->send(new RedefinirSenha($token));
+            \Log::info('[RECUPERAÇÃO SENHA] Email enviado com sucesso', ['email' => $email]);
             return true;
         } catch (\Exception $e) {
-            \Log::error('Erro ao enviar email de reset: ' . $e->getMessage());
+            \Log::error('[RECUPERAÇÃO SENHA] Erro ao enviar email', [
+                'email' => $email,
+                'erro' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return false;
         }
     }
@@ -54,8 +69,11 @@ class PasswordResetService
      */
     public function redefinirSenha(string $email, string $token, string $novaSenha): bool
     {
+        \Log::info('[REDEFINIR SENHA] Tentativa de redefinição', ['email' => $email]);
+
         // Validar token
         if (!$this->validarToken($email, $token)) {
+            \Log::warning('[REDEFINIR SENHA] Token inválido ou expirado', ['email' => $email]);
             return false;
         }
 
@@ -63,12 +81,19 @@ class PasswordResetService
         $usuario = $this->userRepository->buscarPorEmail($email);
         
         if (!$usuario) {
+            \Log::warning('[REDEFINIR SENHA] Usuário não encontrado', ['email' => $email]);
             return false;
         }
 
         // Atualizar senha
         $usuario->password = Hash::make($novaSenha);
         $usuario->save();
+
+        \Log::info('[REDEFINIR SENHA] Senha atualizada com sucesso', [
+            'user_id' => $usuario->id,
+            'email' => $email,
+            'nome' => $usuario->name
+        ]);
 
         // Deletar token usado
         $this->passwordResetRepository->deletarPorEmail($email);

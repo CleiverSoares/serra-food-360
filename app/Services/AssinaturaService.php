@@ -31,7 +31,17 @@ class AssinaturaService
             'status' => 'ativo',
         ];
 
-        return $this->assinaturaRepository->criar($dados);
+        $assinatura = $this->assinaturaRepository->criar($dados);
+
+        \Log::info('[ASSINATURA] Nova assinatura criada', [
+            'assinatura_id' => $assinatura->id,
+            'user_id' => $userId,
+            'plano' => $plano,
+            'tipo_pagamento' => $tipoPagamento,
+            'data_fim' => $assinatura->data_fim->format('d/m/Y')
+        ]);
+
+        return $assinatura;
     }
 
     /**
@@ -57,7 +67,20 @@ class AssinaturaService
      */
     public function renovarAssinatura(int $assinaturaId, string $tipoPagamento): bool
     {
-        return $this->assinaturaRepository->renovar($assinaturaId, $tipoPagamento);
+        $resultado = $this->assinaturaRepository->renovar($assinaturaId, $tipoPagamento);
+
+        if ($resultado) {
+            $assinatura = $this->assinaturaRepository->buscarPorId($assinaturaId);
+            \Log::info('[ASSINATURA] Assinatura renovada', [
+                'assinatura_id' => $assinaturaId,
+                'user_id' => $assinatura->user_id,
+                'plano' => $assinatura->plano,
+                'tipo_pagamento' => $tipoPagamento,
+                'nova_data_fim' => $assinatura->data_fim->format('d/m/Y')
+            ]);
+        }
+
+        return $resultado;
     }
 
     /**
@@ -65,7 +88,18 @@ class AssinaturaService
      */
     public function cancelarAssinatura(int $assinaturaId): bool
     {
-        return $this->assinaturaRepository->cancelar($assinaturaId);
+        $assinatura = $this->assinaturaRepository->buscarPorId($assinaturaId);
+        $resultado = $this->assinaturaRepository->cancelar($assinaturaId);
+
+        if ($resultado && $assinatura) {
+            \Log::info('[ASSINATURA] Assinatura cancelada', [
+                'assinatura_id' => $assinaturaId,
+                'user_id' => $assinatura->user_id,
+                'plano' => $assinatura->plano
+            ]);
+        }
+
+        return $resultado;
     }
 
     /**
@@ -74,6 +108,8 @@ class AssinaturaService
      */
     public function processarAssinaturasVencidas(): array
     {
+        \Log::info('[ASSINATURA] Iniciando processamento de assinaturas vencidas');
+
         $assinaturasVencidas = $this->assinaturaRepository->buscarVencidas();
         $usuariosInativados = [];
 
@@ -85,9 +121,21 @@ class AssinaturaService
             $this->userRepository->atualizarPorId($assinatura->user_id, [
                 'status' => 'inativo'
             ]);
+
+            \Log::warning('[ASSINATURA] Usuário inativado por vencimento', [
+                'user_id' => $assinatura->user_id,
+                'nome' => $assinatura->usuario->name,
+                'email' => $assinatura->usuario->email,
+                'plano' => $assinatura->plano,
+                'data_vencimento' => $assinatura->data_fim->format('d/m/Y')
+            ]);
             
             $usuariosInativados[] = $assinatura->usuario->name;
         }
+
+        \Log::info('[ASSINATURA] Processamento concluído', [
+            'total_inativados' => count($usuariosInativados)
+        ]);
 
         return $usuariosInativados;
     }

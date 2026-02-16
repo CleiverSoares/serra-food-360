@@ -33,18 +33,19 @@ class PasswordResetController extends Controller
             'email.email' => 'Por favor, informe um email válido',
         ]);
 
-        $enviado = $this->passwordResetService->enviarLinkRedefinicao($request->email);
+        \Log::info('[CONTROLLER] Requisição de recuperação de senha recebida', [
+            'email' => $request->email,
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent()
+        ]);
 
-        if ($enviado) {
-            return redirect()
-                ->back()
-                ->with('sucesso', 'Link de redefinição enviado! Verifique seu email.');
-        }
+        // Por segurança, sempre mostramos mensagem de sucesso
+        // (para não revelar quais emails existem no sistema)
+        $this->passwordResetService->enviarLinkRedefinicao($request->email);
 
         return redirect()
             ->back()
-            ->with('erro', 'Email não encontrado em nossa base de dados.')
-            ->withInput();
+            ->with('sucesso', 'Se o email existir em nossa base, você receberá um link de redefinição.');
     }
 
     /**
@@ -82,6 +83,11 @@ class PasswordResetController extends Controller
             'password.confirmed' => 'As senhas não conferem',
         ]);
 
+        \Log::info('[CONTROLLER] Tentativa de redefinição de senha', [
+            'email' => $request->email,
+            'ip' => $request->ip()
+        ]);
+
         $redefinido = $this->passwordResetService->redefinirSenha(
             $request->email,
             $request->token,
@@ -89,11 +95,13 @@ class PasswordResetController extends Controller
         );
 
         if ($redefinido) {
+            \Log::info('[CONTROLLER] Redefinição concluída com sucesso', ['email' => $request->email]);
             return redirect()
                 ->route('login')
                 ->with('sucesso', 'Senha redefinida com sucesso! Faça login com sua nova senha.');
         }
 
+        \Log::warning('[CONTROLLER] Falha na redefinição de senha', ['email' => $request->email]);
         return redirect()
             ->back()
             ->with('erro', 'Não foi possível redefinir a senha. Tente novamente.')
