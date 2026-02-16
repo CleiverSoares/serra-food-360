@@ -93,14 +93,13 @@
     </a>
 @endif
 
-{{-- Em breve (não aparece no bottom nav) --}}
+{{-- Cotações (todos veem, exceto bottom nav) --}}
 @if(!$isBottomNav)
-    <a href="#" 
-       class="{{ $linkClass }} {{ $inactiveClass }}"
+    <a href="{{ $isAdmin ? route('admin.cotacoes.index') : route('cotacoes.index') }}" 
+       class="{{ $linkClass }} {{ request()->routeIs(['admin.cotacoes.*', 'cotacoes.*']) ? $activeClass : $inactiveClass }}"
        @if($isDrawer) @click="menuAberto = false" @endif>
         <i data-lucide="file-text" class="w-5 h-5"></i>
         <span>Cotações</span>
-        <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
     </a>
 
     <a href="#" 

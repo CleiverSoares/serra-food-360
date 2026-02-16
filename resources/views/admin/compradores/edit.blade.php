@@ -122,13 +122,11 @@
                 </h3>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
                     @foreach($segmentos as $segmento)
-                        <label class="flex items-center gap-2 p-3 border-2 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
-                               style="border-color: {{ $segmento->cor }}40;">
+                        <label class="flex items-center gap-2 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 hover:border-[var(--cor-verde-serra)] transition-colors">
                             <input type="checkbox" name="segmentos[]" value="{{ $segmento->id }}"
                                    {{ in_array($segmento->id, old('segmentos', $comprador->segmentos->pluck('id')->toArray())) ? 'checked' : '' }}
-                                   class="w-5 h-5 rounded" style="accent-color: {{ $segmento->cor }};">
-                            <span class="text-sm font-medium" style="color: {{ $segmento->cor }};">
-                                <i data-lucide="{{ $segmento->icone }}" class="w-4 h-4 inline"></i>
+                                   class="w-5 h-5 rounded accent-[var(--cor-verde-serra)]">
+                            <span class="text-sm font-medium text-[var(--cor-texto)]">
                                 {{ $segmento->nome }}
                             </span>
                         </label>

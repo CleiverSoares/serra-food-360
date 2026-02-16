@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\CompradoresController;
 use App\Http\Controllers\FornecedoresController;
 use App\Http\Controllers\TalentosController;
+use App\Http\Controllers\CotacoesController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminUsuariosController;
 use App\Http\Controllers\Admin\AdminCompradoresController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Admin\AdminTalentosController;
 use App\Http\Controllers\Admin\AdminSegmentosController;
 use App\Http\Controllers\Admin\AdminAssinaturasController;
 use App\Http\Controllers\Admin\AdminConfiguracoesController;
+use App\Http\Controllers\Admin\AdminCotacoesController;
 use App\Http\Controllers\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +57,12 @@ Route::middleware('auth')->group(function () {
         // Talentos (fornecedor não vê - controle no controller)
         Route::get('/talentos', [TalentosController::class, 'index'])->name('talentos.index');
         Route::get('/talentos/{id}', [TalentosController::class, 'show'])->name('talentos.show');
+        
+        // Cotações (público - compradores visualizam, fornecedores adicionam ofertas)
+        Route::get('/cotacoes', [CotacoesController::class, 'index'])->name('cotacoes.index');
+        Route::get('/cotacoes/{id}', [CotacoesController::class, 'show'])->name('cotacoes.show');
+        Route::post('/cotacoes/{cotacaoId}/oferta', [CotacoesController::class, 'salvarOferta'])->name('cotacoes.salvar-oferta');
+        Route::delete('/cotacoes/{cotacaoId}/oferta', [CotacoesController::class, 'deletarOferta'])->name('cotacoes.deletar-oferta');
     });
     
     // Área Admin (apenas admin - CRUD completo)
@@ -114,6 +122,17 @@ Route::middleware('auth')->group(function () {
         Route::post('/assinaturas/usuario/{userId}', [AdminAssinaturasController::class, 'armazenar'])->name('assinaturas.armazenar');
         Route::post('/assinaturas/{id}/renovar', [AdminAssinaturasController::class, 'renovar'])->name('assinaturas.renovar');
         Route::post('/assinaturas/{id}/cancelar', [AdminAssinaturasController::class, 'cancelar'])->name('assinaturas.cancelar');
+
+        // Cotações (admin)
+        Route::get('/cotacoes', [AdminCotacoesController::class, 'index'])->name('cotacoes.index');
+        Route::get('/cotacoes/criar', [AdminCotacoesController::class, 'create'])->name('cotacoes.create');
+        Route::post('/cotacoes', [AdminCotacoesController::class, 'store'])->name('cotacoes.store');
+        Route::get('/cotacoes/{id}/editar', [AdminCotacoesController::class, 'edit'])->name('cotacoes.edit');
+        Route::put('/cotacoes/{id}', [AdminCotacoesController::class, 'update'])->name('cotacoes.update');
+        Route::post('/cotacoes/{id}/encerrar', [AdminCotacoesController::class, 'encerrar'])->name('cotacoes.encerrar');
+        Route::delete('/cotacoes/{id}', [AdminCotacoesController::class, 'destroy'])->name('cotacoes.destroy');
+        Route::post('/cotacoes/{cotacaoId}/ofertas', [AdminCotacoesController::class, 'adicionarOferta'])->name('cotacoes.ofertas.adicionar');
+        Route::delete('/cotacoes/ofertas/{id}', [AdminCotacoesController::class, 'deletarOferta'])->name('cotacoes.ofertas.deletar');
 
         // Configurações
         Route::get('/configuracoes', [AdminConfiguracoesController::class, 'index'])->name('configuracoes.index');
