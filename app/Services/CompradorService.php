@@ -36,8 +36,8 @@ class CompradorService
             'busca', 'status', 'segmento', 'cidade'
         ]);
         
-        // Admin vê todos
-        return $this->userRepository->buscarCompradoresComFiltros($filtros, 999999);
+        // Admin vê todos (false = não filtrar apenas aprovados)
+        return $this->userRepository->buscarCompradoresComFiltros($filtros, 999999, false);
     }
 
     /**

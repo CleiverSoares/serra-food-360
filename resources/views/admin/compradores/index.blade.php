@@ -69,6 +69,7 @@
                     <div>
                         <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Cidade</label>
                         <select name="cidade" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)]">
+                            <option value="">Todas as cidades</option>
                             @foreach($filtrosCidade as $c)
                                 <option value="{{ $c }}" {{ $cidade == $c ? 'selected' : '' }}>
                                     {{ $c }}

@@ -18,13 +18,22 @@ class FilterService
 
     /**
      * Preparar filtros de request (GENÉRICO)
+     * Remove valores vazios, nulos e strings só com espaços
      */
     public function prepararFiltros(array $parametros, array $camposPermitidos = []): array
     {
         $filtros = [];
         
         foreach ($camposPermitidos as $campo) {
-            $filtros[$campo] = $parametros[$campo] ?? '';
+            $valor = $parametros[$campo] ?? '';
+            
+            // Limpar espaços e verificar se não está vazio
+            $valor = is_string($valor) ? trim($valor) : $valor;
+            
+            // Só adiciona ao filtro se tiver valor real
+            if ($valor !== '' && $valor !== null) {
+                $filtros[$campo] = $valor;
+            }
         }
         
         return $filtros;
@@ -67,16 +76,21 @@ class FilterService
      */
     public function extrairFiltrosAplicados(array $parametros): array
     {
+        // Limpa valores vazios e espaços em branco
+        $limpar = function($valor) {
+            return is_string($valor) ? trim($valor) : $valor;
+        };
+        
         return [
-            'busca' => $parametros['busca'] ?? '',
-            'status' => $parametros['status'] ?? '',
-            'cidade' => $parametros['cidade'] ?? '',
-            'segmentoId' => $parametros['segmento'] ?? '',
-            'cargo' => $parametros['cargo'] ?? '',
-            'disponibilidade' => $parametros['disponibilidade'] ?? '',
-            'tipoCobranca' => $parametros['tipo_cobranca'] ?? '',
-            'valorMin' => $parametros['valor_min'] ?? '',
-            'valorMax' => $parametros['valor_max'] ?? '',
+            'busca' => $limpar($parametros['busca'] ?? ''),
+            'status' => $limpar($parametros['status'] ?? ''),
+            'cidade' => $limpar($parametros['cidade'] ?? ''),
+            'segmentoId' => $limpar($parametros['segmento'] ?? ''),
+            'cargo' => $limpar($parametros['cargo'] ?? ''),
+            'disponibilidade' => $limpar($parametros['disponibilidade'] ?? ''),
+            'tipoCobranca' => $limpar($parametros['tipo_cobranca'] ?? ''),
+            'valorMin' => $limpar($parametros['valor_min'] ?? ''),
+            'valorMax' => $limpar($parametros['valor_max'] ?? ''),
         ];
     }
 }

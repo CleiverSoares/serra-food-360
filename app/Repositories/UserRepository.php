@@ -260,18 +260,30 @@ class UserRepository
     /**
      * Buscar compradores com filtros e paginação
      */
-    public function buscarCompradoresComFiltros(array $filtros = [], int $porPagina = 12)
+    public function buscarCompradoresComFiltros(array $filtros = [], int $porPagina = 12, bool $somenteAprovados = true)
     {
         $query = UserModel::where('role', 'comprador')
-            ->where('status', 'aprovado')
-            ->with(['comprador', 'segmentos', 'enderecoPrincipal']);
+            ->with(['comprador', 'segmentos', 'enderecoPrincipal', 'assinaturaAtiva']);
 
-        // Filtro de busca
+        // Filtro de status (admin pode ver todos)
+        if ($somenteAprovados) {
+            $query->where('status', 'aprovado');
+        } elseif (!empty($filtros['status'])) {
+            $query->where('status', $filtros['status']);
+        }
+
+        // Filtro de busca (busca em TODOS os campos relevantes)
         if (!empty($filtros['busca'])) {
             $busca = $filtros['busca'];
             $query->where(function($q) use ($busca) {
                 $q->where('name', 'like', "%{$busca}%")
-                  ->orWhere('email', 'like', "%{$busca}%");
+                  ->orWhere('email', 'like', "%{$busca}%")
+                  ->orWhereHas('comprador', function($subQ) use ($busca) {
+                      $subQ->where('nome_negocio', 'like', "%{$busca}%")
+                           ->orWhere('tipo_negocio', 'like', "%{$busca}%")
+                           ->orWhere('descricao', 'like', "%{$busca}%")
+                           ->orWhere('cnpj', 'like', "%{$busca}%");
+                  });
             });
         }
 
@@ -288,6 +300,9 @@ class UserRepository
                 $q->where('cidade', 'like', "%{$filtros['cidade']}%");
             });
         }
+
+        // Ordenação: mais recentes primeiro
+        $query->orderBy('created_at', 'desc');
 
         return $query->paginate($porPagina);
     }
@@ -295,18 +310,29 @@ class UserRepository
     /**
      * Buscar fornecedores com filtros e paginação
      */
-    public function buscarFornecedoresComFiltros(array $filtros = [], int $porPagina = 12)
+    public function buscarFornecedoresComFiltros(array $filtros = [], int $porPagina = 12, bool $somenteAprovados = true)
     {
         $query = UserModel::where('role', 'fornecedor')
-            ->where('status', 'aprovado')
-            ->with(['fornecedor', 'segmentos', 'enderecoPrincipal']);
+            ->with(['fornecedor', 'segmentos', 'enderecoPrincipal', 'assinaturaAtiva']);
 
-        // Filtro de busca
+        // Filtro de status (admin pode ver todos)
+        if ($somenteAprovados) {
+            $query->where('status', 'aprovado');
+        } elseif (!empty($filtros['status'])) {
+            $query->where('status', $filtros['status']);
+        }
+
+        // Filtro de busca (busca em TODOS os campos relevantes)
         if (!empty($filtros['busca'])) {
             $busca = $filtros['busca'];
             $query->where(function($q) use ($busca) {
                 $q->where('name', 'like', "%{$busca}%")
-                  ->orWhere('email', 'like', "%{$busca}%");
+                  ->orWhere('email', 'like', "%{$busca}%")
+                  ->orWhereHas('fornecedor', function($subQ) use ($busca) {
+                      $subQ->where('nome_empresa', 'like', "%{$busca}%")
+                           ->orWhere('descricao', 'like', "%{$busca}%")
+                           ->orWhere('cnpj', 'like', "%{$busca}%");
+                  });
             });
         }
 
@@ -323,6 +349,9 @@ class UserRepository
                 $q->where('cidade', 'like', "%{$filtros['cidade']}%");
             });
         }
+
+        // Ordenação: mais recentes primeiro
+        $query->orderBy('created_at', 'desc');
 
         return $query->paginate($porPagina);
     }

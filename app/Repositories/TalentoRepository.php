@@ -12,7 +12,7 @@ class TalentoRepository
      */
     public function buscarTodos(): Collection
     {
-        return TalentoModel::orderBy('nome')->get();
+        return TalentoModel::orderBy('created_at', 'desc')->get();
     }
 
     /**
@@ -53,7 +53,7 @@ class TalentoRepository
     public function buscarPorCargo(string $cargo): Collection
     {
         return TalentoModel::where('cargo', $cargo)
-            ->orderBy('nome')
+            ->orderBy('created_at', 'desc')
             ->get();
     }
 
@@ -123,7 +123,7 @@ class TalentoRepository
             $query->where('pretensao', '<=', $filtros['valorMax']);
         }
 
-        return $query->orderBy('nome');
+        return $query->orderBy('created_at', 'desc');
     }
 
     /**

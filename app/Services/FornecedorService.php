@@ -36,8 +36,8 @@ class FornecedorService
             'busca', 'status', 'segmento', 'cidade'
         ]);
         
-        // Admin vê todos
-        return $this->userRepository->buscarFornecedoresComFiltros($filtros, 999999);
+        // Admin vê todos (false = não filtrar apenas aprovados)
+        return $this->userRepository->buscarFornecedoresComFiltros($filtros, 999999, false);
     }
 
     /**
