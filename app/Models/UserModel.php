@@ -21,6 +21,7 @@ class UserModel extends Authenticatable
         'password',
         'role',
         'status',
+        'logo_path',
         'aprovado_por',
         'aprovado_em',
         'motivo_rejeicao',

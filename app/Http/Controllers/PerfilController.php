@@ -38,8 +38,15 @@ class PerfilController extends Controller
             $dados = $dadosEdicao['dadosContato'];
             $segmentosIds = $dadosEdicao['segmentosIds'];
         } else {
-            // Admin não usa essa tela
-            return redirect()->route('home')->with('erro', 'Acesso negado.');
+            // Admin: dados simplificados
+            $perfil = $usuario;
+            $dados = [
+                'telefone' => '',
+                'whatsapp' => '',
+                'cidade' => '',
+                'estado' => '',
+            ];
+            $segmentosIds = [];
         }
         
         $segmentos = $this->segmentoRepository->buscarAtivos();
@@ -57,6 +64,7 @@ class PerfilController extends Controller
         $dados = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $usuario->id,
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'telefone' => 'nullable|string|max:20',
             'whatsapp' => 'nullable|string|max:20',
             'cidade' => 'nullable|string|max:255',
@@ -71,22 +79,36 @@ class PerfilController extends Controller
             'segmentos.*' => 'exists:segmentos,id',
         ]);
 
-        // Atualizar dados básicos
-        $this->userService->atualizarPerfil($usuario, [
+        // Upload de logo/foto se fornecida
+        if ($request->hasFile('logo')) {
+            $foto = $request->file('logo');
+            $nomeArquivo = time() . '_' . $usuario->id . '.' . $foto->extension();
+            $caminhoFoto = $foto->storeAs('logos', $nomeArquivo, 'public');
+            $dados['logo_path'] = $caminhoFoto;
+        }
+
+        // Atualizar dados básicos do usuário
+        $dadosUsuario = [
             'name' => $dados['name'],
             'email' => $dados['email'],
-        ]);
+        ];
+        
+        // Admin salva foto na tabela users
+        if ($usuario->role === 'admin' && isset($dados['logo_path'])) {
+            $dadosUsuario['logo_path'] = $dados['logo_path'];
+        }
+        
+        $this->userService->atualizarPerfil($usuario, $dadosUsuario);
 
         // Atualizar segmentos se fornecido
         if (isset($dados['segmentos'])) {
             $this->userRepository->sincronizarSegmentos($usuario, $dados['segmentos']);
         }
 
-        // TODO: Usar Service para atualizar contatos, endereço e dados específicos
-        // Por ora, mantém a lógica aqui mas idealmente deveria estar no Service
-        
-        // Atualizar contatos e endereço via UserRepository
-        $this->userRepository->atualizarContatoEEndereco($usuario->id, $dados);
+        // Atualizar contatos e endereço via UserRepository (não admin)
+        if ($usuario->role !== 'admin') {
+            $this->userRepository->atualizarContatoEEndereco($usuario->id, $dados);
+        }
 
         // Atualizar dados específicos do comprador/fornecedor
         if ($usuario->role === 'comprador') {
@@ -94,6 +116,9 @@ class PerfilController extends Controller
         } elseif ($usuario->role === 'fornecedor') {
             $this->fornecedorService->atualizarDadosNegocio($usuario->id, $dados);
         }
+
+        // Recarregar dados do usuário para atualizar a sessão
+        auth()->user()->refresh();
 
         return redirect()->route('perfil.editar')
             ->with('sucesso', 'Perfil atualizado com sucesso!');

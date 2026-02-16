@@ -11,24 +11,48 @@
             @include('partials.menu-items', ['context' => 'sidebar'])
         </nav>
 
-        {{-- User Info + Logout --}}
-        <div class="flex-shrink-0 border-t border-[var(--cor-borda)] p-4">
-            <div class="flex items-center gap-3 mb-3">
-                <div class="w-10 h-10 rounded-full bg-[var(--cor-verde-serra)] flex items-center justify-center text-white font-bold">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-[var(--cor-texto)] truncate">{{ auth()->user()->name }}</p>
-                    <p class="text-xs text-[var(--cor-texto-muted)] capitalize">{{ auth()->user()->role }}</p>
+        {{-- User Info + Dropdown --}}
+        <div class="flex-shrink-0 border-t border-[var(--cor-borda)] p-4" x-data="{ dropdownAberto: false }">
+            <div class="relative">
+                @php
+                    $userLogoPath = auth()->user()->comprador?->logo_path ?? auth()->user()->fornecedor?->logo_path ?? null;
+                @endphp
+                <button @click="dropdownAberto = !dropdownAberto" 
+                        class="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                    @if($userLogoPath)
+                        <img src="{{ asset('storage/' . $userLogoPath) }}" alt="{{ auth()->user()->name }}" class="w-10 h-10 rounded-full object-cover">
+                    @else
+                        <div class="w-10 h-10 rounded-full bg-[var(--cor-verde-serra)] flex items-center justify-center text-white font-bold flex-shrink-0">
+                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                        </div>
+                    @endif
+                    <div class="flex-1 min-w-0 text-left">
+                        <p class="text-sm font-semibold text-[var(--cor-texto)] truncate">{{ auth()->user()->name }}</p>
+                        <p class="text-xs text-[var(--cor-texto-muted)] capitalize">{{ auth()->user()->role }}</p>
+                    </div>
+                    <i data-lucide="chevron-up" class="w-4 h-4 text-gray-400 transition-transform" :class="{ 'rotate-180': !dropdownAberto }"></i>
+                </button>
+
+                {{-- Dropdown --}}
+                <div x-show="dropdownAberto" 
+                     @click.away="dropdownAberto = false"
+                     x-transition
+                     class="absolute bottom-full left-0 right-0 mb-2 bg-white border border-[var(--cor-borda)] rounded-lg shadow-lg overflow-hidden">
+                    @if(auth()->user()->role !== 'admin')
+                        <a href="{{ route('perfil.editar') }}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer">
+                            <i data-lucide="user-circle" class="w-4 h-4 text-gray-600"></i>
+                            <span class="text-sm font-medium text-[var(--cor-texto)]">Meu Perfil</span>
+                        </a>
+                    @endif
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors text-left cursor-pointer">
+                            <i data-lucide="log-out" class="w-4 h-4 text-red-600"></i>
+                            <span class="text-sm font-medium text-red-700">Sair</span>
+                        </button>
+                    </form>
                 </div>
             </div>
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-all text-sm font-medium">
-                    <i data-lucide="log-out" class="w-4 h-4"></i>
-                    Sair
-                </button>
-            </form>
         </div>
     </div>
 </aside>

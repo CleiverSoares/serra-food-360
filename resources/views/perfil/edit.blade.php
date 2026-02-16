@@ -34,6 +34,39 @@
                     <i data-lucide="user" class="w-5 h-5 text-[var(--cor-verde-serra)]"></i>
                     Dados Pessoais
                 </h3>
+                
+                <!-- Foto de Perfil -->
+                @php
+                    $logoPath = $perfil->comprador?->logo_path ?? $perfil->fornecedor?->logo_path ?? null;
+                @endphp
+                <div class="mb-6 flex items-center gap-6" x-data="{ 
+                    previewUrl: '{{ $logoPath ? asset('storage/' . $logoPath) : '' }}',
+                    mostrarPreview(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            this.previewUrl = URL.createObjectURL(file);
+                        }
+                    }
+                }">
+                    <div class="relative">
+                        <template x-if="previewUrl">
+                            <img :src="previewUrl" alt="Foto" class="w-24 h-24 rounded-full object-cover border-4 border-gray-200">
+                        </template>
+                        <template x-if="!previewUrl">
+                            <div class="w-24 h-24 rounded-full bg-[var(--cor-verde-serra)] flex items-center justify-center text-white text-3xl font-bold border-4 border-gray-200">
+                                {{ strtoupper(substr($perfil->name, 0, 1)) }}
+                            </div>
+                        </template>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Foto de Perfil</label>
+                        <input type="file" name="logo" accept="image/*" 
+                               @change="mostrarPreview($event)"
+                               class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[var(--cor-verde-serra)] file:text-white hover:file:opacity-90 file:cursor-pointer">
+                        <p class="text-xs text-gray-500 mt-1">JPG, PNG ou WEBP. Máximo 2MB.</p>
+                    </div>
+                </div>
+
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Nome Completo *</label>

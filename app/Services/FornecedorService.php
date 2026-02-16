@@ -91,4 +91,32 @@ class FornecedorService
             'segmentosIds' => $segmentosIds,
         ];
     }
+
+    /**
+     * Atualizar dados do negócio
+     */
+    public function atualizarDadosNegocio(int $userId, array $dados): void
+    {
+        $usuario = $this->userRepository->buscarPorId($userId);
+        
+        if (!$usuario || $usuario->role !== 'fornecedor' || !$usuario->fornecedor) {
+            return;
+        }
+
+        $dadosAtualizar = [
+            'nome_negocio' => $dados['nome_negocio'] ?? null,
+            'cnpj' => $dados['cnpj'] ?? null,
+            'tipo_negocio' => $dados['tipo_negocio'] ?? null,
+            'colaboradores' => $dados['colaboradores'] ?? null,
+            'site_url' => $dados['site_url'] ?? null,
+            'descricao' => $dados['descricao'] ?? null,
+        ];
+        
+        // Adicionar logo_path se fornecido
+        if (isset($dados['logo_path'])) {
+            $dadosAtualizar['logo_path'] = $dados['logo_path'];
+        }
+
+        $usuario->fornecedor->update($dadosAtualizar);
+    }
 }

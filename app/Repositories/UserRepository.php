@@ -415,6 +415,7 @@ class UserRepository
             'telefone' => $telefone?->valor ?? '',
             'whatsapp' => $whatsapp?->valor ?? '',
             'cidade' => $endereco?->cidade ?? '',
+            'estado' => $endereco?->estado ?? 'ES',
         ];
     }
 

@@ -119,7 +119,7 @@
     </a>
 @endif
 
-{{-- Meu Perfil (comprador/fornecedor, não aparece no bottom nav) --}}
+{{-- Meu Perfil (comprador/fornecedor, apenas drawer/sidebar) --}}
 @if(!$isAdmin && !$isBottomNav)
     <a href="{{ route('perfil.editar') }}" 
        class="{{ $linkClass }} {{ request()->routeIs('perfil.*') ? $activeClass : $inactiveClass }}"
