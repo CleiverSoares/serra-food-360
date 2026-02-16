@@ -88,17 +88,10 @@ class PerfilController extends Controller
         }
 
         // Atualizar dados básicos do usuário
-        $dadosUsuario = [
+        $this->userService->atualizarPerfil($usuario, [
             'name' => $dados['name'],
             'email' => $dados['email'],
-        ];
-        
-        // Admin salva foto na tabela users
-        if ($usuario->role === 'admin' && isset($dados['logo_path'])) {
-            $dadosUsuario['logo_path'] = $dados['logo_path'];
-        }
-        
-        $this->userService->atualizarPerfil($usuario, $dadosUsuario);
+        ]);
 
         // Atualizar segmentos se fornecido
         if (isset($dados['segmentos'])) {

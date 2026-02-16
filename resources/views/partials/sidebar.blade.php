@@ -15,7 +15,7 @@
         <div class="flex-shrink-0 border-t border-[var(--cor-borda)] p-4" x-data="{ dropdownAberto: false }">
             <div class="relative">
                 @php
-                    $userLogoPath = auth()->user()->logo_path ?? auth()->user()->comprador?->logo_path ?? auth()->user()->fornecedor?->logo_path ?? null;
+                    $userLogoPath = auth()->user()->comprador?->logo_path ?? auth()->user()->fornecedor?->logo_path ?? null;
                 @endphp
                 <button @click="dropdownAberto = !dropdownAberto" 
                         class="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
