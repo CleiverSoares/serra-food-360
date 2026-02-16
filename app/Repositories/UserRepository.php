@@ -275,11 +275,6 @@ class UserRepository
             });
         }
 
-        // Filtro de plano
-        if (!empty($filtros['plano'])) {
-            $query->where('plano', $filtros['plano']);
-        }
-
         // Filtro de segmento
         if (!empty($filtros['segmento'])) {
             $query->whereHas('segmentos', function($q) use ($filtros) {
@@ -313,11 +308,6 @@ class UserRepository
                 $q->where('name', 'like', "%{$busca}%")
                   ->orWhere('email', 'like', "%{$busca}%");
             });
-        }
-
-        // Filtro de plano
-        if (!empty($filtros['plano'])) {
-            $query->where('plano', $filtros['plano']);
         }
 
         // Filtro de segmento

@@ -19,8 +19,8 @@ return new class extends Migration
                 ->constrained('users')
                 ->onDelete('cascade');
             
-            // Tipo de plano
-            $table->enum('plano', ['basico', 'profissional', 'empresarial']);
+            // Tipo de plano (conforme doc: Comum X e VIP 2X)
+            $table->enum('plano', ['comum', 'vip']);
             
             // Tipo de pagamento
             $table->enum('tipo_pagamento', ['mensal', 'anual']);

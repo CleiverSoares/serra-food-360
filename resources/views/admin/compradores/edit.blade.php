@@ -199,9 +199,8 @@
                             <div class="grid md:grid-cols-2 gap-3">
                                 <select name="plano" required class="px-3 py-2 border border-yellow-300 rounded-lg text-sm">
                                     <option value="">Selecione o plano</option>
-                                    <option value="basico">Básico</option>
-                                    <option value="profissional">Profissional</option>
-                                    <option value="empresarial">Empresarial</option>
+                                    <option value="comum">Comum (X)</option>
+                                    <option value="vip">VIP (2X)</option>
                                 </select>
                                 <select name="tipo_pagamento" required class="px-3 py-2 border border-yellow-300 rounded-lg text-sm">
                                     <option value="">Tipo de pagamento</option>

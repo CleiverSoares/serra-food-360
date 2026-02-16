@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('titulo', 'Login')
+@section('titulo', 'Esqueci minha senha')
 
 @section('conteudo')
 <div class="min-h-screen flex items-center justify-center bg-[var(--cor-verde-serra)] px-4 py-12">
@@ -10,38 +10,26 @@
             <div class="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl mb-4 shadow-lg">
                 <img src="{{ asset('images/fiveicon-360.svg') }}" alt="Serra Food 360" class="w-10 h-10">
             </div>
-            <h1 class="text-3xl font-bold text-white mb-2">Bem-vindo de volta!</h1>
-            <p class="text-white/80">Faça login para acessar sua conta</p>
+            <h1 class="text-3xl font-bold text-white mb-2">Esqueceu sua senha?</h1>
+            <p class="text-white/80">Sem problemas! Enviaremos um link de recuperação</p>
         </div>
 
         <!-- Card do formulário -->
         <div class="bg-white rounded-2xl shadow-2xl p-8">
-            @if ($errors->any())
-                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            
+            @if(session('sucesso'))
+                <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                     <div class="flex items-start">
-                        <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mr-3 flex-shrink-0 mt-0.5"></i>
+                        <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5"></i>
                         <div class="flex-1">
-                            <h3 class="text-sm font-semibold text-red-800 mb-1">Erro ao fazer login</h3>
-                            <ul class="text-sm text-red-600 space-y-1">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
+                            <p class="text-sm text-green-800">{{ session('sucesso') }}</p>
+                            <p class="text-xs text-green-600 mt-2">Verifique sua caixa de entrada e spam.</p>
                         </div>
                     </div>
                 </div>
             @endif
 
-            @if (session('info'))
-                <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <div class="flex items-start">
-                        <i data-lucide="info" class="w-5 h-5 text-blue-600 mr-3 flex-shrink-0 mt-0.5"></i>
-                        <p class="text-sm text-blue-800">{{ session('info') }}</p>
-                    </div>
-                </div>
-            @endif
-
-            @if (session('erro'))
+            @if(session('erro'))
                 <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
                     <div class="flex items-start">
                         <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mr-3 flex-shrink-0 mt-0.5"></i>
@@ -50,7 +38,32 @@
                 </div>
             @endif
 
-            <form action="{{ route('login') }}" method="POST" class="space-y-6">
+            @if($errors->any())
+                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <div class="flex items-start">
+                        <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mr-3 flex-shrink-0 mt-0.5"></i>
+                        <div class="flex-1">
+                            <ul class="text-sm text-red-600 space-y-1">
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
+            <!-- Instruções -->
+            <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div class="flex items-start">
+                    <i data-lucide="info" class="w-5 h-5 text-blue-600 mr-3 flex-shrink-0 mt-0.5"></i>
+                    <p class="text-sm text-blue-800">
+                        Digite seu email cadastrado e enviaremos um link para redefinir sua senha.
+                    </p>
+                </div>
+            </div>
+
+            <form action="{{ route('password.email') }}" method="POST" class="space-y-6">
                 @csrf
 
                 <!-- Email -->
@@ -75,43 +88,12 @@
                     </div>
                 </div>
 
-                <!-- Senha -->
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                        Senha
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <i data-lucide="lock" class="w-5 h-5 text-gray-400"></i>
-                        </div>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            required
-                            class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent transition-all"
-                            placeholder="••••••••"
-                        >
-                    </div>
-                </div>
-
-                <!-- Lembrar de mim e Esqueci senha -->
-                <div class="flex items-center justify-between">
-                    <label class="flex items-center cursor-pointer">
-                        <input type="checkbox" name="remember" class="w-4 h-4 text-[var(--cor-verde-serra)] border-gray-300 rounded focus:ring-[var(--cor-verde-serra)]">
-                        <span class="ml-2 text-sm text-gray-600">Lembrar de mim</span>
-                    </label>
-                    <a href="{{ route('password.request') }}" class="text-sm text-[var(--cor-verde-serra)] hover:text-[var(--cor-verde-escuro)] font-medium transition-colors">
-                        Esqueci minha senha
-                    </a>
-                </div>
-
-                <!-- Botão de login -->
+                <!-- Botão de enviar -->
                 <button 
                     type="submit"
                     class="w-full bg-[var(--cor-verde-serra)] text-white py-3 rounded-lg font-semibold hover:bg-[var(--cor-verde-escuro)] transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg hover:shadow-xl"
                 >
-                    Entrar
+                    Enviar Link de Recuperação
                 </button>
             </form>
 
@@ -121,16 +103,16 @@
                     <div class="w-full border-t border-gray-200"></div>
                 </div>
                 <div class="relative flex justify-center text-sm">
-                    <span class="px-4 bg-white text-gray-500">Ainda não tem conta?</span>
+                    <span class="px-4 bg-white text-gray-500">Lembrou sua senha?</span>
                 </div>
             </div>
 
-            <!-- Link para cadastro -->
+            <!-- Link para login -->
             <a 
-                href="{{ route('cadastro') }}"
+                href="{{ route('login') }}"
                 class="block w-full text-center py-3 border-2 border-[var(--cor-verde-serra)] text-[var(--cor-verde-serra)] rounded-lg font-semibold hover:bg-[var(--cor-verde-serra)] hover:text-white transition-all"
             >
-                Criar conta gratuitamente
+                Voltar para o login
             </a>
         </div>
 

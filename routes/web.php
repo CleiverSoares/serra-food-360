@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\AdminTalentosController;
 use App\Http\Controllers\Admin\AdminSegmentosController;
 use App\Http\Controllers\Admin\AdminAssinaturasController;
 use App\Http\Controllers\Admin\AdminConfiguracoesController;
+use App\Http\Controllers\PasswordResetController;
 use Illuminate\Support\Facades\Route;
 
 // Rota pública
@@ -25,6 +26,12 @@ Route::middleware('guest')->group(function () {
     
     Route::get('/cadastro', [AuthController::class, 'exibirCadastro'])->name('cadastro');
     Route::post('/cadastro', [AuthController::class, 'cadastrar']);
+
+    // Recuperação de Senha
+    Route::get('/esqueci-senha', [PasswordResetController::class, 'exibirFormularioEmail'])->name('password.request');
+    Route::post('/esqueci-senha', [PasswordResetController::class, 'enviarLink'])->name('password.email');
+    Route::get('/redefinir-senha', [PasswordResetController::class, 'exibirFormularioRedefinicao'])->name('password.reset');
+    Route::post('/redefinir-senha', [PasswordResetController::class, 'redefinir'])->name('password.update');
 });
 
 // Rotas autenticadas
@@ -111,6 +118,7 @@ Route::middleware('auth')->group(function () {
         // Configurações
         Route::get('/configuracoes', [AdminConfiguracoesController::class, 'index'])->name('configuracoes.index');
         Route::post('/configuracoes', [AdminConfiguracoesController::class, 'salvar'])->name('configuracoes.salvar');
+        Route::get('/configuracoes/historico', [AdminConfiguracoesController::class, 'historico'])->name('configuracoes.historico');
     });
 });
 

@@ -19,7 +19,7 @@ class AdminAssinaturasController extends Controller
     public function armazenar(Request $request, int $userId): RedirectResponse
     {
         $validated = $request->validate([
-            'plano' => 'required|in:basico,profissional,empresarial',
+            'plano' => 'required|in:comum,vip',
             'tipo_pagamento' => 'required|in:mensal,anual',
         ]);
 

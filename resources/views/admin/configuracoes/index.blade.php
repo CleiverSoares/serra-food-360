@@ -69,6 +69,11 @@
                     <i data-lucide="save" class="w-4 h-4"></i>
                     Salvar Configurações
                 </button>
+                <a href="{{ route('admin.configuracoes.historico') }}" 
+                   class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                    <i data-lucide="history" class="w-4 h-4"></i>
+                    Ver Histórico de Preços
+                </a>
                 <a href="{{ route('admin.dashboard') }}" 
                    class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium">
                     <i data-lucide="arrow-left" class="w-4 h-4"></i>
