@@ -123,12 +123,14 @@ class AssinaturaRepository
      */
     public function renovar(int $id, string $tipoPagamento): bool
     {
-        $meses = $tipoPagamento === 'anual' ? 12 : 1;
+        // IMPORTANTE: Usar dias fixos para garantir período correto
+        // Mensal = 30 dias, Anual = 365 dias
+        $dias = $tipoPagamento === 'anual' ? 365 : 30;
         
         return $this->atualizar($id, [
             'tipo_pagamento' => $tipoPagamento,
             'data_inicio' => now(),
-            'data_fim' => now()->addMonths($meses),
+            'data_fim' => now()->addDays($dias),
             'status' => 'ativo',
             'ultimo_aviso_enviado' => null,
         ]);

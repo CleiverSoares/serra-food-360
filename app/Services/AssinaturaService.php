@@ -26,14 +26,16 @@ class AssinaturaService
         // Limpar cache da dashboard
         AdminDashboardController::limparCache();
         
-        $meses = $tipoPagamento === 'anual' ? 12 : 1;
+        // IMPORTANTE: Usar dias fixos para garantir período correto
+        // Mensal = 30 dias, Anual = 365 dias (não depende do mês)
+        $dias = $tipoPagamento === 'anual' ? 365 : 30;
         
         $dados = [
             'user_id' => $userId,
             'plano' => $plano,
             'tipo_pagamento' => $tipoPagamento,
             'data_inicio' => now(),
-            'data_fim' => now()->addMonths($meses),
+            'data_fim' => now()->addDays($dias),
             'status' => 'ativo',
         ];
 
@@ -76,6 +78,7 @@ class AssinaturaService
         // Limpar cache da dashboard
         AdminDashboardController::limparCache();
         
+        // IMPORTANTE: Usar dias fixos - Mensal = 30 dias, Anual = 365 dias
         $resultado = $this->assinaturaRepository->renovar($assinaturaId, $tipoPagamento);
 
         if ($resultado) {

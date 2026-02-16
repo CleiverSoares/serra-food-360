@@ -456,9 +456,10 @@ class DadosTesteSeeder extends Seeder
      */
     private function criarAssinatura(int $userId, string $plano, string $tipoPagamento, int $diasAtiva): void
     {
-        $meses = $tipoPagamento === 'anual' ? 12 : 1;
+        // IMPORTANTE: Usar dias fixos - Mensal = 30 dias, Anual = 365 dias
+        $diasTotais = $tipoPagamento === 'anual' ? 365 : 30;
         $dataInicio = now()->subDays(abs($diasAtiva));
-        $dataFim = $dataInicio->copy()->addMonths($meses);
+        $dataFim = $dataInicio->copy()->addDays($diasTotais);
 
         $status = 'ativo';
         if ($diasAtiva < 0) {
