@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Services\UserService;
 use App\Services\AuthService;
 use App\Services\FornecedorService;
+use App\Services\AssinaturaService;
+use App\Services\ConfiguracaoService;
 use App\Services\FilterService;
 use App\Repositories\SegmentoRepository;
 use App\Repositories\UserRepository;
@@ -17,41 +19,28 @@ class AdminFornecedoresController extends Controller
         private UserService $userService,
         private AuthService $authService,
         private FornecedorService $fornecedorService,
+        private AssinaturaService $assinaturaService,
+        private ConfiguracaoService $configuracaoService,
         private FilterService $filterService,
         private SegmentoRepository $segmentoRepository,
         private UserRepository $userRepository
     ) {}
 
     /**
-     * Listar todos os fornecedores
+     * Listar todos os fornecedores (Controller → Service → Repository)
      */
     public function index(Request $request)
     {
-        // Filtros (SEM queries diretas - tudo via repository/service)
-        $filtros = [
-            'status' => $request->get('status'),
-            'plano' => $request->get('plano'),
-            'cidade' => $request->get('cidade'),
-            'segmento' => $request->get('segmento'),
-            'busca' => $request->get('busca'),
-        ];
+        // Controller apenas orquestra
+        $fornecedores = $this->fornecedorService->buscarFornecedoresAdmin($request->all());
+        $dadosFiltros = $this->fornecedorService->obterDadosFiltros();
+        $filtrosAplicados = $this->filterService->extrairFiltrosAplicados($request->all());
 
-        // Buscar fornecedores (sem paginação para admin)
-        $fornecedores = $this->userRepository->buscarFornecedoresComFiltros($filtros, 999999)->items();
-
-        // Dados para filtros
-        $filtrosStatus = $this->filterService->obterFiltrosStatus();
-        $filtrosPlano = $this->filterService->obterFiltrosPlano();
-        $filtrosCidade = $this->enderecoRepository->buscarCidadesUnicasPorRole('fornecedor');
-        $segmentos = $this->segmentoRepository->buscarAtivos();
-
-        return view('admin.fornecedores.index', compact(
-            'fornecedores',
-            'filtrosStatus',
-            'filtrosPlano',
-            'filtrosCidade',
-            'segmentos'
-        ) + $filtros + ['status' => $filtros['status'], 'segmentoId' => $filtros['segmento']]);
+        return view('admin.fornecedores.index', array_merge(
+            ['fornecedores' => $fornecedores],
+            $dadosFiltros,
+            $filtrosAplicados
+        ));
     }
 
     /**
@@ -60,8 +49,9 @@ class AdminFornecedoresController extends Controller
     public function create()
     {
         $segmentos = $this->segmentoRepository->buscarAtivos();
+        $precosPlanos = $this->configuracaoService->obterTodosPrecosPlanos();
         
-        return view('admin.fornecedores.create', compact('segmentos'));
+        return view('admin.fornecedores.create', compact('segmentos', 'precosPlanos'));
     }
 
     /**
@@ -83,6 +73,8 @@ class AdminFornecedoresController extends Controller
             'segmentos' => 'required|array|min:1',
             'segmentos.*' => 'exists:segmentos,id',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'plano' => 'required|in:comum,vip',
+            'tipo_pagamento' => 'required|in:mensal,anual',
         ]);
 
         // Forçar role e status
@@ -91,9 +83,16 @@ class AdminFornecedoresController extends Controller
 
         $usuario = $this->authService->cadastrar($dados);
 
+        // Criar assinatura automaticamente
+        $this->assinaturaService->criarAssinatura(
+            $usuario->id,
+            $dados['plano'],
+            $dados['tipo_pagamento']
+        );
+
         return redirect()
             ->route('admin.fornecedores.index')
-            ->with('sucesso', 'Fornecedor criado e aprovado com sucesso!');
+            ->with('sucesso', 'Fornecedor criado com assinatura ativa!');
     }
 
     /**

@@ -116,6 +116,80 @@
                     </div>
                 </div>
 
+                <!-- Plano e Tipo de Pagamento -->
+                <div class="bg-green-50 border border-green-200 rounded-lg p-4" 
+                     x-data="{
+                         tipoPagamento: '{{ old('tipo_pagamento') }}',
+                         plano: '{{ old('plano') }}',
+                         precos: @js($precosPlanos),
+                         obterPrecoFormatado(plano) {
+                             if (!this.tipoPagamento) return '';
+                             const valor = this.precos[plano][this.tipoPagamento];
+                             return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
+                         },
+                         obterValorTotal() {
+                             if (!this.plano || !this.tipoPagamento) return '';
+                             const valor = this.precos[this.plano][this.tipoPagamento];
+                             return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
+                         }
+                     }">
+                    <h3 class="text-sm font-semibold text-green-900 mb-3 flex items-center gap-2">
+                        <i data-lucide="credit-card" class="w-4 h-4"></i>
+                        Assinatura e Plano *
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="tipo_pagamento" class="block text-sm font-medium text-gray-700 mb-2">
+                                1º Tipo de Pagamento *
+                            </label>
+                            <select name="tipo_pagamento" id="tipo_pagamento" required x-model="tipoPagamento"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)]">
+                                <option value="">Selecione primeiro</option>
+                                <option value="mensal">Mensal (1 mês)</option>
+                                <option value="anual">Anual (12 meses)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="plano" class="block text-sm font-medium text-gray-700 mb-2">
+                                2º Plano *
+                            </label>
+                            <select name="plano" id="plano" required x-model="plano"
+                                    :disabled="!tipoPagamento"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] disabled:bg-gray-100 disabled:cursor-not-allowed">
+                                <option value="">Selecione o plano</option>
+                                <template x-if="tipoPagamento">
+                                    <option value="comum" x-text="'Comum (X) - ' + obterPrecoFormatado('comum')"></option>
+                                </template>
+                                <template x-if="tipoPagamento">
+                                    <option value="vip" x-text="'VIP (2X) - ' + obterPrecoFormatado('vip')"></option>
+                                </template>
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1" x-show="!tipoPagamento">
+                                Selecione o tipo de pagamento primeiro
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Valor calculado -->
+                    <div x-show="plano && tipoPagamento" x-cloak class="mt-4 p-3 bg-white border border-green-300 rounded-lg">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-gray-700">Valor Total:</span>
+                            <span class="text-lg font-bold text-green-700" x-text="obterValorTotal()"></span>
+                        </div>
+                        <p class="text-xs text-gray-600 mt-1" x-show="tipoPagamento === 'mensal'">
+                            Cobrança mensal
+                        </p>
+                        <p class="text-xs text-gray-600 mt-1" x-show="tipoPagamento === 'anual'">
+                            Pagamento único de 12 meses
+                        </p>
+                    </div>
+
+                    <p class="text-xs text-green-700 mt-3">
+                        <i data-lucide="info" class="w-3 h-3 inline"></i>
+                        A assinatura será criada automaticamente como <strong>ativa</strong> a partir de hoje.
+                    </p>
+                </div>
+
                 <!-- Segmentos de Atuação -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-3">

@@ -21,7 +21,7 @@ class RestauranteRepository
     /**
      * Criar novo restaurante
      */
-    public function criar(array $dados): RestauranteModel
+    public function criar(array $dados): CompradorModel
     {
         return $this->compradorRepository->criar($dados);
     }
@@ -29,7 +29,7 @@ class RestauranteRepository
     /**
      * Buscar restaurante por user_id
      */
-    public function buscarPorUserId(int $userId): ?RestauranteModel
+    public function buscarPorUserId(int $userId): ?CompradorModel
     {
         return $this->compradorRepository->buscarPorUserId($userId);
     }

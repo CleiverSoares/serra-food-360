@@ -91,13 +91,6 @@
         <i data-lucide="tag" class="w-5 h-5"></i>
         <span>Segmentos</span>
     </a>
-    
-    <a href="{{ route('admin.configuracoes.index') }}" 
-       class="{{ $linkClass }} {{ request()->routeIs('admin.configuracoes.*') ? $activeClass : $inactiveClass }}"
-       @if($isDrawer) @click="menuAberto = false" @endif>
-        <i data-lucide="settings" class="w-5 h-5"></i>
-        <span>Configurações</span>
-    </a>
 @endif
 
 {{-- Em breve (não aparece no bottom nav) --}}
@@ -124,5 +117,15 @@
         <i data-lucide="book-open" class="w-5 h-5"></i>
         <span>Material de Gestão</span>
         <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
+    </a>
+@endif
+
+{{-- Configurações (apenas admin, no final de tudo) --}}
+@if($isAdmin && !$isBottomNav)
+    <a href="{{ route('admin.configuracoes.index') }}" 
+       class="{{ $linkClass }} {{ request()->routeIs('admin.configuracoes.*') ? $activeClass : $inactiveClass }}"
+       @if($isDrawer) @click="menuAberto = false" @endif>
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span>Configurações</span>
     </a>
 @endif

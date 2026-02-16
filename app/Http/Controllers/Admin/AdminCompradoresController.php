@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Services\UserService;
 use App\Services\AuthService;
 use App\Services\CompradorService;
+use App\Services\AssinaturaService;
+use App\Services\ConfiguracaoService;
 use App\Services\FilterService;
 use App\Repositories\SegmentoRepository;
 use App\Repositories\UserRepository;
@@ -17,6 +19,8 @@ class AdminCompradoresController extends Controller
         private UserService $userService,
         private AuthService $authService,
         private CompradorService $compradorService,
+        private AssinaturaService $assinaturaService,
+        private ConfiguracaoService $configuracaoService,
         private FilterService $filterService,
         private SegmentoRepository $segmentoRepository,
         private UserRepository $userRepository
@@ -45,8 +49,9 @@ class AdminCompradoresController extends Controller
     public function create()
     {
         $segmentos = $this->segmentoRepository->buscarAtivos();
+        $precosPlanos = $this->configuracaoService->obterTodosPrecosPlanos();
         
-        return view('admin.compradores.create', compact('segmentos'));
+        return view('admin.compradores.create', compact('segmentos', 'precosPlanos'));
     }
 
     /**
@@ -68,6 +73,8 @@ class AdminCompradoresController extends Controller
             'segmentos' => 'required|array|min:1',
             'segmentos.*' => 'exists:segmentos,id',
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'plano' => 'required|in:comum,vip',
+            'tipo_pagamento' => 'required|in:mensal,anual',
         ]);
 
         // Forçar role e status
@@ -76,9 +83,16 @@ class AdminCompradoresController extends Controller
 
         $usuario = $this->authService->cadastrar($dados);
 
+        // Criar assinatura automaticamente
+        $this->assinaturaService->criarAssinatura(
+            $usuario->id,
+            $dados['plano'],
+            $dados['tipo_pagamento']
+        );
+
         return redirect()
             ->route('admin.compradores.index')
-            ->with('sucesso', 'Comprador criado e aprovado com sucesso!');
+            ->with('sucesso', 'Comprador criado com assinatura ativa!');
     }
 
     /**
