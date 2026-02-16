@@ -119,8 +119,8 @@
     </a>
 @endif
 
-{{-- Meu Perfil (comprador/fornecedor, apenas drawer/sidebar) --}}
-@if(!$isAdmin && !$isBottomNav)
+{{-- Meu Perfil (todos, apenas drawer/sidebar) --}}
+@if(!$isBottomNav)
     <a href="{{ route('perfil.editar') }}" 
        class="{{ $linkClass }} {{ request()->routeIs('perfil.*') ? $activeClass : $inactiveClass }}"
        @if($isDrawer) @click="menuAberto = false" @endif>

@@ -37,7 +37,7 @@
                 
                 <!-- Foto de Perfil -->
                 @php
-                    $logoPath = $perfil->comprador?->logo_path ?? $perfil->fornecedor?->logo_path ?? null;
+                    $logoPath = $perfil->logo_path ?? $perfil->comprador?->logo_path ?? $perfil->fornecedor?->logo_path ?? null;
                 @endphp
                 <div class="mb-6 flex items-center gap-6" x-data="{ 
                     previewUrl: '{{ $logoPath ? asset('storage/' . $logoPath) : '' }}',
@@ -105,7 +105,8 @@
                 </div>
             </div>
 
-            <!-- Dados do Negócio -->
+            <!-- Dados do Negócio (apenas comprador/fornecedor) -->
+            @if($perfil->role !== 'admin')
             <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-6">
                 <h3 class="text-lg font-bold text-[var(--cor-texto)] mb-4 flex items-center gap-2">
                     <i data-lucide="building-2" class="w-5 h-5 text-blue-600"></i>
@@ -144,8 +145,10 @@
                     </div>
                 </div>
             </div>
+            @endif
 
-            <!-- Segmentos -->
+            <!-- Segmentos (apenas comprador/fornecedor) -->
+            @if($perfil->role !== 'admin')
             <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-6">
                 <h3 class="text-lg font-bold text-[var(--cor-texto)] mb-4 flex items-center gap-2">
                     <i data-lucide="tag" class="w-5 h-5 text-purple-600"></i>
@@ -164,6 +167,7 @@
                     @endforeach
                 </div>
             </div>
+            @endif
 
             <!-- Botões -->
             <div class="flex flex-wrap gap-3">

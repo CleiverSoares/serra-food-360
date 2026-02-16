@@ -15,7 +15,7 @@
         <div class="flex-shrink-0 border-t border-[var(--cor-borda)] p-4" x-data="{ dropdownAberto: false }">
             <div class="relative">
                 @php
-                    $userLogoPath = auth()->user()->comprador?->logo_path ?? auth()->user()->fornecedor?->logo_path ?? null;
+                    $userLogoPath = auth()->user()->logo_path ?? auth()->user()->comprador?->logo_path ?? auth()->user()->fornecedor?->logo_path ?? null;
                 @endphp
                 <button @click="dropdownAberto = !dropdownAberto" 
                         class="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
@@ -38,12 +38,10 @@
                      @click.away="dropdownAberto = false"
                      x-transition
                      class="absolute bottom-full left-0 right-0 mb-2 bg-white border border-[var(--cor-borda)] rounded-lg shadow-lg overflow-hidden">
-                    @if(auth()->user()->role !== 'admin')
-                        <a href="{{ route('perfil.editar') }}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer">
-                            <i data-lucide="user-circle" class="w-4 h-4 text-gray-600"></i>
-                            <span class="text-sm font-medium text-[var(--cor-texto)]">Meu Perfil</span>
-                        </a>
-                    @endif
+                    <a href="{{ route('perfil.editar') }}" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors cursor-pointer">
+                        <i data-lucide="user-circle" class="w-4 h-4 text-gray-600"></i>
+                        <span class="text-sm font-medium text-[var(--cor-texto)]">Meu Perfil</span>
+                    </a>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors text-left cursor-pointer">
