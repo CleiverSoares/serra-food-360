@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\UserModel;
 use App\Repositories\UserRepository;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 
@@ -98,6 +99,9 @@ class UserService
      */
     public function atualizarPerfil(UserModel $usuario, array $dados): bool
     {
+        // Limpar cache da dashboard
+        AdminDashboardController::limparCache();
+        
         // Se tiver logo novo, salvar
         if (isset($dados['logo']) && $dados['logo']) {
             // Deletar logo antigo se existir
@@ -118,6 +122,9 @@ class UserService
      */
     public function deletar(UserModel $usuario): bool
     {
+        // Limpar cache da dashboard
+        AdminDashboardController::limparCache();
+        
         return $this->userRepository->deletar($usuario);
     }
 }

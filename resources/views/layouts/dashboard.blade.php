@@ -87,5 +87,7 @@
     @include('partials.drawer')
 
     <script>document.addEventListener('DOMContentLoaded',()=>{typeof lucide!=='undefined'&&lucide.createIcons()})</script>
+    
+    @stack('scripts')
 </body>
 </html>

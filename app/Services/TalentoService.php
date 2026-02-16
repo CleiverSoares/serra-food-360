@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\TalentoModel;
 use App\Repositories\TalentoRepository;
 use App\Services\FilterService;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use Illuminate\Support\Facades\Storage;
 
 class TalentoService
@@ -64,6 +65,9 @@ class TalentoService
      */
     public function criar(array $dados): TalentoModel
     {
+        // Limpar cache da dashboard
+        AdminDashboardController::limparCache();
+        
         // REGRA DE NEGÓCIO: processar uploads
         $dados = $this->processarUploads($dados);
         
@@ -75,6 +79,9 @@ class TalentoService
      */
     public function atualizar(TalentoModel $talento, array $dados): bool
     {
+        // Limpar cache da dashboard
+        AdminDashboardController::limparCache();
+        
         // REGRA DE NEGÓCIO: processar uploads e deletar antigos
         $dados = $this->processarUploadsAtualizacao($talento, $dados);
         
@@ -86,6 +93,9 @@ class TalentoService
      */
     public function deletar(TalentoModel $talento): bool
     {
+        // Limpar cache da dashboard
+        AdminDashboardController::limparCache();
+        
         // REGRA DE NEGÓCIO: deletar arquivos primeiro
         $this->deletarArquivos($talento);
         
@@ -97,6 +107,9 @@ class TalentoService
      */
     public function ativar(int $id): bool
     {
+        // Limpar cache da dashboard
+        AdminDashboardController::limparCache();
+        
         return $this->talentoRepository->ativar($id);
     }
 
@@ -105,6 +118,9 @@ class TalentoService
      */
     public function inativar(int $id): bool
     {
+        // Limpar cache da dashboard
+        AdminDashboardController::limparCache();
+        
         return $this->talentoRepository->inativar($id);
     }
 

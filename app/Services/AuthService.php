@@ -9,6 +9,7 @@ use App\Repositories\FornecedorRepository;
 use App\Repositories\EnderecoRepository;
 use App\Repositories\ContatoRepository;
 use App\Mail\NovoCadastroParaAprovacao;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -70,6 +71,9 @@ class AuthService
             'role' => $dados['role'],
             'nome' => $dados['name']
         ]);
+
+        // Limpar cache da dashboard
+        AdminDashboardController::limparCache();
 
         $role = $dados['role'];
         
@@ -213,6 +217,9 @@ class AuthService
      */
     public function aprovar(int $usuarioId, int $adminId): bool
     {
+        // Limpar cache da dashboard
+        AdminDashboardController::limparCache();
+        
         $usuario = $this->userRepository->buscarPorId($usuarioId);
         
         if (!$usuario) {
@@ -231,6 +238,9 @@ class AuthService
      */
     public function rejeitar(int $usuarioId, int $adminId, ?string $motivo = null): bool
     {
+        // Limpar cache da dashboard
+        AdminDashboardController::limparCache();
+        
         $usuario = $this->userRepository->buscarPorId($usuarioId);
         
         if (!$usuario) {

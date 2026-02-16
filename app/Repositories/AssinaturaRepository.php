@@ -149,4 +149,67 @@ class AssinaturaRepository
     {
         return AssinaturaModel::where('id', $id)->delete();
     }
+
+    /**
+     * Contar assinaturas por status
+     */
+    public function contarPorStatus(): array
+    {
+        return [
+            'ativo' => AssinaturaModel::where('status', 'ativo')->count(),
+            'vencido' => AssinaturaModel::where('status', 'vencido')->count(),
+            'cancelado' => AssinaturaModel::where('status', 'cancelado')->count(),
+        ];
+    }
+
+    /**
+     * Contar assinaturas por plano
+     */
+    public function contarPorPlano(): array
+    {
+        return [
+            'comum' => AssinaturaModel::where('status', 'ativo')->where('plano', 'comum')->count(),
+            'vip' => AssinaturaModel::where('status', 'ativo')->where('plano', 'vip')->count(),
+        ];
+    }
+
+    /**
+     * Buscar assinaturas por período
+     */
+    public function buscarPorPeriodo(?string $dataInicio = null, ?string $dataFim = null): Collection
+    {
+        $query = AssinaturaModel::query();
+
+        if ($dataInicio) {
+            $query->where('data_inicio', '>=', $dataInicio);
+        }
+
+        if ($dataFim) {
+            $query->where('data_inicio', '<=', $dataFim);
+        }
+
+        return $query->with('usuario')->get();
+    }
+
+    /**
+     * Buscar todas assinaturas ativas
+     */
+    public function buscarAtivas(): Collection
+    {
+        return AssinaturaModel::where('status', 'ativo')
+            ->with(['usuario', 'usuario.segmentos'])
+            ->get();
+    }
+
+    /**
+     * Obter evolução mensal de assinaturas (últimos 6 meses)
+     */
+    public function obterEvolucaoMensal(int $meses = 6): Collection
+    {
+        return AssinaturaModel::selectRaw('DATE_FORMAT(data_inicio, "%Y-%m") as mes, COUNT(*) as total, plano')
+            ->where('data_inicio', '>=', now()->subMonths($meses))
+            ->groupBy('mes', 'plano')
+            ->orderBy('mes', 'asc')
+            ->get();
+    }
 }

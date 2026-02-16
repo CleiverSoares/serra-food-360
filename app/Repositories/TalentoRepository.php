@@ -129,7 +129,7 @@ class TalentoRepository
     /**
      * Buscar cargos únicos (para filtros)
      */
-    public function buscarCargosUnicos(bool $apenasAtivos = false): Collection
+    public function buscarCargosUnicos(bool $apenasAtivos = false): \Illuminate\Support\Collection
     {
         $query = TalentoModel::select('cargo')->distinct()->orderBy('cargo');
         
@@ -143,7 +143,7 @@ class TalentoRepository
     /**
      * Buscar disponibilidades únicas (para filtros)
      */
-    public function buscarDisponibilidadesUnicas(bool $apenasAtivos = false): Collection
+    public function buscarDisponibilidadesUnicas(bool $apenasAtivos = false): \Illuminate\Support\Collection
     {
         $query = TalentoModel::whereNotNull('disponibilidade')
             ->select('disponibilidade')
