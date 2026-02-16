@@ -68,7 +68,7 @@
                                     </div>
                                 </div>
                                 
-                                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-lg text-xs lg:text-sm font-semibold whitespace-nowrap">
+                                <span class="bg-green-800 px-3 py-1 rounded-lg text-xs lg:text-sm font-semibold whitespace-nowrap text-white">
                                     {{ $cotacao->segmento->nome }}
                                 </span>
                             </div>

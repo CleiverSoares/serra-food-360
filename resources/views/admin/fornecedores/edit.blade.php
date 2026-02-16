@@ -47,13 +47,13 @@
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Telefone *</label>
-                        <input type="tel" name="telefone" value="{{ old('telefone', $fornecedor->telefone) }}" required
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Telefone</label>
+                        <input type="tel" name="telefone" value="{{ old('telefone', $fornecedor->telefone) }}"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">WhatsApp *</label>
-                        <input type="tel" name="whatsapp" value="{{ old('whatsapp', $fornecedor->whatsapp) }}" required
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">WhatsApp</label>
+                        <input type="tel" name="whatsapp" value="{{ old('whatsapp', $fornecedor->whatsapp) }}"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                     <div class="md:col-span-2">

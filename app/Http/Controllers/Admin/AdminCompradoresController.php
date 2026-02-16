@@ -123,8 +123,19 @@ class AdminCompradoresController extends Controller
         }
 
         $segmentos = $this->segmentoRepository->buscarAtivos();
+        
+        // Dados dos contatos e endereço
+        $telefone = $comprador->contatos->where('tipo', 'telefone')->where('is_principal', true)->first();
+        $whatsapp = $comprador->contatos->where('tipo', 'whatsapp')->where('is_principal', true)->first();
+        $endereco = $comprador->enderecoPrincipal;
+        
+        $dados = [
+            'telefone' => $telefone?->valor ?? '',
+            'whatsapp' => $whatsapp?->valor ?? '',
+            'cidade' => $endereco?->cidade ?? '',
+        ];
 
-        return view('admin.compradores.edit', compact('comprador', 'segmentos'));
+        return view('admin.compradores.edit', compact('comprador', 'segmentos', 'dados'));
     }
 
     /**

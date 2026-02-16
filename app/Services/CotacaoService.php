@@ -9,6 +9,7 @@ use App\Repositories\CotacaoFornecedorRepository;
 use App\Repositories\UserRepository;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Mail\NovaCotacaoDisponivel;
+use App\Mail\NovaCotacaoParaFornecedor;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
@@ -82,8 +83,9 @@ class CotacaoService
         
         $cotacao = $this->cotacaoRepository->criar($dados);
         
-        // Enviar email para compradores do segmento
+        // Enviar emails para compradores E fornecedores do segmento
         $this->notificarCompradoresSegmento($cotacao);
+        $this->notificarFornecedoresSegmento($cotacao);
         
         Log::info('Nova cotação criada', [
             'cotacao_id' => $cotacao->id,
@@ -130,6 +132,49 @@ class CotacaoService
                 Log::error('Erro ao enviar email de nova cotação', [
                     'cotacao_id' => $cotacao->id,
                     'comprador_email' => $comprador->email,
+                    'erro' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Notificar fornecedores do segmento sobre nova cotação
+     */
+    private function notificarFornecedoresSegmento(CotacaoModel $cotacao): void
+    {
+        // Buscar fornecedores aprovados do segmento
+        $fornecedores = $this->userRepository->buscarPorRole('fornecedor')
+            ->whereHas('segmentos', function ($query) use ($cotacao) {
+                $query->where('segmentos.id', $cotacao->segmento_id);
+            })
+            ->where('status', 'aprovado')
+            ->get();
+
+        Log::info('Enviando emails para fornecedores do segmento', [
+            'cotacao_id' => $cotacao->id,
+            'segmento' => $cotacao->segmento->nome,
+            'total_fornecedores' => $fornecedores->count(),
+        ]);
+
+        foreach ($fornecedores as $fornecedor) {
+            try {
+                $nomeFornecedor = $fornecedor->fornecedor?->nome_empresa ?? $fornecedor->name;
+                
+                Mail::to($fornecedor->email)->send(
+                    new NovaCotacaoParaFornecedor($cotacao, $nomeFornecedor)
+                );
+
+                Log::info('Email de oportunidade enviado para fornecedor', [
+                    'cotacao_id' => $cotacao->id,
+                    'fornecedor_email' => $fornecedor->email,
+                    'fornecedor_id' => $fornecedor->id,
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Erro ao enviar email para fornecedor', [
+                    'cotacao_id' => $cotacao->id,
+                    'fornecedor_email' => $fornecedor->email,
                     'erro' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
                 ]);

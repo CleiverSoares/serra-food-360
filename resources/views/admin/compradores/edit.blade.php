@@ -47,18 +47,18 @@
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Telefone *</label>
-                        <input type="tel" name="telefone" value="{{ old('telefone', $comprador->telefone) }}" required
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Telefone</label>
+                        <input type="tel" name="telefone" value="{{ old('telefone', $dados['telefone']) }}"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">WhatsApp *</label>
-                        <input type="tel" name="whatsapp" value="{{ old('whatsapp', $comprador->whatsapp) }}" required
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">WhatsApp</label>
+                        <input type="tel" name="whatsapp" value="{{ old('whatsapp', $dados['whatsapp']) }}"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Cidade *</label>
-                        <input type="text" name="cidade" value="{{ old('cidade', $comprador->cidade) }}" required
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Cidade</label>
+                        <input type="text" name="cidade" value="{{ old('cidade', $dados['cidade']) }}"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                 </div>
