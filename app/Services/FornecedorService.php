@@ -70,4 +70,25 @@ class FornecedorService
         $fornecedor->load(['fornecedor', 'segmentos', 'aprovador', 'enderecoPrincipal', 'contatos', 'assinaturaAtiva']);
         return $fornecedor;
     }
+
+    /**
+     * Preparar dados para formulário de edição
+     */
+    public function prepararDadosEdicao(int $id): array
+    {
+        $fornecedor = $this->buscarFornecedorAdmin($id);
+        
+        if (!$fornecedor) {
+            return [];
+        }
+        
+        $dadosContato = $this->userRepository->buscarDadosContatoEEndereco($fornecedor);
+        $segmentosIds = $this->userRepository->obterSegmentosIds($fornecedor);
+        
+        return [
+            'fornecedor' => $fornecedor,
+            'dadosContato' => $dadosContato,
+            'segmentosIds' => $segmentosIds,
+        ];
+    }
 }

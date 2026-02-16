@@ -115,27 +115,21 @@ class AdminCompradoresController extends Controller
      */
     public function edit(int $id)
     {
-        $comprador = $this->compradorService->buscarCompradorAdmin($id);
+        $dadosEdicao = $this->compradorService->prepararDadosEdicao($id);
 
-        if (!$comprador) {
+        if (empty($dadosEdicao)) {
             return redirect()->route('admin.compradores.index')
                 ->with('erro', 'Comprador não encontrado.');
         }
 
         $segmentos = $this->segmentoRepository->buscarAtivos();
-        
-        // Dados dos contatos e endereço
-        $telefone = $comprador->contatos->where('tipo', 'telefone')->where('is_principal', true)->first();
-        $whatsapp = $comprador->contatos->where('tipo', 'whatsapp')->where('is_principal', true)->first();
-        $endereco = $comprador->enderecoPrincipal;
-        
-        $dados = [
-            'telefone' => $telefone?->valor ?? '',
-            'whatsapp' => $whatsapp?->valor ?? '',
-            'cidade' => $endereco?->cidade ?? '',
-        ];
 
-        return view('admin.compradores.edit', compact('comprador', 'segmentos', 'dados'));
+        return view('admin.compradores.edit', [
+            'comprador' => $dadosEdicao['comprador'],
+            'dados' => $dadosEdicao['dadosContato'],
+            'segmentosIds' => $dadosEdicao['segmentosIds'],
+            'segmentos' => $segmentos,
+        ]);
     }
 
     /**

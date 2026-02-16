@@ -391,4 +391,38 @@ class UserRepository
     {
         return UserModel::where('status', 'pendente')->count();
     }
+
+    /**
+     * Buscar dados de contato e endereço para formulário de edição
+     */
+    public function buscarDadosContatoEEndereco(UserModel $usuario): array
+    {
+        $telefone = $usuario->contatos()
+            ->where('tipo', 'telefone')
+            ->where('is_principal', true)
+            ->first();
+        
+        $whatsapp = $usuario->contatos()
+            ->where('tipo', 'whatsapp')
+            ->where('is_principal', true)
+            ->first();
+        
+        $endereco = $usuario->enderecos()
+            ->where('is_padrao', true)
+            ->first();
+        
+        return [
+            'telefone' => $telefone?->valor ?? '',
+            'whatsapp' => $whatsapp?->valor ?? '',
+            'cidade' => $endereco?->cidade ?? '',
+        ];
+    }
+
+    /**
+     * Obter IDs dos segmentos do usuário
+     */
+    public function obterSegmentosIds(UserModel $usuario): array
+    {
+        return $usuario->segmentos()->pluck('segmentos.id')->toArray();
+    }
 }

@@ -112,4 +112,39 @@ class CotacaoRepository
             ->orderBy('created_at', 'desc')
             ->paginate($porPagina);
     }
+
+    /**
+     * Buscar cotações com filtros (para comprador)
+     */
+    public function buscarComFiltros(array $segmentosIds, array $filtros = []): Collection
+    {
+        $query = CotacaoModel::whereIn('segmento_id', $segmentosIds)
+            ->with(['segmento', 'ofertas.fornecedor.fornecedor', 'ofertas.fornecedor.enderecoPrincipal']);
+
+        // Filtro por busca (nome/título/produto)
+        if (!empty($filtros['busca'])) {
+            $busca = $filtros['busca'];
+            $query->where(function($q) use ($busca) {
+                $q->where('titulo', 'like', "%{$busca}%")
+                  ->orWhere('produto', 'like', "%{$busca}%")
+                  ->orWhere('descricao', 'like', "%{$busca}%");
+            });
+        }
+
+        // Filtro por segmento específico
+        if (!empty($filtros['segmento_id'])) {
+            $query->where('segmento_id', $filtros['segmento_id']);
+        }
+
+        // Filtro por status
+        if (!empty($filtros['status'])) {
+            $query->where('status', $filtros['status']);
+        } else {
+            // Por padrão mostra apenas ativos
+            $query->where('status', 'ativo')
+                  ->whereDate('data_fim', '>=', now());
+        }
+
+        return $query->orderBy('data_inicio', 'desc')->get();
+    }
 }

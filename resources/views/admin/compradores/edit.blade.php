@@ -47,6 +47,15 @@
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                     <div>
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Status *</label>
+                        <select name="status" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
+                            <option value="pendente" {{ old('status', $comprador->status) === 'pendente' ? 'selected' : '' }}>Pendente</option>
+                            <option value="aprovado" {{ old('status', $comprador->status) === 'aprovado' ? 'selected' : '' }}>Aprovado</option>
+                            <option value="rejeitado" {{ old('status', $comprador->status) === 'rejeitado' ? 'selected' : '' }}>Rejeitado</option>
+                            <option value="inativo" {{ old('status', $comprador->status) === 'inativo' ? 'selected' : '' }}>Inativo</option>
+                        </select>
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Telefone</label>
                         <input type="tel" name="telefone" value="{{ old('telefone', $dados['telefone']) }}"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
@@ -124,7 +133,7 @@
                     @foreach($segmentos as $segmento)
                         <label class="flex items-center gap-2 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 hover:border-[var(--cor-verde-serra)] transition-colors">
                             <input type="checkbox" name="segmentos[]" value="{{ $segmento->id }}"
-                                   {{ in_array($segmento->id, old('segmentos', $comprador->segmentos->pluck('id')->toArray())) ? 'checked' : '' }}
+                                   {{ in_array($segmento->id, old('segmentos', $segmentosIds)) ? 'checked' : '' }}
                                    class="w-5 h-5 rounded accent-[var(--cor-verde-serra)]">
                             <span class="text-sm font-medium text-[var(--cor-texto)]">
                                 {{ $segmento->nome }}
@@ -134,11 +143,26 @@
                 </div>
             </div>
 
-            <!-- Gerenciar Assinatura -->
-            @php
-                $assinatura = $comprador->assinaturaAtiva;
-            @endphp
-            <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-6">
+            <!-- Botões de Salvar -->
+            <div class="flex flex-wrap gap-3">
+                <button type="submit" class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:opacity-90 transition-all font-medium text-sm md:text-base">
+                    <i data-lucide="save" class="w-4 h-4 flex-shrink-0"></i>
+                    <span class="whitespace-nowrap">Salvar Alterações</span>
+                </button>
+                <a href="{{ route('admin.compradores.show', $comprador->id) }}" 
+                   class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm md:text-base">
+                    <i data-lucide="x" class="w-4 h-4 flex-shrink-0"></i>
+                    <span class="whitespace-nowrap">Cancelar</span>
+                </a>
+            </div>
+
+        </form>
+
+        <!-- Gerenciar Assinatura (formulário independente) -->
+        @php
+            $assinatura = $comprador->assinaturaAtiva;
+        @endphp
+        <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-6 mt-6">
                 <h3 class="text-lg font-bold text-[var(--cor-texto)] mb-4 flex items-center gap-2">
                     <i data-lucide="credit-card" class="w-5 h-5 text-blue-600"></i>
                     Gerenciar Assinatura
@@ -214,21 +238,6 @@
                     </div>
                 @endif
             </div>
-
-            <!-- Botões -->
-            <div class="flex flex-wrap gap-3">
-                <button type="submit" class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:opacity-90 transition-all font-medium text-sm md:text-base">
-                    <i data-lucide="save" class="w-4 h-4 flex-shrink-0"></i>
-                    <span class="whitespace-nowrap">Salvar Alterações</span>
-                </button>
-                <a href="{{ route('admin.compradores.show', $comprador->id) }}" 
-                   class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm md:text-base">
-                    <i data-lucide="x" class="w-4 h-4 flex-shrink-0"></i>
-                    <span class="whitespace-nowrap">Cancelar</span>
-                </a>
-            </div>
-
-        </form>
 
     </div>
 </div>

@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Services\CotacaoService;
+use App\Repositories\SegmentoRepository;
 use Illuminate\Http\Request;
 
 class CotacoesController extends Controller
 {
     public function __construct(
-        private CotacaoService $cotacaoService
+        private CotacaoService $cotacaoService,
+        private SegmentoRepository $segmentoRepository
     ) {}
 
     /**
@@ -26,9 +28,14 @@ class CotacoesController extends Controller
             return view('cotacoes.fornecedor-index', compact('cotacoes'));
         }
         
-        // Comprador: buscar cotações do seu segmento
-        $cotacoes = $this->cotacaoService->buscarCotacoesParaComprador($usuario->id);
-        return view('cotacoes.index', compact('cotacoes'));
+        // Comprador: buscar cotações do seu segmento com filtros
+        $filtros = $request->only(['busca', 'segmento_id', 'status']);
+        $cotacoes = $this->cotacaoService->buscarCotacoesParaComprador($usuario->id, $filtros);
+        
+        // Buscar apenas segmentos do comprador para o filtro
+        $segmentos = $usuario->segmentos;
+        
+        return view('cotacoes.index', compact('cotacoes', 'segmentos', 'filtros'));
     }
 
     /**

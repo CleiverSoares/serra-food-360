@@ -47,18 +47,27 @@
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                     <div>
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Status *</label>
+                        <select name="status" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
+                            <option value="pendente" {{ old('status', $fornecedor->status) === 'pendente' ? 'selected' : '' }}>Pendente</option>
+                            <option value="aprovado" {{ old('status', $fornecedor->status) === 'aprovado' ? 'selected' : '' }}>Aprovado</option>
+                            <option value="rejeitado" {{ old('status', $fornecedor->status) === 'rejeitado' ? 'selected' : '' }}>Rejeitado</option>
+                            <option value="inativo" {{ old('status', $fornecedor->status) === 'inativo' ? 'selected' : '' }}>Inativo</option>
+                        </select>
+                    </div>
+                    <div>
                         <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Telefone</label>
-                        <input type="tel" name="telefone" value="{{ old('telefone', $fornecedor->telefone) }}"
+                        <input type="tel" name="telefone" value="{{ old('telefone', $dados['telefone']) }}"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">WhatsApp</label>
-                        <input type="tel" name="whatsapp" value="{{ old('whatsapp', $fornecedor->whatsapp) }}"
+                        <input type="tel" name="whatsapp" value="{{ old('whatsapp', $dados['whatsapp']) }}"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Cidade *</label>
-                        <input type="text" name="cidade" value="{{ old('cidade', $fornecedor->cidade) }}" required
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Cidade</label>
+                        <input type="text" name="cidade" value="{{ old('cidade', $dados['cidade']) }}"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                 </div>
@@ -114,7 +123,7 @@
                     @foreach($segmentos as $segmento)
                         <label class="flex items-center gap-2 p-3 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 hover:border-[var(--cor-verde-serra)] transition-colors">
                             <input type="checkbox" name="segmentos[]" value="{{ $segmento->id }}"
-                                   {{ in_array($segmento->id, old('segmentos', $fornecedor->segmentos->pluck('id')->toArray())) ? 'checked' : '' }}
+                                   {{ in_array($segmento->id, old('segmentos', $segmentosIds)) ? 'checked' : '' }}
                                    class="w-5 h-5 rounded accent-[var(--cor-verde-serra)]">
                             <span class="text-sm font-medium text-[var(--cor-texto)]">
                                 {{ $segmento->nome }}
@@ -124,11 +133,26 @@
                 </div>
             </div>
 
-            <!-- Gerenciar Assinatura -->
-            @php
-                $assinatura = $fornecedor->assinaturaAtiva;
-            @endphp
-            <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-6">
+            <!-- Botões de Salvar -->
+            <div class="flex flex-wrap gap-3">
+                <button type="submit" class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:opacity-90 transition-all font-medium text-sm md:text-base">
+                    <i data-lucide="save" class="w-4 h-4 flex-shrink-0"></i>
+                    <span class="whitespace-nowrap">Salvar Alterações</span>
+                </button>
+                <a href="{{ route('admin.fornecedores.show', $fornecedor->id) }}" 
+                   class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm md:text-base">
+                    <i data-lucide="x" class="w-4 h-4 flex-shrink-0"></i>
+                    <span class="whitespace-nowrap">Cancelar</span>
+                </a>
+            </div>
+
+        </form>
+
+        <!-- Gerenciar Assinatura (formulário independente) -->
+        @php
+            $assinatura = $fornecedor->assinaturaAtiva;
+        @endphp
+        <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-6 mt-6">
                 <h3 class="text-lg font-bold text-[var(--cor-texto)] mb-4 flex items-center gap-2">
                     <i data-lucide="credit-card" class="w-5 h-5 text-blue-600"></i>
                     Gerenciar Assinatura
@@ -204,21 +228,6 @@
                     </div>
                 @endif
             </div>
-
-            <!-- Botões -->
-            <div class="flex flex-wrap gap-3">
-                <button type="submit" class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:opacity-90 transition-all font-medium text-sm md:text-base">
-                    <i data-lucide="save" class="w-4 h-4 flex-shrink-0"></i>
-                    <span class="whitespace-nowrap">Salvar Alterações</span>
-                </button>
-                <a href="{{ route('admin.fornecedores.show', $fornecedor->id) }}" 
-                   class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm md:text-base">
-                    <i data-lucide="x" class="w-4 h-4 flex-shrink-0"></i>
-                    <span class="whitespace-nowrap">Cancelar</span>
-                </a>
-            </div>
-
-        </form>
 
     </div>
 </div>

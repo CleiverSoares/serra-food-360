@@ -115,16 +115,21 @@ class AdminFornecedoresController extends Controller
      */
     public function edit(int $id)
     {
-        $fornecedor = $this->fornecedorService->buscarFornecedorAdmin($id);
+        $dadosEdicao = $this->fornecedorService->prepararDadosEdicao($id);
 
-        if (!$fornecedor) {
+        if (empty($dadosEdicao)) {
             return redirect()->route('admin.fornecedores.index')
                 ->with('erro', 'Fornecedor não encontrado.');
         }
 
         $segmentos = $this->segmentoRepository->buscarAtivos();
 
-        return view('admin.fornecedores.edit', compact('fornecedor', 'segmentos'));
+        return view('admin.fornecedores.edit', [
+            'fornecedor' => $dadosEdicao['fornecedor'],
+            'dados' => $dadosEdicao['dadosContato'],
+            'segmentosIds' => $dadosEdicao['segmentosIds'],
+            'segmentos' => $segmentos,
+        ]);
     }
 
     /**

@@ -70,4 +70,25 @@ class CompradorService
         $comprador->load(['comprador', 'segmentos', 'aprovador', 'enderecoPrincipal', 'contatos', 'assinaturaAtiva']);
         return $comprador;
     }
+
+    /**
+     * Preparar dados para formulário de edição
+     */
+    public function prepararDadosEdicao(int $id): array
+    {
+        $comprador = $this->buscarCompradorAdmin($id);
+        
+        if (!$comprador) {
+            return [];
+        }
+        
+        $dadosContato = $this->userRepository->buscarDadosContatoEEndereco($comprador);
+        $segmentosIds = $this->userRepository->obterSegmentosIds($comprador);
+        
+        return [
+            'comprador' => $comprador,
+            'dadosContato' => $dadosContato,
+            'segmentosIds' => $segmentosIds,
+        ];
+    }
 }

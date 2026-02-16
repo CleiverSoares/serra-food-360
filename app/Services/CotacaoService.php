@@ -24,9 +24,9 @@ class CotacaoService
     ) {}
 
     /**
-     * Listar cotações ativas para um comprador (baseado nos segmentos)
+     * Listar cotações ativas para um comprador (baseado nos segmentos e filtros)
      */
-    public function buscarCotacoesParaComprador(int $userId): EloquentCollection
+    public function buscarCotacoesParaComprador(int $userId, array $filtros = []): EloquentCollection
     {
         $usuario = $this->userRepository->buscarPorId($userId);
         
@@ -41,7 +41,7 @@ class CotacaoService
             return new EloquentCollection([]);
         }
 
-        return $this->cotacaoRepository->buscarPorSegmentos($segmentosIds, true);
+        return $this->cotacaoRepository->buscarComFiltros($segmentosIds, $filtros);
     }
 
     /**
