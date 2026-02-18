@@ -98,10 +98,10 @@
                 @foreach($cotacoes as $cotacao)
                     @php
                         $melhorOferta = $cotacao->melhorOferta();
-                        $totalOfertas = $cotacao->ofertas->count();
-                        $mediaPreco = $totalOfertas > 0 ? $cotacao->ofertas->avg('preco_unitario') : 0;
+                        $totalOfertas = $cotacao->ofertasOrdenadas->count();
+                        $mediaPreco = $totalOfertas > 0 ? $cotacao->ofertasOrdenadas->avg('preco_unitario') : 0;
                         $menorPreco = $melhorOferta ? $melhorOferta->preco_unitario : 0;
-                        $maiorPreco = $totalOfertas > 0 ? $cotacao->ofertas->max('preco_unitario') : 0;
+                        $maiorPreco = $totalOfertas > 0 ? $cotacao->ofertasOrdenadas->max('preco_unitario') : 0;
                         $economia = $totalOfertas > 1 && $melhorOferta ? ($maiorPreco - $menorPreco) : 0;
                         $economiaPercent = $maiorPreco > 0 ? (($economia / $maiorPreco) * 100) : 0;
                     @endphp
@@ -223,7 +223,7 @@
                                 @endif
 
                                 <!-- Lista de Ofertas -->
-                                @if($cotacao->ofertas->isNotEmpty())
+                                @if($cotacao->ofertasOrdenadas->isNotEmpty())
                                     <div>
                                         <h4 class="text-lg font-bold text-[var(--cor-texto)] mb-4 flex items-center gap-2">
                                             <i data-lucide="package-check" class="w-5 h-5"></i>
@@ -231,7 +231,7 @@
                                         </h4>
 
                                         <div class="grid lg:grid-cols-3 gap-4">
-                                            @foreach($cotacao->ofertasOrdenadas()->get() as $index => $oferta)
+                                            @foreach($cotacao->ofertasOrdenadas as $index => $oferta)
                                                 <div class="bg-white border-2 rounded-xl p-4 {{ $index === 0 ? 'border-yellow-400' : 'border-gray-200' }}">
                                                     @if($index === 0)
                                                         <div class="flex items-center gap-2 text-yellow-700 font-bold text-sm mb-3">

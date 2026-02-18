@@ -13,7 +13,7 @@ class CotacaoRepository
      */
     public function buscarTodas(): Collection
     {
-        return CotacaoModel::with(['segmento', 'criador', 'ofertas.fornecedor.fornecedor'])
+        return CotacaoModel::with(['segmento', 'criador', 'ofertasOrdenadas.fornecedor.fornecedor'])
             ->orderBy('created_at', 'desc')
             ->get();
     }
@@ -25,7 +25,7 @@ class CotacaoRepository
     {
         return CotacaoModel::where('status', 'ativo')
             ->whereDate('data_fim', '>=', now())
-            ->with(['segmento', 'ofertas.fornecedor.fornecedor'])
+            ->with(['segmento', 'ofertasOrdenadas.fornecedor.fornecedor'])
             ->orderBy('data_inicio', 'desc')
             ->get();
     }
@@ -36,7 +36,7 @@ class CotacaoRepository
     public function buscarPorSegmento(int $segmentoId, bool $apenasAtivas = true): Collection
     {
         $query = CotacaoModel::where('segmento_id', $segmentoId)
-            ->with(['segmento', 'ofertas.fornecedor.fornecedor', 'ofertas.fornecedor.enderecoPrincipal']);
+            ->with(['segmento', 'ofertasOrdenadas.fornecedor.fornecedor', 'ofertasOrdenadas.fornecedor.enderecoPrincipal']);
 
         if ($apenasAtivas) {
             $query->where('status', 'ativo')
@@ -52,7 +52,7 @@ class CotacaoRepository
     public function buscarPorSegmentos(array $segmentosIds, bool $apenasAtivas = true): Collection
     {
         $query = CotacaoModel::whereIn('segmento_id', $segmentosIds)
-            ->with(['segmento', 'ofertas.fornecedor.fornecedor', 'ofertas.fornecedor.enderecoPrincipal']);
+            ->with(['segmento', 'ofertasOrdenadas.fornecedor.fornecedor', 'ofertasOrdenadas.fornecedor.enderecoPrincipal']);
 
         if ($apenasAtivas) {
             $query->where('status', 'ativo')
@@ -67,7 +67,7 @@ class CotacaoRepository
      */
     public function buscarPorId(int $id): ?CotacaoModel
     {
-        return CotacaoModel::with(['segmento', 'criador', 'ofertas.fornecedor.fornecedor', 'ofertas.fornecedor.enderecoPrincipal'])
+        return CotacaoModel::with(['segmento', 'criador', 'ofertasOrdenadas.fornecedor.fornecedor', 'ofertasOrdenadas.fornecedor.enderecoPrincipal'])
             ->find($id);
     }
 
@@ -119,7 +119,11 @@ class CotacaoRepository
     public function buscarComFiltros(array $segmentosIds, array $filtros = []): Collection
     {
         $query = CotacaoModel::whereIn('segmento_id', $segmentosIds)
-            ->with(['segmento', 'ofertas.fornecedor.fornecedor', 'ofertas.fornecedor.enderecoPrincipal']);
+            ->with([
+                'segmento', 
+                'ofertasOrdenadas.fornecedor.fornecedor', 
+                'ofertasOrdenadas.fornecedor.enderecoPrincipal'
+            ]);
 
         // Filtro por busca (nome/título/produto)
         if (!empty($filtros['busca'])) {

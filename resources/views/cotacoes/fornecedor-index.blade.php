@@ -45,9 +45,9 @@
                  x-init="$watch('modalAberto', value => { document.body.style.overflow = value ? 'hidden' : 'auto'; })">
                 @foreach($cotacoes as $cotacao)
                     @php
-                        $minhaOferta = $cotacao->ofertas->firstWhere('fornecedor_id', auth()->id());
+                        $minhaOferta = $cotacao->ofertasOrdenadas->firstWhere('fornecedor_id', auth()->id());
                         $melhorOferta = $cotacao->melhorOferta();
-                        $totalOfertas = $cotacao->ofertas->count();
+                        $totalOfertas = $cotacao->ofertasOrdenadas->count();
                     @endphp
 
                     <!-- Card da Cotação -->
@@ -110,7 +110,7 @@
                                         
                                         <!-- Posição no Ranking -->
                                         @php
-                                            $ranking = $cotacao->ofertas->sortBy('preco_unitario')->values();
+                                            $ranking = $cotacao->ofertasOrdenadas->values();
                                             $minhaPosicao = $ranking->search(fn($o) => $o->id === $minhaOferta->id) + 1;
                                         @endphp
                                         
@@ -226,7 +226,7 @@
                                         <i data-lucide="chevron-down" class="w-4 h-4 group-open:rotate-180 transition-transform"></i>
                                     </summary>
                                     <div class="mt-4 space-y-2">
-                                        @foreach($cotacao->ofertasOrdenadas()->get() as $index => $oferta)
+                                        @foreach($cotacao->ofertasOrdenadas as $index => $oferta)
                                             <div class="bg-white border rounded-lg p-3 text-sm">
                                                 <div class="flex items-center justify-between">
                                                     <div>

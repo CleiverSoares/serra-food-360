@@ -157,7 +157,7 @@
                                 class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory lg:grid lg:grid-cols-3 lg:overflow-visible lg:snap-none"
                                 style="scrollbar-width: thin; -webkit-overflow-scrolling: touch;">
                                 
-                                @foreach($cotacao->ofertasOrdenadas()->get() as $index => $oferta)
+                                @foreach($cotacao->ofertasOrdenadas as $index => $oferta)
                                     <!-- Card de Oferta -->
                                     <div class="flex-shrink-0 w-[85vw] lg:w-auto snap-center lg:snap-align-none">
                                         <div class="bg-white border-2 rounded-xl overflow-hidden transition-all hover:shadow-lg

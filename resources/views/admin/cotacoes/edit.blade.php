@@ -201,7 +201,7 @@
             <div class="flex items-center justify-between mb-6">
                 <div>
                     <h2 class="text-xl font-bold text-[var(--cor-texto)]">Ofertas dos Fornecedores</h2>
-                    <p class="text-sm text-[var(--cor-texto-secundario)] mt-1">{{ $cotacao->ofertas->count() }} oferta(s) cadastrada(s)</p>
+                    <p class="text-sm text-[var(--cor-texto-secundario)] mt-1">{{ $cotacao->ofertasOrdenadas->count() }} oferta(s) cadastrada(s)</p>
                 </div>
                 <button @click="mostrarForm = !mostrarForm" 
                         class="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-lg font-semibold hover:bg-blue-100 transition-all">
@@ -307,7 +307,7 @@
             </div>
 
             <!-- Lista de Ofertas -->
-            @if($cotacao->ofertas->isEmpty())
+            @if($cotacao->ofertasOrdenadas->isEmpty())
                 <div class="text-center py-12">
                     <i data-lucide="inbox" class="w-12 h-12 text-gray-300 mx-auto mb-3"></i>
                     <p class="text-[var(--cor-texto-secundario)]">Nenhuma oferta cadastrada ainda</p>
@@ -315,7 +315,7 @@
                 </div>
             @else
                 <div class="space-y-3">
-                    @foreach($cotacao->ofertasOrdenadas()->get() as $index => $oferta)
+                    @foreach($cotacao->ofertasOrdenadas as $index => $oferta)
                         <div class="border-2 rounded-lg p-4 transition-all hover:shadow-md
                                     {{ $oferta->destaque ? 'border-yellow-400 bg-yellow-50' : 'border-gray-200 bg-gray-50' }}">
                             <div class="flex items-start justify-between gap-4">

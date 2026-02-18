@@ -244,7 +244,10 @@ class CotacoesSeeder extends Seeder
             // Criar ofertas de fornecedores diferentes
             $fornecedoresDisponiveis = $fornecedores->shuffle();
             
-            foreach ($dadosCotacao['ofertas'] as $index => $dadosOferta) {
+            // Ordenar ofertas por preço (menor primeiro)
+            $ofertasOrdenadas = collect($dadosCotacao['ofertas'])->sortBy('preco')->values()->toArray();
+            
+            foreach ($ofertasOrdenadas as $index => $dadosOferta) {
                 if ($index >= $fornecedoresDisponiveis->count()) {
                     break;
                 }
@@ -262,7 +265,8 @@ class CotacoesSeeder extends Seeder
                 ]);
 
                 $ofertasCriadas++;
-                echo "   💰 Oferta: R$ {$dadosOferta['preco']} - {$fornecedor->fornecedor->nome_empresa}\n";
+                $destaqueLabel = $index === 0 ? '👑 MELHOR OFERTA' : '';
+                echo "   💰 Oferta: R$ {$dadosOferta['preco']} - {$fornecedor->fornecedor->nome_empresa} {$destaqueLabel}\n";
             }
 
             echo "\n";
