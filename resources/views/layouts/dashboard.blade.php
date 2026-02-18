@@ -41,7 +41,8 @@
               e.target.style.transform = '';
               this.isDragging = false;
           }
-      }">
+      }"
+      x-init="$watch('menuAberto', value => { document.body.style.overflow = value ? 'hidden' : 'auto'; })">
     
     {{-- Sidebar Desktop --}}
     @include('partials.sidebar')

@@ -78,11 +78,20 @@ class AdminMateriaisController extends Controller
         $dados['apenas_vip'] = $request->has('apenas_vip');
         $dados['ativo'] = $request->has('ativo');
 
+        // Passar os arquivos separadamente
+        if ($request->hasFile('thumbnail')) {
+            $dados['thumbnail'] = $request->file('thumbnail');
+        }
+        
+        if ($request->hasFile('arquivo')) {
+            $dados['arquivo'] = $request->file('arquivo');
+        }
+
         $this->materialService->criar($dados);
 
         return redirect()
             ->route('admin.materiais.index')
-            ->with('success', 'Material criado com sucesso!');
+            ->with('sucesso', 'Material criado com sucesso!');
     }
 
     /**
@@ -121,8 +130,8 @@ class AdminMateriaisController extends Controller
             'categoria' => 'required|in:financeiro,pessoas,cardapio,seguranca-alimentar,marketing,legislacao,logistica,inovacao',
             'tipo' => 'required|in:arquivo,video,link',
             'arquivo' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx|max:10240',
-            'video_url' => 'required_if:tipo,video|url',
-            'link_externo' => 'required_if:tipo,link|url',
+            'video_url' => 'nullable|url',
+            'link_externo' => 'nullable|url',
             'thumbnail' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'apenas_vip' => 'boolean',
             'ativo' => 'boolean',
@@ -131,11 +140,20 @@ class AdminMateriaisController extends Controller
         $dados['apenas_vip'] = $request->has('apenas_vip');
         $dados['ativo'] = $request->has('ativo');
 
+        // Passar os arquivos separadamente
+        if ($request->hasFile('thumbnail')) {
+            $dados['thumbnail'] = $request->file('thumbnail');
+        }
+        
+        if ($request->hasFile('arquivo')) {
+            $dados['arquivo'] = $request->file('arquivo');
+        }
+
         $this->materialService->atualizar($id, $dados);
 
         return redirect()
             ->route('admin.materiais.index')
-            ->with('success', 'Material atualizado com sucesso!');
+            ->with('sucesso', 'Material atualizado com sucesso!');
     }
 
     /**
@@ -147,7 +165,7 @@ class AdminMateriaisController extends Controller
 
         return redirect()
             ->route('admin.materiais.index')
-            ->with('success', 'Material deletado com sucesso!');
+            ->with('sucesso', 'Material deletado com sucesso!');
     }
 
     /**

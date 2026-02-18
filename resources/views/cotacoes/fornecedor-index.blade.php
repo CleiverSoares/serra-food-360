@@ -28,7 +28,8 @@
             </div>
         @else
             <!-- Lista de Cotações para Fornecedor -->
-            <div class="space-y-6" x-data="{ modalAberto: null }">
+            <div class="space-y-6" x-data="{ modalAberto: null }" 
+                 x-init="$watch('modalAberto', value => { document.body.style.overflow = value ? 'hidden' : 'auto'; })">
                 @foreach($cotacoes as $cotacao)
                     @php
                         $minhaOferta = $cotacao->ofertas->firstWhere('fornecedor_id', auth()->id());
@@ -235,9 +236,22 @@
                         <!-- Modal de Adicionar/Editar Oferta -->
                         <div x-show="modalAberto === {{ $cotacao->id }}"
                              x-cloak
-                             @click.away="modalAberto = null"
-                             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                            <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" @click.stop>
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0"
+                             x-transition:enter-end="opacity-100"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100"
+                             x-transition:leave-end="opacity-0"
+                             @click.self="modalAberto = null"
+                             class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto">
+                            <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 @click.stop>
                                 <form action="{{ route('cotacoes.salvar-oferta', $cotacao->id) }}" method="POST">
                                     @csrf
                                     

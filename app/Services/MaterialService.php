@@ -144,6 +144,14 @@ class MaterialService
     }
 
     /**
+     * Verificar se material está favoritado
+     */
+    public function isFavorito(int $userId, int $materialId): bool
+    {
+        return $this->materialRepository->isFavorito($userId, $materialId);
+    }
+
+    /**
      * Alternar favorito (adiciona ou remove)
      */
     public function alternarFavorito(int $userId, int $materialId): bool

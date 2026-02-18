@@ -52,30 +52,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/perfil/editar', [PerfilController::class, 'edit'])->name('perfil.editar');
     Route::put('/perfil', [PerfilController::class, 'update'])->name('perfil.atualizar');
     
-    // Material de Gestão (público - usuários logados)
-    Route::get('/materiais', [MateriaisController::class, 'index'])->name('materiais.index');
-    Route::get('/materiais/{id}', [MateriaisController::class, 'show'])->name('materiais.show');
-    Route::get('/materiais/{id}/download', [MateriaisController::class, 'download'])->name('materiais.download');
-    Route::post('/materiais/{id}/favoritar', [MateriaisController::class, 'toggleFavorito'])->name('materiais.favoritar');
-    Route::get('/materiais-favoritos', [MateriaisController::class, 'favoritos'])->name('materiais.favoritos');
-    
-    // Compras Coletivas (público - usuários logados)
-    Route::get('/compras-coletivas', [ComprasColetivasController::class, 'index'])->name('compras-coletivas.index');
-    Route::get('/compras-coletivas/{id}', [ComprasColetivasController::class, 'show'])->name('compras-coletivas.show');
-    Route::post('/compras-coletivas/{id}/participar', [ComprasColetivasController::class, 'participar'])->name('compras-coletivas.participar');
-    Route::put('/compras-coletivas/adesao/{id}', [ComprasColetivasController::class, 'atualizarParticipacao'])->name('compras-coletivas.adesao.atualizar');
-    Route::delete('/compras-coletivas/adesao/{id}', [ComprasColetivasController::class, 'cancelarParticipacao'])->name('compras-coletivas.adesao.cancelar');
-    
-    Route::get('/compras-coletivas/propostas', [ComprasColetivasController::class, 'indexPropostas'])->name('compras-coletivas.propostas.index');
-    Route::get('/compras-coletivas/propostas/criar', [ComprasColetivasController::class, 'createProposta'])->name('compras-coletivas.propostas.create');
-    Route::post('/compras-coletivas/propostas', [ComprasColetivasController::class, 'storeProposta'])->name('compras-coletivas.propostas.store');
-    Route::post('/compras-coletivas/propostas/{id}/votar', [ComprasColetivasController::class, 'votar'])->name('compras-coletivas.propostas.votar');
-    
-    Route::get('/compras-coletivas/fornecedor/ofertas', [ComprasColetivasController::class, 'minhasOfertas'])->name('compras-coletivas.fornecedor.ofertas');
-    Route::post('/compras-coletivas/{id}/ofertar', [ComprasColetivasController::class, 'ofertar'])->name('compras-coletivas.ofertar');
-    
-    Route::get('/api/produtos/autocomplete', [ComprasColetivasController::class, 'autocompleteProdutos'])->name('produtos.autocomplete');
-    
     // Rotas para usuários aprovados (TODOS veem)
     Route::middleware('approved')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -96,6 +72,30 @@ Route::middleware('auth')->group(function () {
         Route::get('/cotacoes/{id}', [CotacoesController::class, 'show'])->name('cotacoes.show');
         Route::post('/cotacoes/{cotacaoId}/oferta', [CotacoesController::class, 'salvarOferta'])->name('cotacoes.salvar-oferta');
         Route::delete('/cotacoes/{cotacaoId}/oferta', [CotacoesController::class, 'deletarOferta'])->name('cotacoes.deletar-oferta');
+        
+        // Material de Gestão (público - usuários aprovados)
+        Route::get('/materiais', [MateriaisController::class, 'index'])->name('materiais.index');
+        Route::get('/materiais/{id}', [MateriaisController::class, 'show'])->name('materiais.show');
+        Route::get('/materiais/{id}/download', [MateriaisController::class, 'download'])->name('materiais.download');
+        Route::post('/materiais/{id}/favoritar', [MateriaisController::class, 'toggleFavorito'])->name('materiais.favoritar');
+        Route::get('/materiais-favoritos', [MateriaisController::class, 'favoritos'])->name('materiais.favoritos');
+        
+        // Compras Coletivas (público - usuários aprovados)
+        // IMPORTANTE: Rotas específicas ANTES das rotas com {id}!
+        Route::get('/compras-coletivas', [ComprasColetivasController::class, 'index'])->name('compras-coletivas.index');
+        Route::get('/compras-coletivas/propostas', [ComprasColetivasController::class, 'indexPropostas'])->name('compras-coletivas.propostas.index');
+        Route::get('/compras-coletivas/propostas/criar', [ComprasColetivasController::class, 'createProposta'])->name('compras-coletivas.propostas.create');
+        Route::post('/compras-coletivas/propostas', [ComprasColetivasController::class, 'storeProposta'])->name('compras-coletivas.propostas.store');
+        Route::post('/compras-coletivas/propostas/{id}/votar', [ComprasColetivasController::class, 'votar'])->name('compras-coletivas.propostas.votar');
+        Route::get('/compras-coletivas/fornecedor/ofertas', [ComprasColetivasController::class, 'minhasOfertas'])->name('compras-coletivas.fornecedor.ofertas');
+        Route::get('/api/produtos/autocomplete', [ComprasColetivasController::class, 'autocompleteProdutos'])->name('produtos.autocomplete');
+        
+        // Rotas com {id} vêm DEPOIS
+        Route::get('/compras-coletivas/{id}', [ComprasColetivasController::class, 'show'])->name('compras-coletivas.show');
+        Route::post('/compras-coletivas/{id}/participar', [ComprasColetivasController::class, 'participar'])->name('compras-coletivas.participar');
+        Route::put('/compras-coletivas/adesao/{id}', [ComprasColetivasController::class, 'atualizarParticipacao'])->name('compras-coletivas.adesao.atualizar');
+        Route::delete('/compras-coletivas/adesao/{id}', [ComprasColetivasController::class, 'cancelarParticipacao'])->name('compras-coletivas.adesao.cancelar');
+        Route::post('/compras-coletivas/{id}/ofertar', [ComprasColetivasController::class, 'ofertar'])->name('compras-coletivas.ofertar');
     });
     
     // Área Admin (apenas admin - CRUD completo)

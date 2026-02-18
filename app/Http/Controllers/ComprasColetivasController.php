@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\CompraColetivaService;
+use App\Repositories\SegmentoRepository;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -11,10 +12,9 @@ use Illuminate\Http\JsonResponse;
 class ComprasColetivasController extends Controller
 {
     public function __construct(
-        private CompraColetivaService $compraColetivaService
-    ) {
-        $this->middleware('auth');
-    }
+        private CompraColetivaService $compraColetivaService,
+        private SegmentoRepository $segmentoRepository
+    ) {}
 
     // ========== COMPRAS ATIVAS (Compradores) ==========
 
@@ -57,7 +57,7 @@ class ComprasColetivasController extends Controller
         if ($resultado) {
             return redirect()
                 ->back()
-                ->with('success', 'Você participou da compra coletiva!');
+                ->with('sucesso', 'Você participou da compra coletiva!');
         }
 
         return redirect()
@@ -81,7 +81,7 @@ class ComprasColetivasController extends Controller
         if ($resultado) {
             return redirect()
                 ->back()
-                ->with('success', 'Participação atualizada!');
+                ->with('sucesso', 'Participação atualizada!');
         }
 
         return redirect()
@@ -95,7 +95,7 @@ class ComprasColetivasController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'Participação cancelada.');
+            ->with('sucesso', 'Participação cancelada.');
     }
 
     // ========== PROPOSTAS ==========
@@ -112,7 +112,8 @@ class ComprasColetivasController extends Controller
 
     public function createProposta(): View
     {
-        return view('compras-coletivas.propostas.create');
+        $categorias = $this->segmentoRepository->buscarTodos();
+        return view('compras-coletivas.propostas.create', compact('categorias'));
     }
 
     public function storeProposta(Request $request): RedirectResponse
@@ -144,7 +145,7 @@ class ComprasColetivasController extends Controller
 
         return redirect()
             ->route('compras-coletivas.propostas.index')
-            ->with('success', 'Proposta enviada! Aguarde análise do admin.');
+            ->with('sucesso', 'Proposta enviada! Aguarde análise do admin.');
     }
 
     public function votar(int $propostaId): JsonResponse
@@ -202,7 +203,7 @@ class ComprasColetivasController extends Controller
         if ($resultado) {
             return redirect()
                 ->back()
-                ->with('success', 'Oferta enviada!');
+                ->with('sucesso', 'Oferta enviada!');
         }
 
         return redirect()

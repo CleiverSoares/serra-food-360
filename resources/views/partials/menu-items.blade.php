@@ -102,28 +102,26 @@
         <span>Cotações</span>
     </a>
 
-    <a href="#" 
-       class="{{ $linkClass }} {{ $inactiveClass }}"
+    <a href="{{ $isAdmin ? route('admin.compras-coletivas.index') : route('compras-coletivas.index') }}" 
+       class="{{ $linkClass }} {{ request()->routeIs(['admin.compras-coletivas.*', 'compras-coletivas.*']) ? $activeClass : $inactiveClass }}"
        @if($isDrawer) @click="menuAberto = false" @endif>
-        <i data-lucide="shopping-basket" class="w-5 h-5"></i>
-        <span>Compras Coletivas</span>
-        <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
+        <i data-lucide="shopping-basket" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="whitespace-nowrap">Compras Coletivas</span>
     </a>
 
-    <a href="#" 
-       class="{{ $linkClass }} {{ $inactiveClass }}"
+    <a href="{{ $isAdmin ? route('admin.materiais.index') : route('materiais.index') }}" 
+       class="{{ $linkClass }} {{ request()->routeIs(['admin.materiais.*', 'materiais.*']) ? $activeClass : $inactiveClass }}"
        @if($isDrawer) @click="menuAberto = false" @endif>
-        <i data-lucide="book-open" class="w-5 h-5"></i>
-        <span>Material de Gestão</span>
-        <span class="ml-auto text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Em breve</span>
+        <i data-lucide="book-open" class="w-5 h-5 flex-shrink-0"></i>
+        <span class="whitespace-nowrap">Material de Gestão</span>
     </a>
 @endif
 
-{{-- Meu Perfil (todos, apenas drawer/sidebar) --}}
-@if(!$isBottomNav)
+{{-- Meu Perfil (todos, APENAS no drawer/mobile) --}}
+@if($isDrawer)
     <a href="{{ route('perfil.editar') }}" 
        class="{{ $linkClass }} {{ request()->routeIs('perfil.*') ? $activeClass : $inactiveClass }}"
-       @if($isDrawer) @click="menuAberto = false" @endif>
+       @click="menuAberto = false">
         <i data-lucide="user-circle" class="w-5 h-5"></i>
         <span>Meu Perfil</span>
     </a>

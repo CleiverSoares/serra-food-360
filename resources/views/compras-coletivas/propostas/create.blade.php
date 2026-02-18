@@ -1,101 +1,125 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
-@section('content')
-<div class="p-4 lg:p-8 max-w-3xl mx-auto">
-    <div class="mb-6">
-        <a href="{{ route('compras-coletivas.propostas.index') }}" class="text-primary hover:underline flex items-center gap-2 text-sm">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            Voltar
-        </a>
-        <h1 class="text-2xl font-bold text-gray-900 mt-2">Propor Produto para Compra Coletiva</h1>
-        <p class="text-sm text-gray-600 mt-1">Sugira um produto que você gostaria de comprar em grupo para obter melhores preços</p>
-    </div>
+@section('titulo', 'Propor Produto')
+@section('page-title', 'Compras Coletivas')
+@section('page-subtitle', 'Propor novo produto para compra coletiva')
 
-    <form action="{{ route('compras-coletivas.propostas.store') }}" method="POST" class="bg-white rounded-lg shadow-sm p-6">
-        @csrf
+@section('conteudo')
+<div class="p-4 lg:p-8">
+    <div class="max-w-4xl mx-auto">
 
-        <!-- Nome do Produto -->
+        @if($errors->any())
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <ul class="list-disc list-inside text-sm text-red-800">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <!-- Breadcrumb -->
         <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Produto *</label>
-            <input type="text" name="produto_nome" value="{{ old('produto_nome') }}" required 
-                   placeholder="Ex: Arroz Branco Tipo 1"
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-            @error('produto_nome')<span class="text-red-500 text-xs mt-1">{{ $message }}</span>@enderror
-        </div>
-
-        <!-- Descrição -->
-        <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Descrição do Produto</label>
-            <textarea name="produto_descricao" rows="3" 
-                      placeholder="Especificações, marca preferida, qualidade, etc."
-                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">{{ old('produto_descricao') }}</textarea>
-            @error('produto_descricao')<span class="text-red-500 text-xs mt-1">{{ $message }}</span>@enderror
-        </div>
-
-        <!-- Unidade de Medida -->
-        <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Unidade de Medida *</label>
-            <select name="unidade_medida" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                <option value="">Selecione...</option>
-                <option value="kg" {{ old('unidade_medida') === 'kg' ? 'selected' : '' }}>Quilograma (kg)</option>
-                <option value="g" {{ old('unidade_medida') === 'g' ? 'selected' : '' }}>Grama (g)</option>
-                <option value="litro" {{ old('unidade_medida') === 'litro' ? 'selected' : '' }}>Litro</option>
-                <option value="ml" {{ old('unidade_medida') === 'ml' ? 'selected' : '' }}>Mililitro (ml)</option>
-                <option value="un" {{ old('unidade_medida') === 'un' ? 'selected' : '' }}>Unidade</option>
-                <option value="cx" {{ old('unidade_medida') === 'cx' ? 'selected' : '' }}>Caixa</option>
-                <option value="sc" {{ old('unidade_medida') === 'sc' ? 'selected' : '' }}>Saco</option>
-                <option value="pt" {{ old('unidade_medida') === 'pt' ? 'selected' : '' }}>Pacote</option>
-            </select>
-            @error('unidade_medida')<span class="text-red-500 text-xs mt-1">{{ $message }}</span>@enderror
-        </div>
-
-        <!-- Categoria -->
-        <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Categoria (opcional)</label>
-            <select name="categoria_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
-                <option value="">Nenhuma</option>
-                @foreach($categorias ?? [] as $categoria)
-                    <option value="{{ $categoria->id }}" {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>{{ $categoria->nome }}</option>
-                @endforeach
-            </select>
-            @error('categoria_id')<span class="text-red-500 text-xs mt-1">{{ $message }}</span>@enderror
-        </div>
-
-        <!-- Justificativa -->
-        <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Por que você quer este produto? *</label>
-            <textarea name="justificativa" rows="4" required 
-                      placeholder="Explique por que este produto seria útil para você e para outros compradores. Quanto mais clara sua justificativa, mais chances de ser aprovada!"
-                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">{{ old('justificativa') }}</textarea>
-            <p class="text-xs text-gray-500 mt-1">Mínimo 50 caracteres</p>
-            @error('justificativa')<span class="text-red-500 text-xs mt-1">{{ $message }}</span>@enderror
+            <a href="{{ route('compras-coletivas.propostas.index') }}" 
+               class="inline-flex items-center gap-2 text-[var(--cor-verde-serra)] hover:underline text-sm font-medium">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                Voltar para Propostas
+            </a>
         </div>
 
         <!-- Info Box -->
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <h3 class="font-bold text-blue-900 mb-2 flex items-center gap-2">
-                <i data-lucide="info" class="w-4 h-4"></i>
-                Como funciona?
-            </h3>
-            <ol class="text-sm text-blue-800 space-y-1 list-decimal list-inside">
-                <li>Você propõe o produto</li>
-                <li>O admin analisa e aprova</li>
-                <li>A proposta vai para votação (7 dias)</li>
-                <li>Se aprovada, vira uma Compra Coletiva oficial</li>
-                <li>Você e outros podem participar!</li>
-            </ol>
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 lg:p-6 mb-6">
+            <div class="flex items-start gap-3">
+                <i data-lucide="info" class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"></i>
+                <div>
+                    <p class="text-sm font-semibold text-blue-900 mb-1">Como Funciona?</p>
+                    <p class="text-sm text-blue-700">
+                        1. Você propõe um produto<br>
+                        2. Outros compradores votam na sua proposta<br>
+                        3. Propostas com mais votos viram compras coletivas oficiais<br>
+                        4. Fornecedores enviam ofertas e todos economizam!
+                    </p>
+                </div>
+            </div>
         </div>
 
-        <!-- Botões -->
-        <div class="flex gap-3">
-            <button type="submit" class="btn-primary flex-1">
-                <i data-lucide="send" class="w-4 h-4 inline"></i>
-                Enviar Proposta
-            </button>
-            <a href="{{ route('compras-coletivas.propostas.index') }}" class="btn-secondary flex-1 text-center">
-                Cancelar
-            </a>
-        </div>
-    </form>
+        <form method="POST" action="{{ route('compras-coletivas.propostas.store') }}" class="space-y-6">
+            @csrf
+
+            <!-- Informações do Produto -->
+            <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-4 lg:p-6">
+                <h3 class="text-lg font-bold text-[var(--cor-texto)] mb-4 flex items-center gap-2">
+                    <i data-lucide="package" class="w-5 h-5 text-green-600"></i>
+                    Informações do Produto
+                </h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Nome do Produto *</label>
+                        <input type="text" name="nome_produto" value="{{ old('nome_produto') }}" required
+                               placeholder="Ex: Óleo de Soja 900ml"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Descrição do Produto</label>
+                        <textarea name="descricao_produto" rows="3"
+                                  placeholder="Descreva o produto, marca preferida, especificações..."
+                                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">{{ old('descricao_produto') }}</textarea>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Unidade de Medida *</label>
+                            <input type="text" name="unidade_medida" value="{{ old('unidade_medida') }}" required
+                                   placeholder="Ex: Litro, Kg, Caixa, Unidade"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Categoria *</label>
+                            <select name="categoria_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
+                                <option value="">Selecione...</option>
+                                @foreach($categorias as $categoria)
+                                    <option value="{{ $categoria->id }}" {{ old('categoria_id') == $categoria->id ? 'selected' : '' }}>{{ $categoria->nome }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Justificativa -->
+            <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-4 lg:p-6">
+                <h3 class="text-lg font-bold text-[var(--cor-texto)] mb-4 flex items-center gap-2">
+                    <i data-lucide="message-square" class="w-5 h-5 text-blue-600"></i>
+                    Justificativa
+                </h3>
+                
+                <div>
+                    <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Por que este produto? *</label>
+                    <textarea name="justificativa" rows="4" required
+                              placeholder="Explique por que você acha que este produto deveria estar em compra coletiva. Quanto mais convincente, mais votos você terá!"
+                              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">{{ old('justificativa') }}</textarea>
+                    <p class="text-xs text-gray-600 mt-1">Dica: Mencione frequência de uso, volume de compra, potencial de economia.</p>
+                </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="flex flex-col md:flex-row gap-3">
+                <button type="submit" class="inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:bg-green-700 transition-all font-medium text-sm md:text-base flex-1">
+                    <i data-lucide="send" class="w-4 h-4 flex-shrink-0"></i>
+                    <span class="whitespace-nowrap">Enviar Proposta</span>
+                </button>
+                <a href="{{ route('compras-coletivas.propostas.index') }}" 
+                   class="inline-flex items-center justify-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm md:text-base flex-1">
+                    <i data-lucide="x" class="w-4 h-4 flex-shrink-0"></i>
+                    <span class="whitespace-nowrap">Cancelar</span>
+                </a>
+            </div>
+
+        </form>
+
+    </div>
 </div>
 @endsection

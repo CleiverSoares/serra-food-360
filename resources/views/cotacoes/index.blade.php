@@ -10,35 +10,25 @@
 
         <!-- Filtros -->
         <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-4 lg:p-6 mb-6">
-            <form method="GET" action="{{ route('cotacoes.index') }}" class="space-y-4">
-                <div class="flex items-center gap-2 mb-4">
-                    <i data-lucide="filter" class="w-5 h-5 text-[var(--cor-verde-serra)]"></i>
-                    <h3 class="text-lg font-bold text-[var(--cor-texto)]">Filtros</h3>
-                </div>
-                
-                <div class="grid md:grid-cols-4 gap-4">
+            <form method="GET" action="{{ route('cotacoes.index') }}">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+                    
                     <!-- Busca -->
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">
-                            Buscar por nome ou produto
-                        </label>
                         <input 
                             type="text" 
                             name="busca" 
                             value="{{ $filtros['busca'] ?? '' }}"
-                            placeholder="Ex: Tomate, Alface..."
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
+                            placeholder="Buscar por nome ou produto..."
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent text-sm">
                     </div>
 
                     <!-- Segmento -->
                     <div>
-                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">
-                            Segmento
-                        </label>
                         <select 
                             name="segmento_id" 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
-                            <option value="">Todos</option>
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent text-sm">
+                            <option value="">Segmento</option>
                             @foreach($segmentos as $segmento)
                                 <option value="{{ $segmento->id }}" {{ ($filtros['segmento_id'] ?? '') == $segmento->id ? 'selected' : '' }}>
                                     {{ $segmento->nome }}
@@ -49,29 +39,25 @@
 
                     <!-- Status -->
                     <div>
-                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">
-                            Status
-                        </label>
                         <select 
                             name="status" 
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
-                            <option value="">Apenas Ativas</option>
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent text-sm">
+                            <option value="">Status</option>
                             <option value="ativo" {{ ($filtros['status'] ?? '') === 'ativo' ? 'selected' : '' }}>Ativas</option>
                             <option value="encerrado" {{ ($filtros['status'] ?? '') === 'encerrado' ? 'selected' : '' }}>Encerradas</option>
                         </select>
                     </div>
-                </div>
 
-                <!-- Botões -->
-                <div class="flex flex-wrap gap-2">
-                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:opacity-90 transition-all font-medium text-sm">
-                        <i data-lucide="search" class="w-4 h-4"></i>
-                        Buscar
-                    </button>
-                    <a href="{{ route('cotacoes.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                        Limpar
-                    </a>
+                    <!-- Botões -->
+                    <div class="flex gap-2">
+                        <button type="submit" class="flex-1 px-4 py-2.5 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 text-sm font-medium">
+                            <i data-lucide="search" class="w-4 h-4"></i>
+                            <span class="hidden md:inline">Buscar</span>
+                        </button>
+                        <a href="{{ route('cotacoes.index') }}" class="px-3 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </a>
+                    </div>
                 </div>
             </form>
         </div>
@@ -94,10 +80,18 @@
                     
                     <!-- Header da Cotação -->
                     <div class="bg-[var(--cor-verde-serra)] text-white p-4 lg:p-6">
-                        <div class="flex items-start justify-between gap-4">
-                            <div class="flex-1">
-                                <h2 class="text-xl lg:text-2xl font-bold mb-2">{{ $cotacao->produto }}</h2>
-                                <p class="text-sm lg:text-base text-green-50 mb-3">{{ $cotacao->titulo }}</p>
+                        <div class="flex items-start gap-4">
+                            <!-- Imagem do Produto -->
+                            @if($cotacao->imagem_produto_url)
+                                <div class="flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 rounded-lg overflow-hidden border-2 border-white/20">
+                                    <img src="{{ asset('storage/' . $cotacao->imagem_produto_url) }}" alt="{{ $cotacao->produto }}" class="w-full h-full object-cover">
+                                </div>
+                            @endif
+                            
+                            <div class="flex-1 flex items-start justify-between gap-4">
+                                <div class="flex-1">
+                                    <h2 class="text-xl lg:text-2xl font-bold mb-2">{{ $cotacao->produto }}</h2>
+                                    <p class="text-sm lg:text-base text-green-50 mb-3">{{ $cotacao->titulo }}</p>
                                 
                                 <div class="flex flex-wrap gap-3 text-sm">
                                     <span class="flex items-center gap-1">
@@ -115,11 +109,12 @@
                                         Até {{ $cotacao->data_fim->format('d/m') }}
                                     </span>
                                 </div>
+                                </div>
+                                
+                                <span class="bg-green-800 px-3 py-1 rounded-lg text-xs lg:text-sm font-semibold whitespace-nowrap text-white flex-shrink-0">
+                                    {{ $cotacao->segmento->nome }}
+                                </span>
                             </div>
-                            
-                            <span class="bg-green-800 px-3 py-1 rounded-lg text-xs lg:text-sm font-semibold whitespace-nowrap text-white">
-                                {{ $cotacao->segmento->nome }}
-                            </span>
                         </div>
                         
                         @if($cotacao->descricao)

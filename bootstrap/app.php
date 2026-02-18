@@ -16,6 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckRole::class,
             'assinatura.ativa' => \App\Http\Middleware\CheckAssinaturaAtiva::class,
         ]);
+        
+        // Customizar middleware de autenticação
+        $middleware->redirectGuestsTo(fn () => route('login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

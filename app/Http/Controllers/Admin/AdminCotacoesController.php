@@ -45,12 +45,20 @@ class AdminCotacoesController extends Controller
             'titulo' => 'required|string|max:255',
             'produto' => 'required|string|max:255',
             'descricao' => 'nullable|string',
+            'imagem_produto' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'unidade' => 'required|string|max:20',
             'quantidade_minima' => 'nullable|numeric|min:0',
             'data_inicio' => 'required|date',
             'data_fim' => 'required|date|after:data_inicio',
             'segmento_id' => 'required|exists:segmentos,id',
         ]);
+
+        // Upload da imagem do produto
+        if ($request->hasFile('imagem_produto')) {
+            $imagem = $request->file('imagem_produto');
+            $nomeImagem = time() . '_' . $imagem->getClientOriginalName();
+            $dados['imagem_produto_url'] = $imagem->storeAs('cotacoes/produtos', $nomeImagem, 'public');
+        }
 
         $dados['criado_por'] = auth()->id();
         $dados['status'] = 'ativo';
@@ -88,12 +96,27 @@ class AdminCotacoesController extends Controller
             'titulo' => 'required|string|max:255',
             'produto' => 'required|string|max:255',
             'descricao' => 'nullable|string',
+            'imagem_produto' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'unidade' => 'required|string|max:20',
             'quantidade_minima' => 'nullable|numeric|min:0',
             'data_inicio' => 'required|date',
             'data_fim' => 'required|date|after:data_inicio',
             'segmento_id' => 'required|exists:segmentos,id',
         ]);
+
+        // Upload da imagem do produto (se houver)
+        if ($request->hasFile('imagem_produto')) {
+            $cotacao = $this->cotacaoService->buscarCotacao($id);
+            
+            // Deletar imagem antiga
+            if ($cotacao && $cotacao->imagem_produto_url) {
+                \Storage::disk('public')->delete($cotacao->imagem_produto_url);
+            }
+            
+            $imagem = $request->file('imagem_produto');
+            $nomeImagem = time() . '_' . $imagem->getClientOriginalName();
+            $dados['imagem_produto_url'] = $imagem->storeAs('cotacoes/produtos', $nomeImagem, 'public');
+        }
 
         $this->cotacaoService->atualizarCotacao($id, $dados);
 

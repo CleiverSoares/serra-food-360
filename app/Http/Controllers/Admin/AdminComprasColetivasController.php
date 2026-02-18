@@ -46,11 +46,16 @@ class AdminComprasColetivasController extends Controller
 
         $dados['ativo'] = $request->has('ativo');
 
+        // Passar o arquivo de imagem
+        if ($request->hasFile('imagem')) {
+            $dados['imagem'] = $request->file('imagem');
+        }
+
         $this->compraColetivaService->criarProduto($dados);
 
         return redirect()
             ->route('admin.compras-coletivas.produtos.index')
-            ->with('success', 'Produto adicionado ao catálogo!');
+            ->with('sucesso', 'Produto adicionado ao catálogo!');
     }
 
     public function editProduto(int $id): View
@@ -78,11 +83,16 @@ class AdminComprasColetivasController extends Controller
 
         $dados['ativo'] = $request->has('ativo');
 
+        // Passar o arquivo de imagem
+        if ($request->hasFile('imagem')) {
+            $dados['imagem'] = $request->file('imagem');
+        }
+
         $this->compraColetivaService->atualizarProduto($id, $dados);
 
         return redirect()
             ->route('admin.compras-coletivas.produtos.index')
-            ->with('success', 'Produto atualizado!');
+            ->with('sucesso', 'Produto atualizado!');
     }
 
     public function destroyProduto(int $id): RedirectResponse
@@ -91,7 +101,7 @@ class AdminComprasColetivasController extends Controller
 
         return redirect()
             ->route('admin.compras-coletivas.produtos.index')
-            ->with('success', 'Produto deletado!');
+            ->with('sucesso', 'Produto deletado!');
     }
 
     // ========== PROPOSTAS ==========
@@ -121,7 +131,7 @@ class AdminComprasColetivasController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'Votação iniciada! Encerramento em 7 dias.');
+            ->with('sucesso', 'Votação iniciada! Encerramento em 7 dias.');
     }
 
     public function aprovarProposta(int $id): RedirectResponse
@@ -130,7 +140,7 @@ class AdminComprasColetivasController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'Proposta aprovada!');
+            ->with('sucesso', 'Proposta aprovada!');
     }
 
     public function rejeitarProposta(int $id): RedirectResponse
@@ -139,7 +149,7 @@ class AdminComprasColetivasController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', 'Proposta rejeitada.');
+            ->with('sucesso', 'Proposta rejeitada.');
     }
 
     // ========== COMPRAS COLETIVAS ==========
@@ -177,7 +187,7 @@ class AdminComprasColetivasController extends Controller
 
         return redirect()
             ->route('admin.compras-coletivas.compras.index')
-            ->with('success', 'Compra Coletiva criada!');
+            ->with('sucesso', 'Compra Coletiva criada!');
     }
 
     public function editCompra(int $id): View
@@ -207,7 +217,7 @@ class AdminComprasColetivasController extends Controller
 
         return redirect()
             ->route('admin.compras-coletivas.compras.index')
-            ->with('success', 'Compra atualizada!');
+            ->with('sucesso', 'Compra atualizada!');
     }
 
     public function destroyCompra(int $id): RedirectResponse
@@ -216,6 +226,6 @@ class AdminComprasColetivasController extends Controller
 
         return redirect()
             ->route('admin.compras-coletivas.compras.index')
-            ->with('success', 'Compra deletada!');
+            ->with('sucesso', 'Compra deletada!');
     }
 }

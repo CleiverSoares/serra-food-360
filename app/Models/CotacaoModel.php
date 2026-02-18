@@ -14,6 +14,7 @@ class CotacaoModel extends Model
         'titulo',
         'descricao',
         'foto_url',
+        'imagem_produto_url',
         'produto',
         'unidade',
         'quantidade_minima',

@@ -116,8 +116,8 @@
                                 <div class="flex gap-4">
                                     <!-- Foto do Produto -->
                                     <div class="flex-shrink-0">
-                                        @if($cotacao->foto_url)
-                                            <img src="{{ $cotacao->foto_url }}" 
+                                        @if($cotacao->imagem_produto_url)
+                                            <img src="{{ asset('storage/' . $cotacao->imagem_produto_url) }}" 
                                                  alt="{{ $cotacao->produto }}"
                                                  class="w-24 h-24 lg:w-32 lg:h-32 object-cover rounded-xl border-2 border-gray-200">
                                         @else

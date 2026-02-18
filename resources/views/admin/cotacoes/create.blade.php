@@ -10,8 +10,41 @@
 
         <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-6 lg:p-8">
             
-            <form action="{{ route('admin.cotacoes.store') }}" method="POST">
+            <form action="{{ route('admin.cotacoes.store') }}" method="POST" enctype="multipart/form-data" x-data="{ imagemPreview: null }">
                 @csrf
+
+                <!-- 📸 IMAGEM DO PRODUTO - DESTAQUE -->
+                <div class="mb-6 p-6 bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-xl">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i data-lucide="image" class="w-6 h-6 text-blue-600"></i>
+                        <h3 class="text-lg font-bold text-blue-900">Foto do Produto</h3>
+                        <span class="px-2 py-0.5 bg-blue-200 text-blue-800 text-xs font-bold rounded">OPCIONAL</span>
+                    </div>
+                    
+                    <p class="text-sm text-blue-700 mb-4">
+                        📌 Adicione uma foto do produto para facilitar a identificação pelos fornecedores
+                    </p>
+                    
+                    <input type="file" 
+                           id="imagem_produto" 
+                           name="imagem_produto" 
+                           accept="image/jpeg,image/jpg,image/png,image/webp"
+                           @change="if ($event.target.files[0]) { imagemPreview = URL.createObjectURL($event.target.files[0]); }"
+                           class="w-full px-4 py-3 border-2 border-blue-300 bg-white rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+                    <p class="text-xs text-blue-600 mt-2 font-medium">✓ JPG, PNG ou WEBP • Máximo 2MB</p>
+                    @error('imagem_produto')
+                        <p class="text-red-600 text-sm mt-2 font-medium">{{ $message }}</p>
+                    @enderror
+                    
+                    <!-- Preview Grande -->
+                    <div x-show="imagemPreview" class="mt-4 p-4 bg-white rounded-lg border-2 border-blue-200">
+                        <p class="text-sm font-bold text-blue-900 mb-3 flex items-center gap-2">
+                            <i data-lucide="eye" class="w-4 h-4"></i>
+                            Preview da Imagem
+                        </p>
+                        <img :src="imagemPreview" alt="Preview" class="w-full max-w-md h-48 object-cover rounded-lg shadow-md mx-auto">
+                    </div>
+                </div>
 
                 <!-- Título e Produto -->
                 <div class="grid lg:grid-cols-2 gap-6 mb-6">

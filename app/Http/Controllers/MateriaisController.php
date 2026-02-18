@@ -13,9 +13,7 @@ class MateriaisController extends Controller
 {
     public function __construct(
         private MaterialService $materialService
-    ) {
-        $this->middleware('auth');
-    }
+    ) {}
 
     /**
      * Listar materiais para o usuário logado
@@ -67,10 +65,13 @@ class MateriaisController extends Controller
             abort(403, 'Este conteúdo é exclusivo para assinantes VIP.');
         }
 
+        // Verificar se está favoritado
+        $isFavorito = $this->materialService->isFavorito($usuario->id, $material->id);
+
         // Registrar visualização
         $this->materialService->visualizar($material->id, $usuario->id);
 
-        return view('materiais.show', compact('material', 'isVip'));
+        return view('materiais.show', compact('material', 'isVip', 'isFavorito'));
     }
 
     /**
