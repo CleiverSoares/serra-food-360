@@ -10,25 +10,32 @@
 
         <!-- Filtros -->
         <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-4 lg:p-6 mb-6">
-            <form method="GET" action="{{ route('cotacoes.index') }}">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
-                    
-                    <!-- Busca -->
-                    <div class="md:col-span-2">
-                        <input 
-                            type="text" 
-                            name="busca" 
-                            value="{{ $filtros['busca'] ?? '' }}"
-                            placeholder="Buscar por nome ou produto..."
-                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent text-sm">
-                    </div>
+            <form method="GET" action="{{ route('cotacoes.index') }}" class="space-y-4">
+                
+                <!-- Busca por nome -->
+                <div>
+                    <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">
+                        <i data-lucide="search" class="w-4 h-4 inline mr-1"></i>
+                        Buscar por nome ou produto
+                    </label>
+                    <input 
+                        type="text" 
+                        name="busca" 
+                        value="{{ $filtros['busca'] ?? '' }}"
+                        placeholder="Digite o nome ou produto..."
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
+                </div>
 
+                <!-- Filtros em linha -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
                     <!-- Segmento -->
                     <div>
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Segmento</label>
                         <select 
                             name="segmento_id" 
-                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent text-sm">
-                            <option value="">Segmento</option>
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
+                            <option value="">Todos os segmentos</option>
                             @foreach($segmentos as $segmento)
                                 <option value="{{ $segmento->id }}" {{ ($filtros['segmento_id'] ?? '') == $segmento->id ? 'selected' : '' }}>
                                     {{ $segmento->nome }}
@@ -39,25 +46,28 @@
 
                     <!-- Status -->
                     <div>
+                        <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Status</label>
                         <select 
                             name="status" 
-                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent text-sm">
-                            <option value="">Status</option>
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
+                            <option value="">Todos os status</option>
                             <option value="ativo" {{ ($filtros['status'] ?? '') === 'ativo' ? 'selected' : '' }}>Ativas</option>
                             <option value="encerrado" {{ ($filtros['status'] ?? '') === 'encerrado' ? 'selected' : '' }}>Encerradas</option>
                         </select>
                     </div>
 
-                    <!-- Botões -->
-                    <div class="flex gap-2">
-                        <button type="submit" class="flex-1 px-4 py-2.5 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 text-sm font-medium">
-                            <i data-lucide="search" class="w-4 h-4"></i>
-                            <span class="hidden md:inline">Buscar</span>
-                        </button>
-                        <a href="{{ route('cotacoes.index') }}" class="px-3 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center">
-                            <i data-lucide="x" class="w-4 h-4"></i>
-                        </a>
-                    </div>
+                </div>
+
+                <!-- Botões -->
+                <div class="flex gap-2">
+                    <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors" style="background-color: #2D5F3F; color: #ffffff;">
+                        <i data-lucide="filter" class="w-4 h-4"></i>
+                        Filtrar
+                    </button>
+                    <a href="{{ route('cotacoes.index') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                        Limpar
+                    </a>
                 </div>
             </form>
         </div>
@@ -79,12 +89,17 @@
                 <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] mb-6 overflow-hidden">
                     
                     <!-- Header da Cotação -->
-                    <div class="bg-[var(--cor-verde-serra)] text-white p-4 lg:p-6">
+                    <div class="bg-[var(--cor-verde-serra)] text-white p-4 lg:p-6"
+                         x-data="{ modalImagem: false, imagemSrc: '', imagemAlt: '' }">
                         <div class="flex items-start gap-4">
-                            <!-- Imagem do Produto -->
+                            <!-- Imagem do Produto (Clicável para Zoom) -->
                             @if($cotacao->imagem_produto_url)
-                                <div class="flex-shrink-0 w-16 h-16 lg:w-20 lg:h-20 rounded-lg overflow-hidden border-2 border-white/20">
+                                <div class="flex-shrink-0 w-24 h-24 lg:w-32 lg:h-32 rounded-lg overflow-hidden border-2 border-white/20 cursor-pointer group relative"
+                                     @click="modalImagem = true; imagemSrc = '{{ asset('storage/' . $cotacao->imagem_produto_url) }}'; imagemAlt = '{{ $cotacao->produto }}'">
                                     <img src="{{ asset('storage/' . $cotacao->imagem_produto_url) }}" alt="{{ $cotacao->produto }}" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <i data-lucide="zoom-in" class="w-8 h-8 text-white"></i>
+                                    </div>
                                 </div>
                             @endif
                             
@@ -122,9 +137,24 @@
                                 {{ $cotacao->descricao }}
                             </p>
                         @endif
+
+                        <!-- Modal de Imagem Zoom -->
+                        <div x-show="modalImagem" 
+                             x-transition
+                             @click.self="modalImagem = false"
+                             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+                             style="display: none;">
+                            <div class="relative max-w-6xl w-full">
+                                <button @click="modalImagem = false" 
+                                        class="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors">
+                                    <i data-lucide="x" class="w-8 h-8"></i>
+                                </button>
+                                <img :src="imagemSrc" :alt="imagemAlt" class="w-full h-auto max-h-[85vh] object-contain rounded-lg">
+                            </div>
+                        </div>
                     </div>
 
-                    @if($cotacao->ofertas->isEmpty())
+                    @if($cotacao->ofertasOrdenadas->isEmpty())
                         <!-- Sem ofertas ainda -->
                         <div class="p-8 text-center">
                             <i data-lucide="inbox" class="w-12 h-12 text-gray-300 mx-auto mb-3"></i>
@@ -147,7 +177,7 @@
                                     Deslize para ver todas as ofertas
                                 </p>
                                 <span class="text-xs font-semibold text-[var(--cor-verde-serra)]">
-                                    {{ $cotacao->ofertas->count() }} ofertas
+                                    {{ $cotacao->ofertasOrdenadas->count() }} ofertas
                                 </span>
                             </div>
 
@@ -158,10 +188,10 @@
                                 style="scrollbar-width: thin; -webkit-overflow-scrolling: touch;">
                                 
                                 @foreach($cotacao->ofertasOrdenadas as $index => $oferta)
-                                    <!-- Card de Oferta -->
-                                    <div class="flex-shrink-0 w-[85vw] lg:w-auto snap-center lg:snap-align-none">
-                                        <div class="bg-white border-2 rounded-xl overflow-hidden transition-all hover:shadow-lg
-                                                    {{ $oferta->destaque ? 'border-yellow-400 shadow-md' : 'border-[var(--cor-borda)]' }}">
+                                                    <!-- Card de Oferta -->
+                                                    <div class="flex-shrink-0 w-[85vw] lg:w-auto snap-center lg:snap-align-none">
+                                                        <div class="bg-white border-2 rounded-xl overflow-hidden transition-all hover:shadow-lg
+                                                                    {{ $oferta->destaque ? 'border-yellow-400 shadow-md' : 'border-[var(--cor-borda)]' }}">
                                             
                                             <!-- Badge de Posição -->
                                             <div class="px-4 pt-4 pb-2 flex items-center justify-between
@@ -221,9 +251,9 @@
                                                     R$ {{ number_format($oferta->preco_unitario, 2, ',', '.') }}
                                                 </p>
                                                 
-                                                @if($index === 0 && $cotacao->ofertas->count() > 1)
+                                                @if($index === 0 && $cotacao->ofertasOrdenadas->count() > 1)
                                                     @php
-                                                        $segundoMelhor = $cotacao->ofertas->skip(1)->first();
+                                                        $segundoMelhor = $cotacao->ofertasOrdenadas->skip(1)->first();
                                                         if ($segundoMelhor) {
                                                             $economia = $segundoMelhor->preco_unitario - $oferta->preco_unitario;
                                                             $percentual = ($economia / $segundoMelhor->preco_unitario) * 100;
@@ -341,6 +371,13 @@ document.querySelectorAll('[x-ref="kanban"]').forEach(container => {
         const walk = (x - startX) * 2;
         container.scrollLeft = scrollLeft - walk;
     });
+});
+
+// Re-renderizar Lucide icons quando necessário
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 });
 </script>
 @endpush
