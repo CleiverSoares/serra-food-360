@@ -102,12 +102,12 @@
                 @foreach($materiais as $material)
                     <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full">
                         <!-- Thumbnail -->
-                        <a href="{{ route('materiais.show', $material->id) }}" class="block aspect-video bg-gray-100 relative overflow-hidden group flex-shrink-0">
+                        <a href="{{ route('materiais.show', $material->id) }}" class="block bg-gray-100 relative overflow-hidden group flex-shrink-0" style="height: 200px; min-height: 200px;">
                             @if($material->thumbnail_url)
                                 <!-- Thumbnail customizado -->
                                 <img src="{{ asset('storage/' . $material->thumbnail_url) }}" 
                                      alt="{{ $material->titulo }}" 
-                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                     class="w-full h-full object-contain bg-white group-hover:scale-105 transition-transform duration-300">
                             @elseif($material->tipo === 'video' && $material->video_url)
                                 <!-- Preview do YouTube -->
                                 @php

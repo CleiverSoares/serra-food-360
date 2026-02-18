@@ -32,7 +32,7 @@
                 @foreach($materiais as $material)
                     <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] hover:shadow-md transition-shadow overflow-hidden flex flex-col h-full">
                         <!-- Thumbnail -->
-                        <a href="{{ route('materiais.show', $material->id) }}" class="block relative aspect-video bg-gray-100 overflow-hidden group flex-shrink-0">
+                        <a href="{{ route('materiais.show', $material->id) }}" class="block relative bg-gray-100 overflow-hidden group flex-shrink-0" style="height: 200px; min-height: 200px;">
                             @if($material->thumbnail_url)
                                 <!-- Thumbnail customizado -->
                                 <img src="{{ asset('storage/' . $material->thumbnail_url) }}" 
