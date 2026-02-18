@@ -4,6 +4,25 @@
 @section('page-title', 'Catálogo de Produtos')
 @section('page-subtitle', 'Gerenciar produtos disponíveis para compras coletivas')
 
+@section('header-actions')
+<div class="flex items-center gap-3">
+    <a href="{{ route('admin.compras-coletivas.produtos.create') }}" class="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors font-medium" style="background-color: #2D5F3F; color: #ffffff;">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        Novo Produto
+    </a>
+    <a href="{{ route('admin.compras-coletivas.index') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#2D5F3F] transition-colors font-medium">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        Voltar
+    </a>
+</div>
+@endsection
+
+@section('mobile-header-actions')
+<a href="{{ route('admin.compras-coletivas.index') }}" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Voltar">
+    <i data-lucide="arrow-left" class="w-5 h-5 text-[var(--cor-texto)]"></i>
+</a>
+@endsection
+
 @section('conteudo')
 <div class="p-4 lg:p-8">
     <div class="max-w-7xl mx-auto">
@@ -13,20 +32,6 @@
                 <p class="text-green-800">{{ session('sucesso') }}</p>
             </div>
         @endif
-
-        <!-- Navegação -->
-        <div class="flex flex-wrap gap-3 mb-6">
-            <a href="{{ route('admin.compras-coletivas.index') }}" 
-               class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm md:text-base">
-                <i data-lucide="arrow-left" class="w-4 h-4 flex-shrink-0"></i>
-                <span class="whitespace-nowrap">Compras Coletivas</span>
-            </a>
-            <a href="{{ route('admin.compras-coletivas.produtos.create') }}" 
-               class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:bg-green-700 transition-all font-medium text-sm md:text-base shadow-sm hover:shadow-md">
-                <i data-lucide="plus" class="w-4 h-4 flex-shrink-0"></i>
-                <span class="whitespace-nowrap">Novo Produto</span>
-            </a>
-        </div>
 
         <!-- Filtros -->
         <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-4 md:p-6 mb-6">

@@ -35,23 +35,57 @@
             @csrf
             @method('PUT')
 
+            <!-- 📸 IMAGEM DO PRODUTO -->
+            <div class="bg-blue-50 border-2 border-blue-300 rounded-xl p-6">
+                <div class="flex items-start gap-4">
+                    <i data-lucide="info" class="w-6 h-6 text-blue-600 flex-shrink-0"></i>
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-blue-900 mb-2">ℹ️ Como funciona a imagem?</h3>
+                        <p class="text-sm text-blue-800 mb-3">
+                            A imagem da compra coletiva vem do <strong>Produto do Catálogo</strong> selecionado abaixo.
+                        </p>
+                        
+                        @if($compra->produto->imagem_url)
+                            <div class="p-4 bg-white rounded-lg border border-blue-200">
+                                <p class="text-xs text-blue-700 font-bold mb-2">✓ IMAGEM ATUAL DO PRODUTO:</p>
+                                <img src="{{ asset('storage/' . $compra->produto->imagem_url) }}" 
+                                     alt="{{ $compra->produto->nome }}" 
+                                     class="w-full max-w-sm h-40 object-contain rounded-lg border border-gray-300 bg-gray-50 mx-auto">
+                            </div>
+                        @else
+                            <div class="p-4 bg-white rounded-lg border border-orange-300">
+                                <p class="text-sm text-orange-700 font-bold">⚠️ Este produto ainda não tem imagem!</p>
+                                <p class="text-xs text-orange-600 mt-1">
+                                    Vá em <strong>Catálogo de Produtos</strong> e edite o produto "{{ $compra->produto->nome }}" para adicionar a foto.
+                                </p>
+                            </div>
+                        @endif
+                        
+                        <p class="text-xs text-blue-700 mt-3">
+                            💡 <strong>Para trocar a imagem:</strong> Vá em <a href="{{ route('admin.compras-coletivas.produtos.index') }}" class="underline font-bold">Catálogo de Produtos</a> e edite o produto.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Informações Básicas -->
             <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-6">
                 <h3 class="text-lg font-bold text-[var(--cor-texto)] mb-4 flex items-center gap-2">
-                    <i data-lucide="info" class="w-5 h-5 text-blue-600"></i>
+                    <i data-lucide="info" class="w-5 h-5"></i>
                     Informações Básicas
                 </h3>
                 
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Produto do Catálogo *</label>
-                        <select name="produto_catalogo_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
+                        <select name="produto_catalogo_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)]">
                             @foreach($produtos as $produto)
                                 <option value="{{ $produto->id }}" {{ $compra->produto_catalogo_id == $produto->id ? 'selected' : '' }}>
                                     {{ $produto->nome }} ({{ $produto->unidade_medida }})
                                 </option>
                             @endforeach
                         </select>
+                        <p class="text-xs text-gray-600 mt-1">💡 A imagem da compra vem do produto selecionado</p>
                     </div>
 
                     <div>

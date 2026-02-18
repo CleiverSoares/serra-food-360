@@ -4,6 +4,19 @@
 @section('page-title', 'Cotações')
 @section('page-subtitle', 'Adicione suas ofertas e aumente suas vendas')
 
+@section('header-actions')
+<a href="{{ route('cotacoes.index') }}" class="flex items-center gap-2 px-4 py-2 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-verde-serra)] transition-colors">
+    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+    Voltar
+</a>
+@endsection
+
+@section('mobile-header-actions')
+<a href="{{ route('cotacoes.index') }}" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Voltar">
+    <i data-lucide="arrow-left" class="w-5 h-5 text-[var(--cor-texto)]"></i>
+</a>
+@endsection
+
 @section('conteudo')
 <div class="p-4 lg:p-8">
     <div class="max-w-7xl mx-auto">

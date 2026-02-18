@@ -142,6 +142,11 @@ class CompraColetivaService
         return true;
     }
 
+    public function removerVoto(int $propostaId, int $userId): bool
+    {
+        return $this->propostaRepository->removerVoto($propostaId, $userId);
+    }
+
     public function aprovarProposta(int $propostaId): bool
     {
         return $this->propostaRepository->atualizar($propostaId, ['status' => 'aprovada']);

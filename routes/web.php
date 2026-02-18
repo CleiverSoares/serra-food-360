@@ -87,6 +87,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/compras-coletivas/propostas/criar', [ComprasColetivasController::class, 'createProposta'])->name('compras-coletivas.propostas.create');
         Route::post('/compras-coletivas/propostas', [ComprasColetivasController::class, 'storeProposta'])->name('compras-coletivas.propostas.store');
         Route::post('/compras-coletivas/propostas/{id}/votar', [ComprasColetivasController::class, 'votar'])->name('compras-coletivas.propostas.votar');
+        Route::delete('/compras-coletivas/propostas/{id}/votar', [ComprasColetivasController::class, 'removerVoto'])->name('compras-coletivas.propostas.remover-voto');
         Route::get('/compras-coletivas/fornecedor/ofertas', [ComprasColetivasController::class, 'minhasOfertas'])->name('compras-coletivas.fornecedor.ofertas');
         Route::get('/api/produtos/autocomplete', [ComprasColetivasController::class, 'autocompleteProdutos'])->name('produtos.autocomplete');
         

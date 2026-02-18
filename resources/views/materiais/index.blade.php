@@ -117,7 +117,7 @@
                                 @if($youtubeId)
                                     <img src="https://img.youtube.com/vi/{{ $youtubeId }}/maxresdefault.jpg" 
                                          alt="{{ $material->titulo }}" 
-                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                         class="w-full h-full object-contain bg-black group-hover:scale-105 transition-transform duration-300"
                                          onerror="this.src='https://img.youtube.com/vi/{{ $youtubeId }}/hqdefault.jpg'">
                                     <!-- Play button overlay -->
                                     <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 group-hover:bg-opacity-40 transition-all">

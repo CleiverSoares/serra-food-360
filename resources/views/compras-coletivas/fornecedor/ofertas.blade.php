@@ -4,6 +4,19 @@
 @section('page-title', 'Minhas Ofertas')
 @section('page-subtitle', 'Gerenciar ofertas enviadas para compras coletivas')
 
+@section('header-actions')
+<a href="{{ route('compras-coletivas.index') }}" class="flex items-center gap-2 px-4 py-2 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-verde-serra)] transition-colors">
+    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+    Voltar
+</a>
+@endsection
+
+@section('mobile-header-actions')
+<a href="{{ route('compras-coletivas.index') }}" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Voltar">
+    <i data-lucide="arrow-left" class="w-5 h-5 text-[var(--cor-texto)]"></i>
+</a>
+@endsection
+
 @section('conteudo')
 <div class="p-4 lg:p-8">
     <div class="max-w-7xl mx-auto">
@@ -13,15 +26,6 @@
                 <p class="text-green-800">{{ session('sucesso') }}</p>
             </div>
         @endif
-
-        <!-- Botão Voltar -->
-        <div class="mb-6">
-            <a href="{{ route('compras-coletivas.index') }}" 
-               class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm md:text-base">
-                <i data-lucide="arrow-left" class="w-4 h-4 flex-shrink-0"></i>
-                <span class="whitespace-nowrap">Compras Coletivas</span>
-            </a>
-        </div>
 
         <!-- Contador -->
         <div class="mb-4">

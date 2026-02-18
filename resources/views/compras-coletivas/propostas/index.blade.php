@@ -4,6 +4,25 @@
 @section('page-title', 'Compras Coletivas')
 @section('page-subtitle', 'Propostas de produtos para votação')
 
+@section('header-actions')
+<div class="flex items-center gap-3">
+    <a href="{{ route('compras-coletivas.propostas.create') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg transition-colors font-medium" style="background-color: #2D5F3F; color: #ffffff;">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        Propor Produto
+    </a>
+    <a href="{{ route('compras-coletivas.index') }}" class="inline-flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#2D5F3F] transition-colors font-medium">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        Voltar
+    </a>
+</div>
+@endsection
+
+@section('mobile-header-actions')
+<a href="{{ route('compras-coletivas.index') }}" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Voltar">
+    <i data-lucide="arrow-left" class="w-5 h-5 text-[var(--cor-texto)]"></i>
+</a>
+@endsection
+
 @section('conteudo')
 <div class="p-4 lg:p-8">
     <div class="max-w-7xl mx-auto">
@@ -14,62 +33,62 @@
             </div>
         @endif
 
-        <!-- Botão Propor -->
-        <div class="mb-6">
-            <a href="{{ route('compras-coletivas.propostas.create') }}" 
-               class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:bg-green-700 transition-all font-medium shadow-sm hover:shadow-md">
-                <i data-lucide="plus" class="w-5 h-5"></i>
-                <span class="whitespace-nowrap">Propor Produto</span>
-            </a>
-        </div>
-
         <!-- Propostas em Votação -->
         @if($propostas->count() > 0)
             <div class="mb-8">
                 <h2 class="text-lg font-bold text-[var(--cor-texto)] mb-4 flex items-center gap-2">
-                    <i data-lucide="vote" class="w-5 h-5 text-blue-600"></i>
+                    <i data-lucide="vote" class="w-5 h-5"></i>
                     Em Votação Agora ({{ $propostas->count() }})
                 </h2>
-                <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     @foreach($propostas as $proposta)
-                        <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-4 lg:p-6 hover:shadow-md transition-shadow" 
-                             x-data="{ jaVotou: {{ $proposta->votos->where('user_id', auth()->id())->count() > 0 ? 'true' : 'false' }} }">
-                            <div class="flex flex-col md:flex-row md:items-start gap-4">
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center gap-3 mb-2 flex-wrap">
-                                        <h3 class="text-lg font-bold text-[var(--cor-texto)]">{{ $proposta->produto->nome }}</h3>
-                                        <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">
-                                            {{ $proposta->votos_count }} votos
-                                        </span>
-                                    </div>
+                        <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full" 
+                             x-data="{ 
+                                jaVotou: {{ $proposta->votos->where('user_id', auth()->id())->count() > 0 ? 'true' : 'false' }},
+                                votosCount: {{ $proposta->votos_count }},
+                                votando: false
+                             }">
+                            
+                            <!-- Header -->
+                            <div class="p-4 border-b border-gray-200">
+                                <h3 class="font-bold text-[var(--cor-texto)] mb-2">{{ $proposta->produto->nome }}</h3>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded" x-text="votosCount + ' votos'"></span>
+                                </div>
+                            </div>
 
-                                    <p class="text-sm text-[var(--cor-texto-muted)] mb-3">{{ $proposta->produto->descricao }}</p>
+                            <!-- Conteúdo -->
+                            <div class="p-4 flex-1">
+                                <p class="text-sm text-[var(--cor-texto-muted)] mb-3">{{ $proposta->produto->descricao }}</p>
 
-                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm mb-3">
-                                        <div>
-                                            <span class="text-[var(--cor-texto-muted)]">Unidade:</span>
-                                            <span class="font-medium ml-1">{{ $proposta->produto->unidade_medida }}</span>
-                                        </div>
-                                        <div>
-                                            <span class="text-[var(--cor-texto-muted)]">Proposto por:</span>
-                                            <span class="font-medium ml-1">{{ $proposta->propositor->nome }}</span>
-                                        </div>
-                                        <div>
-                                            <span class="text-[var(--cor-texto-muted)]">Encerra:</span>
-                                            <span class="font-medium ml-1">{{ $proposta->data_votacao_fim->format('d/m/Y') }}</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="bg-gray-50 rounded-lg p-3">
-                                        <p class="text-sm text-[var(--cor-texto)]"><strong>Justificativa:</strong> {{ $proposta->justificativa }}</p>
-                                    </div>
+                                <div class="space-y-2 text-xs mb-3">
+                                    <p><span class="text-[var(--cor-texto-muted)]">Unidade:</span> <span class="font-medium">{{ $proposta->produto->unidade_medida }}</span></p>
+                                    <p><span class="text-[var(--cor-texto-muted)]">Por:</span> <span class="font-medium">{{ $proposta->propositor->nome }}</span></p>
+                                    <p><span class="text-[var(--cor-texto-muted)]">Encerra:</span> <span class="font-medium">{{ $proposta->data_votacao_fim->format('d/m/Y') }}</span></p>
                                 </div>
 
-                                <!-- Botão de Votar -->
+                                @if($proposta->justificativa)
+                                    <div class="bg-gray-50 rounded-lg p-3">
+                                        <p class="text-xs text-[var(--cor-texto)] line-clamp-3">{{ $proposta->justificativa }}</p>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Botão de Votar/Remover Voto -->
+                            <div class="p-4 border-t border-gray-200">
                                 <button 
-                                    @click="if (!jaVotou) { 
-                                        fetch('{{ route('compras-coletivas.propostas.votar', $proposta->id) }}', { 
-                                            method: 'POST', 
+                                    @click="
+                                        if (votando) return;
+                                        votando = true;
+                                        
+                                        const url = !jaVotou 
+                                            ? '{{ route('compras-coletivas.propostas.votar', $proposta->id) }}'
+                                            : '{{ route('compras-coletivas.propostas.remover-voto', $proposta->id) }}';
+                                        
+                                        const method = !jaVotou ? 'POST' : 'DELETE';
+                                        
+                                        fetch(url, { 
+                                            method: method, 
                                             headers: { 
                                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                                 'Content-Type': 'application/json'
@@ -78,16 +97,28 @@
                                         .then(r => r.json())
                                         .then(d => {
                                             if (d.success) {
-                                                jaVotou = true;
-                                                location.reload();
+                                                if (!jaVotou) {
+                                                    jaVotou = true;
+                                                    votosCount++;
+                                                } else {
+                                                    jaVotou = false;
+                                                    votosCount--;
+                                                }
+                                                setTimeout(() => {
+                                                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                                                }, 50);
                                             }
+                                            votando = false;
+                                        })
+                                        .catch(() => {
+                                            votando = false;
                                         });
-                                    }"
-                                    :disabled="jaVotou"
-                                    :class="jaVotou ? 'bg-gray-100 text-gray-700 cursor-not-allowed' : 'bg-[var(--cor-verde-serra)] text-white hover:bg-green-700'"
-                                    class="w-full md:w-auto px-6 py-3 rounded-lg font-bold text-sm whitespace-nowrap transition-all flex items-center justify-center gap-2">
-                                    <i :data-lucide="jaVotou ? 'check' : 'thumbs-up'" class="w-4 h-4"></i>
-                                    <span x-text="jaVotou ? 'Já Votou' : 'Votar'"></span>
+                                    "
+                                    :disabled="votando"
+                                    :style="jaVotou ? 'background-color: #ef4444; color: #ffffff;' : 'background-color: #2D5F3F; color: #ffffff;'"
+                                    class="w-full px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-60">
+                                    <i :data-lucide="jaVotou ? 'x' : 'thumbs-up'" class="w-4 h-4"></i>
+                                    <span x-text="votando ? 'Processando...' : (jaVotou ? 'Remover Voto' : 'Votar')"></span>
                                 </button>
                             </div>
                         </div>
@@ -105,45 +136,44 @@
         @if($minhasPropostas->count() > 0)
             <div>
                 <h2 class="text-lg font-bold text-[var(--cor-texto)] mb-4 flex items-center gap-2">
-                    <i data-lucide="lightbulb" class="w-5 h-5 text-green-600"></i>
+                    <i data-lucide="lightbulb" class="w-5 h-5"></i>
                     Minhas Propostas ({{ $minhasPropostas->count() }})
                 </h2>
-                <div class="space-y-4">
+                <div class="space-y-3">
                     @foreach($minhasPropostas as $proposta)
-                        <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-4 lg:p-6">
-                            <div class="flex items-center gap-3 mb-2 flex-wrap">
-                                <h3 class="text-lg font-bold text-[var(--cor-texto)]">{{ $proposta->produto->nome }}</h3>
-                                <span class="px-3 py-1 text-xs font-bold rounded-full 
-                                    {{ $proposta->status === 'pendente' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                    {{ $proposta->status === 'em_votacao' ? 'bg-blue-100 text-blue-800' : '' }}
-                                    {{ $proposta->status === 'aprovada' ? 'bg-green-100 text-green-800' : '' }}
-                                    {{ $proposta->status === 'rejeitada' ? 'bg-red-100 text-red-800' : '' }}">
-                                    {{ ucfirst(str_replace('_', ' ', $proposta->status)) }}
-                                </span>
-                                @if($proposta->status === 'em_votacao')
-                                    <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">
-                                        {{ $proposta->votos_count }} votos
-                                    </span>
-                                @endif
+                        <div class="bg-white rounded-lg shadow-sm border border-[var(--cor-borda)] p-4">
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 mb-2 flex-wrap">
+                                        <h3 class="font-bold text-[var(--cor-texto)]">{{ $proposta->produto->nome }}</h3>
+                                        <span class="px-2 py-0.5 text-xs font-bold rounded 
+                                            {{ $proposta->status === 'pendente' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                            {{ $proposta->status === 'em_votacao' ? 'bg-blue-100 text-blue-800' : '' }}
+                                            {{ $proposta->status === 'aprovada' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $proposta->status === 'rejeitada' ? 'bg-red-100 text-red-800' : '' }}">
+                                            {{ ucfirst(str_replace('_', ' ', $proposta->status)) }}
+                                        </span>
+                                        @if($proposta->status === 'em_votacao')
+                                            <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-bold rounded">
+                                                {{ $proposta->votos_count }} votos
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    <p class="text-xs text-[var(--cor-texto-muted)] mb-2">{{ $proposta->produto->descricao }}</p>
+
+                                    @if($proposta->status === 'em_votacao')
+                                        <p class="text-xs text-blue-600 flex items-center gap-1">
+                                            <i data-lucide="clock" class="w-3 h-3"></i>
+                                            Encerra em {{ $proposta->data_votacao_fim->format('d/m/Y') }}
+                                        </p>
+                                    @endif
+                                </div>
                             </div>
-
-                            <p class="text-sm text-[var(--cor-texto-muted)] mb-3">{{ $proposta->produto->descricao }}</p>
-
-                            <div class="bg-gray-50 rounded-lg p-3">
-                                <p class="text-sm text-[var(--cor-texto)]"><strong>Justificativa:</strong> {{ $proposta->justificativa }}</p>
-                            </div>
-
-                            @if($proposta->status === 'em_votacao')
-                                <p class="text-xs text-blue-600 mt-3 flex items-center gap-1">
-                                    <i data-lucide="clock" class="w-3 h-3"></i>
-                                    Votação encerra em {{ $proposta->data_votacao_fim->format('d/m/Y') }}
-                                </p>
-                            @endif
                         </div>
                     @endforeach
                 </div>
 
-                <!-- Paginação -->
                 @if($minhasPropostas->hasPages())
                     <div class="mt-6">
                         {{ $minhasPropostas->links() }}

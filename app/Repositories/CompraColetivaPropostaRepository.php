@@ -101,6 +101,24 @@ class CompraColetivaPropostaRepository
     }
 
     /**
+     * Remover voto
+     */
+    public function removerVoto(int $propostaId, int $userId): bool
+    {
+        $deletado = CompraColetivaVotoModel::where('proposta_id', $propostaId)
+            ->where('user_id', $userId)
+            ->delete();
+
+        if ($deletado > 0) {
+            // Decrementar contador
+            CompraColetivaPropostaModel::where('id', $propostaId)->decrement('votos_count');
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Buscar propostas com votação encerrada (para processar)
      */
     public function buscarVotacoesEncerradas(): Collection

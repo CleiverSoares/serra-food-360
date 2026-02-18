@@ -4,18 +4,22 @@
 @section('page-title', 'Meus Favoritos')
 @section('page-subtitle', 'Materiais salvos para acesso rápido')
 
+@section('header-actions')
+<a href="{{ route('materiais.index') }}" class="flex items-center gap-2 px-4 py-2 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-verde-serra)] transition-colors">
+    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+    Voltar
+</a>
+@endsection
+
+@section('mobile-header-actions')
+<a href="{{ route('materiais.index') }}" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Voltar">
+    <i data-lucide="arrow-left" class="w-5 h-5 text-[var(--cor-texto)]"></i>
+</a>
+@endsection
+
 @section('conteudo')
 <div class="p-4 lg:p-8">
     <div class="max-w-7xl mx-auto">
-
-        <!-- Botão Voltar -->
-        <div class="mb-6">
-            <a href="{{ route('materiais.index') }}" 
-               class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm md:text-base">
-                <i data-lucide="arrow-left" class="w-4 h-4 flex-shrink-0"></i>
-                <span class="whitespace-nowrap">Material de Gestão</span>
-            </a>
-        </div>
 
         <!-- Contador -->
         @if($materiais->count() > 0)
@@ -37,7 +41,7 @@
                                 <!-- Thumbnail customizado -->
                                 <img src="{{ asset('storage/' . $material->thumbnail_url) }}" 
                                      alt="{{ $material->titulo }}" 
-                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                     class="w-full h-full object-contain bg-white group-hover:scale-105 transition-transform duration-300">
                             @elseif($material->tipo === 'video' && $material->video_url)
                                 <!-- Preview do YouTube -->
                                 @php
@@ -47,7 +51,7 @@
                                 @if($videoId)
                                     <img src="https://img.youtube.com/vi/{{ $videoId }}/maxresdefault.jpg" 
                                          alt="{{ $material->titulo }}" 
-                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                         class="w-full h-full object-contain bg-black group-hover:scale-105 transition-transform duration-300"
                                          onerror="this.src='https://img.youtube.com/vi/{{ $videoId }}/hqdefault.jpg'">
                                     <!-- Play button overlay -->
                                     <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 group-hover:bg-opacity-40 transition-all">

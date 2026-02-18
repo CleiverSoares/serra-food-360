@@ -28,22 +28,39 @@
         <form method="POST" action="{{ route('admin.compras-coletivas.store') }}" class="space-y-6">
             @csrf
 
+            <!-- 📸 AVISO SOBRE IMAGEM -->
+            <div class="bg-blue-50 border-2 border-blue-300 rounded-xl p-6">
+                <div class="flex items-start gap-4">
+                    <i data-lucide="info" class="w-6 h-6 text-blue-600 flex-shrink-0"></i>
+                    <div>
+                        <h3 class="text-lg font-bold text-blue-900 mb-2">ℹ️ Como adicionar imagem?</h3>
+                        <p class="text-sm text-blue-800 mb-3">
+                            A imagem da compra coletiva vem do <strong>Produto do Catálogo</strong> que você selecionar abaixo.
+                        </p>
+                        <p class="text-xs text-blue-700">
+                            💡 <strong>Para adicionar/editar a foto do produto:</strong> Vá em <a href="{{ route('admin.compras-coletivas.produtos.index') }}" class="underline font-bold">Catálogo de Produtos</a> → Editar Produto → Adicione a foto lá.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Informações Básicas -->
             <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-6">
                 <h3 class="text-lg font-bold text-[var(--cor-texto)] mb-4 flex items-center gap-2">
-                    <i data-lucide="info" class="w-5 h-5 text-blue-600"></i>
+                    <i data-lucide="info" class="w-5 h-5"></i>
                     Informações Básicas
                 </h3>
                 
                 <div class="space-y-4">
                     <div>
                         <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Produto do Catálogo *</label>
-                        <select name="produto_catalogo_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
+                        <select name="produto_catalogo_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)]">
                             <option value="">Selecione um produto</option>
                             @foreach($produtos as $produto)
                                 <option value="{{ $produto->id }}">{{ $produto->nome }} ({{ $produto->unidade_medida }})</option>
                             @endforeach
                         </select>
+                        <p class="text-xs text-gray-600 mt-1">💡 A imagem da compra vem do produto selecionado</p>
                     </div>
 
                     <div>

@@ -165,6 +165,23 @@ class ComprasColetivasController extends Controller
         ], 400);
     }
 
+    public function removerVoto(int $propostaId): JsonResponse
+    {
+        $resultado = $this->compraColetivaService->removerVoto($propostaId, auth()->id());
+
+        if ($resultado) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Voto removido!',
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Erro ao remover voto.',
+        ], 400);
+    }
+
     // ========== AUTOCOMPLETE PRODUTOS ==========
 
     public function autocompleteProdutos(Request $request): JsonResponse

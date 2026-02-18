@@ -16,7 +16,7 @@
 
         <!-- Ações Rápidas -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <a href="{{ route('compras-coletivas.propostas.index') }}" 
+            <a href="{{ route('compras-coletivas.propostas.create') }}" 
                class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] p-4 hover:shadow-md transition-shadow">
                 <div class="flex items-center gap-3">
                     <div class="p-3 bg-blue-100 rounded-lg flex-shrink-0">

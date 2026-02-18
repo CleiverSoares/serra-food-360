@@ -4,18 +4,22 @@
 @section('page-title', 'Material de Gestão')
 @section('page-subtitle', $material->titulo)
 
+@section('header-actions')
+<a href="{{ route('materiais.index') }}" class="flex items-center gap-2 px-4 py-2 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-verde-serra)] transition-colors">
+    <i data-lucide="arrow-left" class="w-4 h-4"></i>
+    Voltar
+</a>
+@endsection
+
+@section('mobile-header-actions')
+<a href="{{ route('materiais.index') }}" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Voltar">
+    <i data-lucide="arrow-left" class="w-5 h-5 text-[var(--cor-texto)]"></i>
+</a>
+@endsection
+
 @section('conteudo')
 <div class="p-4 lg:p-8">
     <div class="max-w-7xl mx-auto">
-
-        <!-- Breadcrumb -->
-        <div class="mb-6">
-            <a href="{{ route('materiais.index') }}" 
-               class="inline-flex items-center gap-2 text-[var(--cor-verde-serra)] hover:underline text-sm font-medium">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                Voltar para Materiais
-            </a>
-        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
