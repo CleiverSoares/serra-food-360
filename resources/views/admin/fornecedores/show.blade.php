@@ -5,15 +5,23 @@
 @section('page-subtitle', $fornecedor->fornecedor?->nome_empresa)
 
 @section('header-actions')
-@if(auth()->user()->role === 'admin')
-    <a href="{{ route('admin.fornecedores.edit', $fornecedor->id) }}" class="flex items-center gap-2 px-4 py-2 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:opacity-90 transition-all">
-        <i data-lucide="edit" class="w-4 h-4"></i>
-        Editar
+<div class="flex items-center gap-3">
+    @if(auth()->user()->role === 'admin')
+        <a href="{{ route('admin.fornecedores.edit', $fornecedor->id) }}" class="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors" style="background-color: #2D5F3F; color: #ffffff;">
+            <i data-lucide="edit" class="w-4 h-4"></i>
+            Editar
+        </a>
+    @endif
+    <a href="{{ auth()->user()->role === 'admin' ? route('admin.fornecedores.index') : route('fornecedores.index') }}" class="flex items-center gap-2 px-4 py-2 text-gray-600 hover:text-[#2D5F3F] transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        Voltar
     </a>
-@endif
-<a href="{{ auth()->user()->role === 'admin' ? route('admin.fornecedores.index') : route('fornecedores.index') }}" class="flex items-center gap-2 px-4 py-2 text-[var(--cor-texto-secundario)] hover:text-[var(--cor-verde-serra)] transition-colors">
-    <i data-lucide="arrow-left" class="w-4 h-4"></i>
-    Voltar
+</div>
+@endsection
+
+@section('mobile-header-actions')
+<a href="{{ auth()->user()->role === 'admin' ? route('admin.fornecedores.index') : route('fornecedores.index') }}" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" title="Voltar">
+    <i data-lucide="arrow-left" class="w-5 h-5 text-[var(--cor-texto)]"></i>
 </a>
 @endsection
 
@@ -22,29 +30,36 @@
     <div class="max-w-5xl mx-auto space-y-6">
 
         <!-- Card Principal -->
-        <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] overflow-hidden">
+        <div class="bg-white rounded-xl shadow-sm border border-[var(--cor-borda)] overflow-hidden"
+             x-data="{ modalLogo: false }">
             
             <!-- Header com Logo -->
             <div class="bg-purple-50 p-4 md:p-6 border-b border-[var(--cor-borda)]">
-                <div class="flex items-center gap-4 md:gap-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-6">
                     @if($fornecedor->fornecedor && $fornecedor->fornecedor->logo_path)
-                        <img src="{{ asset('storage/' . $fornecedor->fornecedor->logo_path) }}" 
-                             alt="{{ $fornecedor->name }}"
-                             class="w-16 h-16 md:w-24 md:h-24 rounded-xl object-cover shadow-md flex-shrink-0">
+                        <div class="w-20 h-20 md:w-28 md:h-28 rounded-xl overflow-hidden shadow-md flex-shrink-0 cursor-pointer group relative mx-auto sm:mx-0"
+                             @click="modalLogo = true">
+                            <img src="{{ asset('storage/' . $fornecedor->fornecedor->logo_path) }}" 
+                                 alt="{{ $fornecedor->name }}"
+                                 class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <i data-lucide="zoom-in" class="w-8 h-8 text-white"></i>
+                            </div>
+                        </div>
                     @else
-                        <div class="w-16 h-16 md:w-24 md:h-24 rounded-xl bg-purple-600 text-white flex items-center justify-center text-2xl md:text-4xl font-bold shadow-md flex-shrink-0">
+                        <div class="w-20 h-20 md:w-28 md:h-28 rounded-xl bg-purple-600 text-white flex items-center justify-center text-3xl md:text-5xl font-bold shadow-md flex-shrink-0 mx-auto sm:mx-0">
                             {{ strtoupper(substr($fornecedor->name, 0, 1)) }}
                         </div>
                     @endif
 
-                    <div class="flex-1 min-w-0">
-                        <h2 class="text-lg md:text-2xl font-bold text-[var(--cor-texto)] mb-1 truncate">{{ $fornecedor->name }}</h2>
+                    <div class="flex-1 min-w-0 text-center sm:text-left w-full">
+                        <h2 class="text-xl md:text-2xl font-bold text-[var(--cor-texto)] mb-1">{{ $fornecedor->name }}</h2>
                         @if($fornecedor->fornecedor)
-                            <p class="text-base md:text-lg text-[var(--cor-texto-muted)] mb-2 truncate">{{ $fornecedor->fornecedor->nome_empresa }}</p>
+                            <p class="text-base md:text-lg text-[var(--cor-texto-muted)] mb-3">{{ $fornecedor->fornecedor->nome_empresa }}</p>
                         @endif
                         
                         <!-- Badges -->
-                        <div class="flex flex-wrap gap-2">
+                        <div class="flex flex-wrap gap-2 justify-center sm:justify-start">
                             <span class="px-3 py-1 rounded-full text-xs font-bold
                                 {{ $fornecedor->status === 'aprovado' ? 'bg-green-100 text-green-800' : '' }}
                                 {{ $fornecedor->status === 'pendente' ? 'bg-yellow-100 text-yellow-800' : '' }}
@@ -62,14 +77,34 @@
                 </div>
             </div>
 
+            <!-- Modal de Logo -->
+            @if($fornecedor->fornecedor && $fornecedor->fornecedor->logo_path)
+                <div x-show="modalLogo" 
+                     x-transition
+                     @click.self="modalLogo = false"
+                     class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+                     style="display: none;">
+                    <div class="relative max-w-4xl w-full">
+                        <button @click="modalLogo = false" 
+                                class="absolute -top-12 right-0 p-2 text-white hover:text-gray-300 transition-colors">
+                            <i data-lucide="x" class="w-8 h-8"></i>
+                        </button>
+                        <img src="{{ asset('storage/' . $fornecedor->fornecedor->logo_path) }}" 
+                             alt="{{ $fornecedor->name }}" 
+                             class="w-full h-auto max-h-[85vh] object-contain rounded-lg">
+                    </div>
+                </div>
+            @endif
+
             <!-- Conteúdo -->
-            <div class="p-6">
+            <div class="p-4 md:p-6 space-y-4 md:space-y-6">
                 
-                <!-- Assinatura -->
-                @php
-                    $assinatura = $fornecedor->assinaturaAtiva;
-                @endphp
-                <div class="mb-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border-2 border-blue-200">
+                <!-- Assinatura (apenas admin e o próprio usuário) -->
+                @if(auth()->user()->role === 'admin' || auth()->id() === $fornecedor->id)
+                    @php
+                        $assinatura = $fornecedor->assinaturaAtiva;
+                    @endphp
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border-2 border-blue-200">
                     <h3 class="text-sm font-bold text-[var(--cor-texto)] mb-3 flex items-center gap-2">
                         <i data-lucide="credit-card" class="w-5 h-5 text-blue-600"></i>
                         Assinatura
@@ -142,7 +177,8 @@
                             @endif
                         </div>
                     @endif
-                </div>
+                    </div>
+                @endif
                 
                 <!-- Segmentos -->
                 @if($fornecedor->segmentos->count() > 0)
@@ -164,7 +200,7 @@
                 @endif
 
                 <!-- Grid de Informações -->
-                <div class="grid md:grid-cols-2 gap-6">
+                <div class="grid md:grid-cols-2 gap-4 md:gap-6">
                     
                     <!-- Coluna 1: Dados Pessoais -->
                     <div class="bg-gray-50 rounded-lg p-4">
@@ -259,43 +295,38 @@
                     </div>
                 @endif
 
-                <!-- Ações -->
-                <div class="flex flex-wrap gap-3 pt-6 border-t border-[var(--cor-borda)]">
-                    @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('admin.fornecedores.edit', $fornecedor->id) }}" 
-                           class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-[var(--cor-verde-serra)] text-white rounded-lg hover:opacity-90 transition-all font-medium text-sm md:text-base">
-                            <i data-lucide="edit" class="w-4 h-4 flex-shrink-0"></i>
-                            <span class="whitespace-nowrap">Editar Fornecedor</span>
-                        </a>
-                    @endif
-                    
-                    <a href="{{ $fornecedor->whatsappPrincipal?->linkWhatsApp() ?? '#' }}" 
+                <!-- Botão WhatsApp Destacado -->
+                @if($fornecedor->whatsappPrincipal)
+                    <a href="{{ $fornecedor->whatsappPrincipal->linkWhatsApp() }}" 
                        target="_blank"
-                       class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium text-sm md:text-base">
-                        <i data-lucide="message-circle" class="w-4 h-4 flex-shrink-0"></i>
-                        <span class="whitespace-nowrap">WhatsApp</span>
+                       class="flex items-center justify-center gap-2 px-6 py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold shadow-sm w-full">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        Entrar em Contato via WhatsApp
                     </a>
-                    
-                    @if(auth()->user()->role === 'admin')
+                @endif
+
+                <!-- Ações Admin -->
+                @if(auth()->user()->role === 'admin')
+                    <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-[var(--cor-borda)]">
                         @if($fornecedor->status === 'inativo')
-                            <form action="{{ route('admin.fornecedores.ativar', $fornecedor->id) }}" method="POST" class="inline">
+                            <form action="{{ route('admin.fornecedores.ativar', $fornecedor->id) }}" method="POST" class="flex-1">
                                 @csrf
-                                <button type="submit" class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors font-medium text-sm md:text-base">
-                                    <i data-lucide="check-circle" class="w-4 h-4 flex-shrink-0"></i>
-                                    <span class="whitespace-nowrap">Ativar</span>
+                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors font-medium text-sm border border-green-200">
+                                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                                    Ativar
                                 </button>
                             </form>
                         @else
-                            <form action="{{ route('admin.fornecedores.inativar', $fornecedor->id) }}" method="POST" class="inline">
+                            <form action="{{ route('admin.fornecedores.inativar', $fornecedor->id) }}" method="POST" class="flex-1">
                                 @csrf
-                                <button type="submit" class="inline-flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 bg-orange-50 text-orange-700 rounded-lg hover:bg-orange-100 transition-colors font-medium text-sm md:text-base">
-                                    <i data-lucide="pause-circle" class="w-4 h-4 flex-shrink-0"></i>
-                                    <span class="whitespace-nowrap">Inativar</span>
+                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-orange-50 text-orange-700 rounded-lg hover:bg-orange-100 transition-colors font-medium text-sm border border-orange-200">
+                                    <i data-lucide="pause-circle" class="w-4 h-4"></i>
+                                    Inativar
                                 </button>
                             </form>
                         @endif
-                    @endif
-                </div>
+                    </div>
+                @endif
 
             </div>
         </div>
@@ -303,3 +334,13 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+});
+</script>
+@endpush

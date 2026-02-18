@@ -61,6 +61,17 @@ class AdminTalentosController extends Controller
             'carta_recomendacao' => 'nullable|mimes:pdf|max:5120',
         ]);
 
+        // Adicionar os arquivos aos dados validados
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto');
+        }
+        if ($request->hasFile('curriculo_pdf')) {
+            $validated['curriculo_pdf'] = $request->file('curriculo_pdf');
+        }
+        if ($request->hasFile('carta_recomendacao')) {
+            $validated['carta_recomendacao'] = $request->file('carta_recomendacao');
+        }
+
         $talento = $this->talentoService->criar($validated);
 
         return redirect()
@@ -105,6 +116,17 @@ class AdminTalentosController extends Controller
             'curriculo_pdf' => 'nullable|mimes:pdf|max:5120',
             'carta_recomendacao' => 'nullable|mimes:pdf|max:5120',
         ]);
+
+        // Adicionar os arquivos aos dados validados
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = $request->file('foto');
+        }
+        if ($request->hasFile('curriculo_pdf')) {
+            $validated['curriculo_pdf'] = $request->file('curriculo_pdf');
+        }
+        if ($request->hasFile('carta_recomendacao')) {
+            $validated['carta_recomendacao'] = $request->file('carta_recomendacao');
+        }
 
         $this->talentoService->atualizar($talento, $validated);
 

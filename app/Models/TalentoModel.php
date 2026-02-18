@@ -17,7 +17,7 @@ class TalentoModel extends Model
         'pretensao',
         'tipo_cobranca',
         'foto_path',
-        'curriculo_pdf_path',
+        'curriculo_path',
         'carta_recomendacao_path',
         'ativo',
         'disponibilidade',

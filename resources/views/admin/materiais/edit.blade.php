@@ -59,11 +59,13 @@
                             <select name="categoria" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                                 <option value="">Selecione...</option>
                                 <option value="financeiro" {{ old('categoria', $material->categoria) === 'financeiro' ? 'selected' : '' }}>Financeiro</option>
-                                <option value="cozinha" {{ old('categoria', $material->categoria) === 'cozinha' ? 'selected' : '' }}>Cozinha</option>
-                                <option value="legislacao" {{ old('categoria', $material->categoria) === 'legislacao' ? 'selected' : '' }}>Legislação</option>
-                                <option value="gestao_equipe" {{ old('categoria', $material->categoria) === 'gestao_equipe' ? 'selected' : '' }}>Gestão de Equipe</option>
+                                <option value="pessoas" {{ old('categoria', $material->categoria) === 'pessoas' ? 'selected' : '' }}>Gestão de Pessoas</option>
+                                <option value="cardapio" {{ old('categoria', $material->categoria) === 'cardapio' ? 'selected' : '' }}>Cardápio</option>
+                                <option value="seguranca-alimentar" {{ old('categoria', $material->categoria) === 'seguranca-alimentar' ? 'selected' : '' }}>Segurança Alimentar</option>
                                 <option value="marketing" {{ old('categoria', $material->categoria) === 'marketing' ? 'selected' : '' }}>Marketing</option>
-                                <option value="atendimento" {{ old('categoria', $material->categoria) === 'atendimento' ? 'selected' : '' }}>Atendimento</option>
+                                <option value="legislacao" {{ old('categoria', $material->categoria) === 'legislacao' ? 'selected' : '' }}>Legislação</option>
+                                <option value="logistica" {{ old('categoria', $material->categoria) === 'logistica' ? 'selected' : '' }}>Logística</option>
+                                <option value="inovacao" {{ old('categoria', $material->categoria) === 'inovacao' ? 'selected' : '' }}>Inovação</option>
                             </select>
                         </div>
 
@@ -101,6 +103,7 @@
                             {{ $material->tipo === 'arquivo' && $material->arquivo_path ? 'Substituir Arquivo' : 'Arquivo' }}
                         </label>
                         <input type="file" name="arquivo" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                               :disabled="tipo !== 'arquivo'"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                         <p class="text-xs text-gray-600 mt-1">Formatos: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX. Máximo 10MB</p>
                     </div>
@@ -112,6 +115,8 @@
                         <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">URL do YouTube *</label>
                         <input type="url" name="video_url" value="{{ old('video_url', $material->video_url) }}"
                                placeholder="https://www.youtube.com/watch?v=..."
+                               :required="tipo === 'video'"
+                               :disabled="tipo !== 'video'"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                         <p class="text-xs text-gray-600 mt-1">Cole o link completo do vídeo do YouTube</p>
                     </div>
@@ -123,6 +128,8 @@
                         <label class="block text-sm font-medium text-[var(--cor-texto)] mb-2">Link Externo *</label>
                         <input type="url" name="link_externo" value="{{ old('link_externo', $material->link_externo) }}"
                                placeholder="https://..."
+                               :required="tipo === 'link'"
+                               :disabled="tipo !== 'link'"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--cor-verde-serra)] focus:border-transparent">
                     </div>
                 </div>
